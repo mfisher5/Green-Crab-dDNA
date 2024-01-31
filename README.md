@@ -11,6 +11,18 @@ Abstract: Predation by invasive species can threaten local ecosystems and econom
 *Bettina Thallinger, Georgina Cordone, Eily Allen, Erin D’Agnese, Megan Schaffer, and Maya Garber-Yonts shared invaluable lab and bioinformatic knowledge and assistance, and Eric Ward provided help troubleshooting the R package zoid.*  
 ___________________
 
-### Using this repository
 
-Structure
+### Workflow
+
+
+### Requirements
+
+
+### Setup
+
+
+### Folders
+
+
+
+
