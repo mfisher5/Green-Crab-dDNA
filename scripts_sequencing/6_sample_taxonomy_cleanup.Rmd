@@ -201,10 +201,10 @@ From that list, I'm going to remove the following:
 to_remove_phyla <- c("Bacillariophyta", "Rotifera")
 to_remove_taxa  <- c("uncultured Bangiophyceae","Tetraselmis","Chromulinales","Chloropicon","Chloropicon primus","Chloroparvula pacifica","	Paraphysomonas sp.","uncultured Jiaozhou Bay zooplankton","Trebouxia aggregata","Lobosphaera incisa",	"Scenedesmus quadricauda","Trebouxiophyceae sp. M-hakoo 311","Pseudoralfsia verrucosa","Thecamonas trahens","Cyprideis torosa","Gallus gallus","Myrionema strangulans","Apoikiospumella mondseeiensis","Pedospumella sp.","Synechococcus")
 to_remove_genus <- c("Scomber","Chloropicon")
-to_remove_family <- c("Chrysophyceae")
+to_remove_class <- c("Chrysophyceae")
 
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(too_small_rm=ifelse(control_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus) | family %in% to_remove_family, 1, 0))
+  mutate(too_small_rm=ifelse(control_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus) | class %in% to_remove_class, 1, 0))
 ```
 <br>
 
