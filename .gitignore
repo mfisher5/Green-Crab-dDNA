@@ -1,1 +1,15 @@
+# ppt for producing doc images #
 doc/*.pptx
+
+# large data files #
+data/dada2/**
+data/blast/**
+data/results/**
+data/qc/**
+#!data/blast/run3_BF3_taxonomy_filtered.csv
+#!data/blast/run3_BF3_taxonomy_filtered.csv
+#!data/blast/run4_BF3_taxonomy_filtered.csv
+#!data/blast/run5_BF3_taxonomy_filtered.csv
+scripts_sequencing/**.html
+.Rproj.user
+Green-crab-dDNA.Rproj
