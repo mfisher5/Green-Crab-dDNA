@@ -135,79 +135,109 @@ write_csv(dat.out, here(indir,paste0('runs',first(run.nums),'-',last(run.nums),'
 
 # get species-level prey for each crab
 spdat <- dat.out %>% filter(rank=="species")
-# write_csv(spdat, here('results','allRuns_BF3_CEG05Blast_filtered_species.csv'))
 write_csv(spdat, here('data','results','allRuns_BF3_TESTING_filtered_species.csv'))
 
 
-#  keep non-specific ids in data set only if that taxon is not represented for the given crab -- for all plant / algae IDs that only go to order thru genus, otherwise just through genus
-nonspec_dat <- dat.out %>% 
-  filter((phylum %in% c("Chlorophyta","Rhodophyta","Streptophyta") & rank=="order") | (class %in% c("Phaeophyceae") & rank=="order") | rank %in% c("genus","family")) %>%
-  mutate(dup_sample=sample)
-
-nonspec_dat %<>%
+#  keep non-specific ids in data set only if that taxon is not represented for the given crab -- allow up to family
+dat.unq <- dat.out %>%
+  filter(rank %in% c('species','genus','family')) %>%
   group_by(sample) %>%
   nest()
 
-remove_duplicate_taxonomy <- function(x){
-  tmp_sample <- as.character(unique(x[,"dup_sample"]))
-  
-  if(tmp_sample %in% spdat$sample){
-    green.filter <- x %>% filter(phylum %in% c("Chlorophyta","Rhodophyta","Streptophyta") | (class %in% c("Phaeophyceae","Chrysophyceae"))) %>%
-      filter(!(taxon %in% (filter(spdat,sample==tmp_sample))$genus) & !(taxon %in% (filter(spdat,sample==tmp_sample))$family) & !(taxon %in% (filter(spdat,sample==tmp_sample))$order))
-    x.filter <- x %>% filter(!(phylum %in% c("Chlorophyta","Rhodophyta","Streptophyta")) & (!(class %in% c("Phaeophyceae","Chrysophyceae")))) %>%
-      filter(!(taxon %in% (filter(spdat,sample==tmp_sample))$genus) & !(taxon %in% (filter(spdat,sample==tmp_sample))$family)) %>% 
-    bind_rows(green.filter)
-    return(x.filter)
-    
-  } else{return(x)}
-}
-# check fx
-# test <- (nonspec_dat$data[which(nonspec_dat$sample=="MC-B")])[[1]]
-# tmp_sample <- as.character(unique(test[,"dup_sample"]))
-# tmp_sample %in% spdat$sample
-# test.filter <- test %>% mutate(non_green=!(phylum %in% c("Chlorophyta","Rhodophyta","Streptophyta")) & (!(class %in% c("Phaeophyceae","Chrysophyceae")))) %>%
-#   mutate(keep_genus=ifelse(!(taxon %in% (filter(spdat,sample==tmp_sample))$genus),1,0)) %>%
-#   mutate(keep_family=ifelse(!(taxon %in% (filter(spdat,sample==tmp_sample))$family),1,0))
+dat.unq %<>% mutate(data.filter=purrr::map(data,get_unique_taxa))   ## improved function
 
 
+dat.unq.filter <-  dat.unq %>% dplyr::select(-data) %>% unnest(c(sample,data.filter))
 
-nonspec_dat %<>% mutate(data.filter=purrr::map(data,remove_duplicate_taxonomy))
+# check if taxa were filtered out
+check.filter <- dat.unq.filter %>% group_by(sample) %>% summarise(ntax_filtered=length(unique(taxon))) %>%
+  left_join(dat.out %>% group_by(sample) %>% summarise(ntax_original=length(unique(taxon)))) %>%
+  mutate(diff_tax=ntax_original-ntax_filtered)
+check.filter %>% ggplot(aes(x=diff_tax)) + geom_histogram()
 
-unqdat <- nonspec_dat %>% dplyr::select(-data) %>% unnest(c(sample,data.filter)) %>% dplyr::select(-dup_sample) %>%
-  bind_rows(spdat)
-
-
-# remove duplicates that have two + entries of higher level taxonomy!
-unqdat %>% 
-  filter(rank!="species") %>% 
-  dplyr::select(sample,Hash,taxon,rank,species,genus,family,order,class) %>% distinct() %>%
-  group_by(Hash, sample) %>% summarise(duplicated.ranks=length(unique(rank))) %>% filter(duplicated.ranks > 1)
-
-# fix hash 6ab46a5ec84ed667fae6c421dc0b59c9cc86727f
-tmpdat <- filter(unqdat, Hash=="6ab46a5ec84ed667fae6c421dc0b59c9cc86727f" & sample %in% c("WACO21-288","WACO21-607")) %>%
-  filter(rank=="genus")
-
-unqdat %<>% filter(  !( (Hash=="6ab46a5ec84ed667fae6c421dc0b59c9cc86727f") & (sample %in% c("WACO21-288","WACO21-607")) )  ) %>%
-  bind_rows(tmpdat)
-
-
-write_csv(unqdat, here('data','results','allRuns_BF3_TESTING_filtered_unique_taxa.csv'))
+write_csv(dat.unq.filter, here('data','results','allRuns_BF3_filtered_unique_taxa.csv'))
 
 # summarize taxonomy ------------------------------------------------------
 
-
-unq.summary <- unqdat %>%
+unq.summary <- dat.unq.filter %>%
   group_by(taxon,rank,phylum,class,family,genus,species,type) %>%
   mutate(type=ifelse(type=="Samples","Sample",type)) %>%    # fix inconsistent naming
   summarise(n_crab=length(unique(sample)),
             miseqruns=paste0(unique(MiSeqRun),collapse=","),
             site_months=paste0(unique(site_month),collapse=","))
-write_csv(unq.summary, here('data','results','allRuns_BF3_TESTING_filtered_unique_taxa_summary_SUBMIT.csv'))
+write_csv(unq.summary, here('data','results','allRuns_BF3_filtered_unique_taxa_summary.csv'))
 
 
 
 
 
+# Sensitivity: to order? to class? -----------------------------------------
+
+### redo filtering above to order
+dat.unq2 <- dat.out %>%
+  filter(rank %in% c('species','genus','family','order')) %>%
+  group_by(sample) %>%
+  nest()
+
+dat.unq2 %<>% mutate(data.filter=purrr::map(data,get_unique_taxa))
+
+
+dat.unq2.filter <-  dat.unq2 %>% dplyr::select(-data) %>% unnest(c(sample,data.filter))
+
+
+unq2.summary <- dat.unq2.filter %>%
+  group_by(taxon,rank,phylum,class,family,genus,species,type) %>%
+  mutate(type=ifelse(type=="Samples","Sample",type)) %>%    # fix inconsistent naming
+  summarise(n_crab=length(unique(sample)),
+            miseqruns=paste0(unique(MiSeqRun),collapse=","),
+            site_months=paste0(unique(site_month),collapse=",")) %>%
+  anti_join(unq.summary) %>%
+  mutate(filter="to order")
+
+### redo filtering above to class
+dat.unq3 <- dat.out %>%
+  filter(rank %in% c('species','genus','family','order','class')) %>%
+  group_by(sample) %>%
+  nest()
+
+dat.unq3 %<>% mutate(data.filter=purrr::map(data,get_unique_taxa))
+
+
+dat.unq3.filter <-  dat.unq3 %>% dplyr::select(-data) %>% unnest(c(sample,data.filter))
+
+
+unq3.summary <- dat.unq3.filter %>%
+  group_by(taxon,rank,phylum,class,family,genus,species,type) %>%
+  mutate(type=ifelse(type=="Samples","Sample",type)) %>%    # fix inconsistent naming
+  summarise(n_crab=length(unique(sample)),
+            miseqruns=paste0(unique(MiSeqRun),collapse=","),
+            site_months=paste0(unique(site_month),collapse=",")) %>%
+  anti_join(unq.summary) %>%
+  mutate(filter="to class")
+
+
+### redo filtering above to phylum
+dat.unq4 <- dat.out %>%
+  group_by(sample) %>%
+  nest()
+
+dat.unq4 %<>% mutate(data.filter=purrr::map(data,get_unique_taxa))
+
+
+dat.unq4.filter <-  dat.unq4 %>% dplyr::select(-data) %>% unnest(c(sample,data.filter))
+
+
+unq4.summary <- dat.unq4.filter %>%
+  group_by(taxon,rank,phylum,class,family,genus,species,type) %>%
+  mutate(type=ifelse(type=="Samples","Sample",type)) %>%    # fix inconsistent naming
+  summarise(n_crab=length(unique(sample)),
+            miseqruns=paste0(unique(MiSeqRun),collapse=","),
+            site_months=paste0(unique(site_month),collapse=",")) %>%
+  anti_join(unq.summary) %>%
+  mutate(filter="to phylum")
+
+unq2.summary %>% bind_rows(unq3.summary) %>% bind_rows(unq4.summary) %>%
+write_csv(here('data','results','allRuns_BF3_filtered_unique_taxa_summary_sensitivity.csv'))
 
 
 

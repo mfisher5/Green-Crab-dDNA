@@ -25,6 +25,8 @@ get_unique_taxa <- function(taxa.df, level="all"){
   dat <- dat %>%
     filter(!(taxon %in% fdat$order))
   
+  # remove higher level taxonomy represented by class
+  
   
   
   } else if(level=="site"){

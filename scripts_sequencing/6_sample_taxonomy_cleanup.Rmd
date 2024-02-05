@@ -30,7 +30,7 @@ library(here)
 library(ggplot2)
 library(ggrepel)
 
-writing=FALSE  ## true to write files, false to knit for doc
+writing=TRUE  ## true to write files, false to knit for doc
 ```
 
 Specify user directories
@@ -43,19 +43,19 @@ outdir      <- 'data/blast'
 What are the names of the processed blast file with taxonomy from script 6?
 ```{r}
 # hashes with unique staxids
-blast_file <- 'run4_bf3_sample_CEGblast_lca_taxonomy.csv'
+blast_file <- 'run2_bf3_sample_CEGblast_lca_taxonomy.csv'
 ```
 <br>
 
 What is the location / name of the metadata file for this sequencing run?
 ```{r}
-run_metadat_file <- 'data/metadata/run4_BF3_filtered_metadata.csv'
+run_metadat_file <- 'data/metadata/run2_BF3_filtered_metadata.csv'
 ```
 <br>
 
 And the run number and the marker
 ```{r}
-run.num <- 4
+run.num <- 2
 marker <- 'BF3'
 ```
 <br>
@@ -118,7 +118,7 @@ To easier track how much data is being removed, I'm going to classify each hash 
 ### Controls
 
 get the hashes in the controls. **Not run through BLAST for Run 2, set to eval=FALSE**
-```{r echo=FALSE, fig.height=3, fig.width=8, eval=TRUE}
+```{r echo=FALSE, fig.height=3, fig.width=8, eval=FALSE}
 control_dat <- blast.dat.filter %>% filter(type=="Control")
 ggplot(data=control_dat, aes(x=sample_id, y=nReads, fill=taxon)) +
   geom_col() +
@@ -280,7 +280,7 @@ ggplot(plotdat %>% filter(grepl(site, site_month)), aes(x=sample_id,y=pReads,fil
 <br>
 
 *No Nahcotta in runs 2,3 - set eval to FALSE*
-```{r echo=FALSE, fig.height=5, fig.width=10, eval=TRUE}
+```{r echo=FALSE, fig.height=5, fig.width=10, eval=FALSE}
 site <- "Nahcotta"
 ggplot(plotdat %>% filter(grepl(site, site_month)), aes(x=sample_id,y=pReads,fill=reason)) +
   geom_col() +
