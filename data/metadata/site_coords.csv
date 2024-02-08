@@ -1,0 +1,12 @@
+type,site_name,sampling_month,latitude,longitude,n_dissected
+Sentinel,Stackpole,May,46.597556,-124.037698,1
+Sentinel,Stackpole,July,46.597556,-124.037698,12
+Sentinel,Stackpole,September,46.597556,-124.037698,12
+Sentinel,Nahcotta,July,46.492106,-124.031611,12
+Sentinel,Nahcotta,September,46.492106,-124.031611,14
+Clam Bed,Long Beach,May,46.434368,-124.017641,15
+Clam Bed,Long Beach,July,46.434368,-124.017641,9
+Clam Bed,Long Beach,September,46.434368,-124.017641,10
+Clam Bed,Oysterville,May,46.554265,-124.016617,13
+Clam Bed,Oysterville,July,46.554265,-124.016617,8
+Clam Bed,Oysterville,September,46.554265,-124.016617,15

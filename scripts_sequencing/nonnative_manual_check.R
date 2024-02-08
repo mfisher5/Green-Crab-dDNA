@@ -48,7 +48,7 @@ dat <- read_csv(here(blastdir,paste0('runs',min(run.nums),'-',max(run.nums),'_',
 
 # Get sequence data for species of interest -------------------------------
 
-s <- "Neoporphyra haitanensis"
+s <- "Botrylloides violaceus"
 
 
 asvdat <- dat %>% filter(taxon==s) %>% dplyr::select(Hash,MiSeqRun) %>% distinct()

@@ -11,5 +11,7 @@ data/qc/**
 #!data/blast/run4_BF3_taxonomy_filtered.csv
 #!data/blast/run5_BF3_taxonomy_filtered.csv
 scripts_sequencing/**.html
+figs/**.png
 .Rproj.user
+.Rhistory
 Green-crab-dDNA.Rproj

@@ -1,0 +1,197 @@
+---
+title: "Manual Filtering"
+author: "M Fisher"
+date: "4/27/2023"
+output: html_document
+---
+
+# Description
+
+Use this script to: 
+
+(1) Get BLAST output for species flagged as 'non-native' during manual filtering, to check percent identity and e-values.
+
+(2) Apply the manual filter
+
+(3) Create a final data file with taxonomy / sequences for ASVs combined across runs, and all ASVs in each EGC sample
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(ggrepel)
+library(cowplot)
+library(janitor)
+library(magrittr)
+
+source(here('R','get_unique_taxa.R'))
+
+# User inputs
+dada2dir <- 'data/dada2'
+blastdir <- 'data/blast'
+indir   <- 'data/results'
+run.nums <- c(2,3,4,5)
+marker  <- 'BF3'
+metadata_dir <- 'data/metadata'
+blast_filename <- c('hash_key_clean_blast_2023-04-26.fasta')
+
+```
+
+
+# 1. Data
+
+Read in the files with unique taxa across all runs (produced by script 7)
+```{r}
+# summary of taxonomy across all samples
+unq.summary <- read_csv( here(indir,'allRuns_BF3_filtered_unique_taxa_summary.csv'))
+
+# taxonomy per hash per crab
+dat.out <- read_csv(here(blastdir,paste0('runs',first(run.nums),'-',last(run.nums),'_',marker,'_taxonomy_filtered.csv')))
+```
+read in the raw blasted taxonomy data 
+```{r}
+for(i in seq(1,length(run.nums))){
+  r=run.nums[[i]]
+  if(r==run.nums[1]){
+    rawblastdat <- read_delim(here(blastdir, paste0("run",r,"_",blast_filename)), col_names=FALSE, col_types=rep("c",times=18)) %>% mutate(MiSeqRun=r)
+  } else{
+    rawblastdat %<>% bind_rows(read_delim(here(blastdir, paste0("run",r,"_",blast_filename)), col_names=FALSE, col_types=rep("c",times=18))
+                            %>% mutate(MiSeqRun=r,X15=as.character(X15)))
+  }
+}
+colnames(rawblastdat) <- c("qseqid", "sseqid", "sacc", "pident", "length",
+                        "mismatch", "gapopen", "qcovus", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "staxids", "qlen", "sscinames", "sseq","MiSeqRun")
+```
+
+read in the sequences associated with each hash
+```{r}
+for(i in seq(1,length(run.nums))){
+  r=run.nums[[i]]
+  if(r==run.nums[1]){
+    hash_keys <- read_delim(here(dada2dir, paste0("run_",r),"hash_key.csv"), col_names=TRUE, col_types=rep("c",times=3)) %>% mutate(MiSeqRun=r)
+  } else{
+    hash_keys %<>% bind_rows(read_delim(here(dada2dir, paste0("run_",r),"hash_key.csv"), col_names=TRUE, col_types=rep("c",times=3))
+                            %>% mutate(MiSeqRun=r))
+  }
+}
+```
+
+
+# 2. BLAST percent identities
+
+while conducting manual filtering, it will be helpful to have percent identities associated with BLAST matches.
+
+pull the percent identities for all taxa in the filtered file from (1), summarize across matches, and save.
+```{r}
+unq.pident <- unq.summary %>%
+  filter(type=="Sample") %>%
+  left_join(dat.out %>% dplyr::select(taxon,Hash) %>% distinct(), by="taxon") %>%
+  left_join(rawblastdat,by=c("Hash"="qseqid")) %>%
+  group_by(taxon,rank,phylum,class, family,genus, species,type,n_crab,miseqruns,sscinames) %>%
+  summarise(min_pident=min(pident),max_pident=max(pident),mean_pident=mean(pident))
+write_csv(unq.pident, here('data','results','allRuns_BF3_filtered_unique_taxa_summary_blastPIdent.csv'))
+```
+
+
+for previously undetected non-natives, it might be helpful to look at the raw blast data for all ASVs.
+```{r eval=FALSE}
+
+s <- "Neoporphyra haitensis"
+
+
+asvdat <- dat.out %>% filter(taxon==s) %>% dplyr::select(Hash,MiSeqRun) %>% distinct()
+tmp.blast.out <- asvdat %>% left_join(rawblastdat, by=c('Hash'='qseqid','MiSeqRun'))
+
+
+write.csv(tmp.blast.out,file=here(paste0('tmpfile_',s,'.csv')))
+
+```
+
+
+# 3. Apply manual filter
+
+Working from excel, I created the following file with manual filter information:
+```{r}
+manual.filter <- read_csv(here(indir,'allRuns_BF3_filtered_unique_taxa_summary_MANUALfilter.csv'))
+```
+
+delete the taxa marked for removal in the final list
+```{r}
+final.taxa <- manual.filter %>% filter(!is.na(taxon.final))
+```
+
+
+# 4. Final data
+
+Create a final data file with sequences for ASVs combined across runs, and all ASVs in each EGC sample
+```{r}
+final.dat <- final.taxa %>%
+  left_join(dat.out, by=c("taxon","rank")) %>%
+  mutate(type=ifelse(type=="Samples","Sample",type)) %>% # fix inconsistent type if needed
+  filter(type=="Sample") %>%
+  dplyr::select(-filter) %>%
+  mutate(species=ifelse(rank.final=="species" & is.na(species), taxon.final,species)) %>%  #Mya arenaria
+  dplyr::select(sample,tech,site_month,taxon.final,rank.final,nReads,kingdom,phylum,class,order,family,genus,species,MiSeqRun,Hash) %>%
+  left_join(hash_keys,by=c("Hash","MiSeqRun")) %>%
+  distinct()
+
+write_csv(final.dat, here(indir, 'allRuns_BF3_filtered_unique_taxa_manualFilter.csv'))
+```
+
+Next, remove the lower-level taxonomic information for IDs backed out to genus level or higher. 
+```{r}
+final.dat2 <- final.dat %>%
+  mutate(species=ifelse(rank.final != "species" & !is.na(species),NA,species)) %>%
+  mutate(genus=ifelse(!(rank.final %in% c("species","genus")) & !is.na(genus),NA,genus)) %>%
+  mutate(family=ifelse(!(rank.final %in% c("species","genus","family")) & !is.na(family), NA, family)) %>%
+  distinct()
+```
+```{r}
+View(anti_join(final.dat2,final.dat))  # taxa that have been manually changed to higher taxonomic levels should all be reported here
+View(anti_join(final.dat,final.dat2))  # taxa that have lower taxonomic info than rank level should all be reported here
+```
+
+Since some of the IDs were backed out to genus level or higher, based on manual checking of non-native status / percent identity in blast match, we have to again remove duplicated higher-level taxa from individual crab. So for example, if our manual change from an unclassified Ectocarpus species means that a crab has both an *Ectocarpus fasciculatus* and an *Ectocarpus* ID, we want to get rid of the *Ectocarpus* ID as a potentially non-unique taxa.
+
+
+```{r}
+final.dat.unq.nest <- final.dat2 %>%
+  rename(rank=rank.final,taxon=taxon.final) %>%
+  group_by(sample) %>%
+  nest()
+
+final.dat.unq.nest %<>% mutate(data.filter=purrr::map(data,get_unique_taxa))   ## improved function
+
+
+
+final.dat.unq <-  final.dat.unq.nest %>% dplyr::select(-data) %>% unnest(c(sample,data.filter))
+```
+
+Let's check what was removed
+```{r}
+dat.check <- anti_join(rename(final.dat2, rank=rank.final,taxon=taxon.final), final.dat.unq) %>% distinct()
+
+# View(filter(final.dat.unq,sample=="WACO21-340" & genus=="Hemigrapsus"))
+```
+
+
+```{r}
+write_csv(final.dat.unq, here(indir, 'allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+```
+
+
+Create a final summary data file with taxonomy combined across runs / crabs. This will involve removing any lower-level taxa for ASVs that were manually adjusted to higher-level classifications (non-native taxa with lower percent identity scores; BOLD specimens that are unclassified species)
+```{r}
+final.dat.unq %>%
+  group_by(taxon,rank,phylum,class,order,family,genus,species) %>%
+  summarise(n_crab=length(unique(sample)),
+            miseqruns=paste0(unique(MiSeqRun),collapse=","),
+            site_months=paste0(unique(site_month),collapse=",")) %>%
+  write_csv(here(indir, 'allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv'))
+```
+
+
+
+
+
