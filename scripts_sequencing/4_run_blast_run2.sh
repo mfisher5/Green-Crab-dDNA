@@ -5,7 +5,7 @@ BLAST_DB='/mnt/nfs/home/KellyCEG/blastdb/nt'
 blast_input="/mnt/nfs/home/KellyCEG/mcf/dada2/run2_Hash_Key_step2clean.fasta"
 blast_output='/mnt/nfs/home/KellyCEG/mcf/blast/run2_hash_key_clean_blast_2023-05-10.fasta'
 # BLAST PARAMETERS
-PERCENT_IDENTITY="85"   # ran at 94% for first round in April 2023, changed 5/10/2023
+PERCENT_IDENTITY="94"   # ran at 85% for 5/10/2023
 WORD_SIZE="15"
 EVALUE="1e-30"
 # number of matches recorded in the alignment:
