@@ -1,0 +1,23 @@
+# CEG server NCBI Blast runs
+
+## 04/23/2023
+
+PERCENT_IDENTITY="94"
+WORD_SIZE="15"
+EVALUE="1e-30"
+MAXIMUM_MATCHES="50"
+CULLING="5"
+blast_input="/mnt/nfs/home/KellyCEG/mcf/dada2/run2_Hash_Key_step2clean.fasta"
+blast_output='/mnt/nfs/home/KellyCEG/mcf/blast/run2_hash_key_clean_blast_2023-04-23.fasta'
+
+
+
+## 05/10/2023
+
+PERCENT_IDENTITY="85"
+WORD_SIZE="15"
+EVALUE="1e-30"
+MAXIMUM_MATCHES="50"
+CULLING="5"
+blast_input="/mnt/nfs/home/KellyCEG/mcf/dada2/run2_Hash_Key_step2clean.fasta"
+blast_output='/mnt/nfs/home/KellyCEG/mcf/blast/run2_hash_key_clean_blast_2023-05-10.fasta'

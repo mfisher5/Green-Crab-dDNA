@@ -1,0 +1,413 @@
+---
+title: "Process BLAST output"
+subtitle: "last run: `r format(Sys.time(), '%B %d, %Y')`"
+author: "M Fisher via Eily"
+date: "1/1/2023"
+output: 
+  html_document:
+    toc: yes
+---
+
+# Description 
+
+This script takes BLAST results, cleans them up, and makes/adds to a custom blast reference database for ASVs that are not classified using the tree-based approach in insect. 
+
+<br>
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br>
+
+This script requires the following packages:
+```{r message=FALSE, warning=FALSE}
+library(here)
+library(tidyverse)
+library(magrittr)
+library(cowplot)
+library(janitor)
+library(insect)
+library(taxonomizr)
+```
+<br>
+
+This script calls the following custom function:
+```{r}
+source(here('R','custom.lca.R'))
+```
+<br>
+
+User directories
+```{r}
+indir    <- 'data/blast/KellyLabCEG'
+outdir   <- 'data/blast/KellyLabCEG'
+dada_dir <- 'data/dada2/run_5'
+```
+<br>
+
+Files containing Blast output.
+```{r}
+blast_filenames     <- c('run5_hash_key_clean_blast_2023-05-10.fasta')
+filename_identifier <- c('run_5')
+```
+<br>
+
+Output files
+```{r}
+consensus_out <- 'run5_bf3_CEG05blast_multipleIDs_taxonomy.csv'
+unique_out    <- 'run5_bf3_CEG05blast_uniqueIDs_taxonomy.csv'
+all_out       <- 'run5_bf3_CEG05blast_taxonomy.csv'
+```
+<br>
+
+Run number and locus for QC.
+```{r}
+run.num=5
+locus='bf3'
+```
+<br>
+
+Pull taxonomy from insect package
+```{r warning=FALSE, eval=FALSE}
+worlds.taxonomy <- insect::taxonomy() 
+# worlds.taxonomy <- readRDS(here('data','databases','insect_worlds_taxonomy.rds'))
+```
+<br>
+<br>
+
+# Read in BLAST fasta
+The blast results should have the headers specified, following script 4. 
+
+The column `staxid` contains the taxa IDs assigned to the DNA sequences (identified using their hashes); a hash can be assigned a single taxon ID (yay!) or multiple taxa IDs. When we coerce the column `staxid` into a numeric format, the hashes assigned to multiple taxa IDs will go to NA. We can then filter the data set to separate the hashes assigned to multiple taxa ids and explore. 
+
+```{r data}
+for(i in seq(1,length(blast_filenames))){
+  tmp_file <- read_delim(here(indir,blast_filenames[i]),col_names = c("qseqid", "sseqid", "sacc", "pident", "length", "mismatch", "gapopen", "qcovus", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "staxid", "qlen", "sscinames", "sseq"), delim = "\t") %>% mutate(Ntaxid=as.numeric(staxid))
+  # split data by whether or not there are multiple IDs in the `staxid` column
+  tmp_NA <- tmp_file %>%
+    filter(is.na(Ntaxid)) %>%
+    mutate(dataset = filename_identifier[i])
+  tmp_dat <- tmp_file  %>%
+    filter(!is.na(Ntaxid)) %>%
+    mutate(dataset = filename_identifier[i])
+  # split data again, by whether or not there are multiple rows / `sseqid` per `qseqid`
+  tmp_multi <- tmp_dat %>%
+    group_by(qseqid) %>%
+    dplyr::filter(n() != 1) %>%
+    ungroup()
+  tmp_dat %<>% group_by(qseqid) %>%
+    dplyr::filter(n() == 1) %>%
+    ungroup()
+  
+  if(i==1){
+    blast_dat <- tmp_dat
+    blast_to_process  <- tmp_multi
+    blast_to_process2 <- tmp_NA
+  } else{
+    blast_dat %<>% bind_rows(tmp_dat)
+    blast_to_process  %<>% bind_rows(tmp_multi)
+    blast_to_process2 %<>% bind_rows(tmp_NA)
+  }
+  
+}
+rm(tmp_file, tmp_dat, tmp_multi, tmp_NA)
+unique(blast_dat$dataset)
+dim(blast_dat)
+dim(blast_to_process)
+dim(blast_to_process2)
+```
+
+<br>
+<br>
+
+# Process BLAST data
+
+## re-format multiple staxids & conduct LCA
+
+**none for run 5???**
+
+extract all of the taxa IDs 
+```{r}
+multi_taxids <- blast_to_process2 %>%
+  distinct(staxid) %>%
+  pull()
+multi_taxids <- unlist(sapply(multi_taxids,str_split,";")); names(multi_taxids) <- NULL
+multi_taxids
+```
+<br>
+
+Use insect's database to get the associated taxonomy. Coerce the output (a list) into a dataframe.
+```{r}
+multi_taxids_taxonomy <- insect::get_lineage(as.numeric(multi_taxids), worlds.taxonomy)
+multi_taxids_taxonomy_df <- tibble (staxid = multi_taxids,
+                         taxonomy = multi_taxids_taxonomy) %>%
+  mutate (Kingdom = map_chr(taxonomy, ~.x["kingdom"]),
+          Phylum = map_chr(taxonomy, ~.x["phylum"]),
+          Class = map_chr(taxonomy, ~.x["class"]),
+          Order = map_chr(taxonomy, ~.x["order"]),
+          Family= map_chr(taxonomy, ~.x["family"]),
+          Genus = map_chr(taxonomy, ~.x["genus"]),
+          Species = map_chr(taxonomy, ~.x["species"]))
+```
+<br>
+
+Attach the taxonomy information to the hashes that were assigned multiple taxIDs. The resulting data frame has one row per unique taxID per hash.
+```{r}
+tmp_ids <- c("id1","id2","id3","id4","id5","id6","id7","id8","id9","id10")
+multi_taxids_df <- blast_to_process2 %>%
+  separate(staxid, all_of(tmp_ids), fill = "right") %>%
+  pivot_longer(all_of(tmp_ids), values_to="staxid") %>%
+  filter(!is.na(staxid)) %>%
+  left_join(multi_taxids_taxonomy_df,by="staxid")
+head(multi_taxids_df)
+```
+```{r}
+write_csv(multi_taxids_df, here(outdir, paste0('run',run.num,'_',locus,'_CEG05blast_multipleIDs_staxids_lca-input.csv')))
+```
+<br>
+
+```{r}
+multi2_lca <- custom.lca(multi_taxids_df, cutoff = 0.9)
+```
+<br>
+
+split consensus taxonomy into multiple columns, to merge with the rest of the data
+```{r}
+multi2_lca_df <- multi2_lca %>%
+  separate(consensus, c("kingdom", "phylum", "class", "order", "family", "genus", "species"), sep = '%') %>% 
+  rename(representative = qseqid)
+multi2_lca_df[multi2_lca_df == "NA" ] <- NA                                 # make sure "NA" is interpreted as NA
+multi2_lca_df <- multi2_lca_df[rowSums(is.na(multi2_lca_df[ , 2:8])) != 7,]  # remove any rows with no taxonomic information (all NAs)
+```
+<br>
+
+get the lowest level of taxonomy available for each hash using the function `coalesce`.
+```{r}
+multi2_lca_df %<>% 
+  mutate(taxon = coalesce(species,genus,family,order,class,phylum,kingdom))
+```
+<br>
+
+re-format the data frame so that the lowest taxonomic level available is reported in the column 'rank', and the 'score' and 'taxID' columns are saved as *consensus*. Add back in the dataset information
+```{r}
+multi2_lca_df %<>%
+  group_by (representative) %>% nest %>% 
+  mutate (rank = map_chr(data, ~pivot_longer(.x,cols = 1:7, names_to  = "rank", values_to ="name") %>% 
+                           filter(name == taxon) %>% pull(rank))) %>% 
+  select(representative, rank) %>% 
+  inner_join(multi2_lca_df) %>%
+  mutate(taxID="consensus", score="consensus")
+multi2_lca_df %<>% left_join(dplyr::select(blast_to_process2, qseqid,dataset),by=c("representative"="qseqid"))
+colnames(multi2_lca_df)
+```
+<br>
+
+
+
+## conduct LCA for multiple sseqids
+
+extract all of the taxa IDs 
+```{r}
+multi_seqids <- blast_to_process %>%
+  distinct(staxid) %>%
+  pull()
+length(multi_seqids)
+```
+<br>
+
+Use insect's database to get the associated taxonomy. Coerce the output (a list) into a dataframe.
+```{r}
+multi_seqids_taxonomy <- insect::get_lineage(as.numeric(multi_seqids), worlds.taxonomy)
+multi_seqids_taxonomy_df <- tibble (staxid = multi_seqids,
+                         taxonomy = multi_seqids_taxonomy) %>%
+  mutate (Kingdom = map_chr(taxonomy, ~.x["kingdom"]),
+          Phylum = map_chr(taxonomy, ~.x["phylum"]),
+          Class = map_chr(taxonomy, ~.x["class"]),
+          Order = map_chr(taxonomy, ~.x["order"]),
+          Family= map_chr(taxonomy, ~.x["family"]),
+          Genus = map_chr(taxonomy, ~.x["genus"]),
+          Species = map_chr(taxonomy, ~.x["species"]))
+```
+<br>
+
+Attach the taxonomy information to the hashes that were assigned multiple taxIDs. The resulting data frame has one row per unique taxID per hash.
+```{r}
+multi_seqids_df <- blast_to_process %>%
+  left_join(multi_seqids_taxonomy_df,by="staxid")
+colnames(multi_seqids_df)
+```
+<br>
+```{r}
+write_csv(multi_seqids_df, here(outdir, paste0('run',run.num,'_',locus,'_CEG05blast_multipleIDs_multrows_lca-input.csv')))
+```
+<br>
+
+```{r}
+multi_lca <- custom.lca(multi_seqids_df, cutoff = 0.9)
+```
+<br>
+
+```{r eval=FALSE}
+# if you get a Warning from purrr::map() cannot remove file...
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\RtmpgNGNhV', recursive=TRUE)
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\Rtmp4mBzYf', recursive=TRUE) 
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\RtmpmADD5S', recursive=TRUE)
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\RtmpMvQCr2', recursive=TRUE)
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\Rtmp4mBzYf', recursive=TRUE)
+unlink('C:\\Users\\mfisher5\\AppData\\Local\\Temp\\RtmpuymOvp', recursive=TRUE)
+```
+<br>
+
+split consensus taxonomy into multiple columns, to merge with the rest of the data
+```{r}
+multi_lca_df <- multi_lca %>%
+  separate(consensus, c("kingdom", "phylum", "class", "order", "family", "genus", "species"), sep = '%') %>% 
+  rename(representative = qseqid)
+multi_lca_df[multi_lca_df == "NA" ] <- NA                                 # make sure "NA" is interpreted as NA
+multi_lca_df <- multi_lca_df[rowSums(is.na(multi_lca_df[ , 2:8])) != 7,]  # remove any rows with no taxonomic information (all NAs)
+```
+<br>
+
+get the lowest level of taxonomy available for each hash using the function `coalesce`.
+```{r}
+multi_lca_df %<>% 
+  mutate(taxon = coalesce(species,genus,family,order,class,phylum,kingdom))
+```
+<br>
+
+re-format the data frame so that the lowest taxonomic level available is reported in the column 'rank', and the 'score' and 'taxID' columns are saved as *consensus*. Add back in the dataset information
+```{r}
+multi_lca_df %<>%
+  group_by (representative) %>% nest %>% 
+  mutate (rank = map_chr(data, ~pivot_longer(.x,cols = 1:7, names_to  = "rank", values_to ="name") %>% 
+                           filter(name == taxon) %>% pull(rank))) %>% 
+  select(representative, rank) %>% 
+  inner_join(multi_lca_df) %>%
+  mutate(taxID="consensus", score="consensus")
+multi_lca_df %<>% left_join(dplyr::select(blast_to_process, qseqid,dataset) %>% distinct(),by=c("representative"="qseqid"))
+colnames(multi_lca_df)
+```
+<br>
+
+combine with the data set from previous section, and write out both.
+```{r}
+multi_lca_df %<>% bind_rows(multi2_lca_df)
+write.csv(multi_lca_df, here(outdir, consensus_out), row.names=FALSE)
+```
+<br>
+
+
+## summarize taxonomy for unique staxids
+
+Use the insect `get_lineage` function to attach taxonomy information to each unique taxID in the blast data.
+```{r}
+blast_taxonomy <- insect::get_lineage(unique(blast_dat$Ntaxid), worlds.taxonomy)
+taxonomy_df <- tibble (staxid = unique(blast_dat$Ntaxid),
+                         taxonomy = blast_taxonomy) %>%
+  mutate (Kingdom = map_chr(taxonomy, ~.x["kingdom"]),
+          Phylum = map_chr(taxonomy, ~.x["phylum"]),
+          Class = map_chr(taxonomy, ~.x["class"]),
+          Order = map_chr(taxonomy, ~.x["order"]),
+          Family= map_chr(taxonomy, ~.x["family"]),
+          Genus = map_chr(taxonomy, ~.x["genus"]),
+          Species = map_chr(taxonomy, ~.x["species"]))
+blast_taxonomy_df <- left_join(blast_dat, taxonomy_df,by=c("Ntaxid"="staxid"))
+```
+<br>
+
+
+re-format the data frame so that the lowest taxonomic level available is reported in the columns 'taxon' and 'rank'. 
+```{r}
+blast_taxonomy_df %<>%
+  clean_names() %>%
+  mutate(taxon = coalesce(species,genus,family,order,class,phylum,kingdom)) 
+blast_taxonomy_rank <- blast_taxonomy_df %>%
+  pivot_longer(cols = c(species,genus,family,order,class,phylum,kingdom), names_to  = "rank", values_to ="name") %>%
+  filter(name == taxon) %>% dplyr::select(qseqid, sseqid, sacc, rank)
+blast_taxonomy_df <- left_join(blast_taxonomy_df,blast_taxonomy_rank,by=c('qseqid', 'sseqid', 'sacc'))
+colnames(blast_taxonomy_df)
+```
+<br>
+
+save to file
+```{r}
+blast_taxonomy_df %<>% dplyr::select(-taxonomy)
+write.csv(blast_taxonomy_df, here(outdir, unique_out), row.names=FALSE)
+```
+<br>
+<br>
+
+# Link BLAST taxonomy to sample metadata
+
+After running the previous section, you should have the sample & hash information in one file, and the BLAST taxonomy associated with hashes in another file. This section combines these two files into a single data frame that can then be used to complete the next steps of the analysis (assess technical replicate variability, subtract contamination, etc.)
+
+First, read in the data file that maps the hashes to each sample. 
+```{r}
+hash.meta <- read_csv(here(dada_dir, 'ASV_table.csv'))
+```
+<br>
+
+Read in the BLAST taxonomy data files, and combine them. 
+```{r}
+blast_dat <- read_csv(here(outdir, consensus_out)) %>%
+  rename("qseqid"=representative) %>%
+  bind_rows(read_csv(here(outdir, unique_out)))
+```
+<br>
+
+The hash is in the `qseqid` column of the blast taxonomy data set. 
+```{r}
+all((unique(blast_dat$qseqid) %in% unique(hash.meta$Hash))==TRUE)
+```
+<br>
+
+Use the hash to match taxonomy to sample IDs.
+```{r}
+sample_taxonomy <- left_join(hash.meta, blast_dat,by=c("Hash"="qseqid"))
+```
+<br>
+
+check amount of missing taxonomy, per sample
+```{r}
+missing_taxonomy <- sample_taxonomy %>%
+  mutate(taxonomy.present=ifelse(is.na(rank), 1,0)) %>%
+  group_by(Sample_name,Locus,sample_id, taxonomy.present) %>%
+  summarise(nHashes=length(unique(Hash)),
+            nReads=sum(nReads)) %>%
+  group_by(Sample_name,Locus,sample_id) %>%
+  mutate(totalHashes=sum(nHashes),
+            totalReads=sum(nReads)) %>%
+  ungroup() %>%
+  mutate(pHashes=nHashes/totalHashes,
+         pReads=nReads/totalReads)
+
+write.csv(missing_taxonomy, here(outdir, paste0("run",run.num, "_", locus,'_missing_CEG05blast_taxonomy_by-sample.csv')), row.names = FALSE)
+```
+```{r echo=FALSE}
+p1 <- ggplot(data=filter(missing_taxonomy,taxonomy.present==1), aes(x=pHashes), fill="forestgreen") +
+  geom_histogram() + theme_bw() + xlab("prop Hashes with Taxonomy") + xlim(c(0,1))
+p2 <- ggplot(data=filter(missing_taxonomy,taxonomy.present==1), aes(x=pReads), fill="forestgreen") +
+  geom_histogram() + theme_bw() + xlab("prop Reads with Taxonomy") + xlim(c(0,1))
+plot_grid(plotlist=list(p1,p2))
+
+png(here::here('data','blast',paste0('run_',run.num),'_CEG05blast_missing_taxonomy.png'))
+plot_grid(plotlist=list(p1,p2))
+dev.off()
+```
+<br>
+
+This distribution may change when contamination from controls is removed. 
+
+Write out the full taxonomy dataset.
+```{r}
+write.csv(sample_taxonomy, here(outdir, paste0("run",run.num, "_", locus, "_", "sample_CEG05blast_lca_taxonomy.csv")), row.names=FALSE)
+```
+<br>
+
+
+
+
+
+

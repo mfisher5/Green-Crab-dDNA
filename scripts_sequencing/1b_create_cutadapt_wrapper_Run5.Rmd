@@ -1,0 +1,551 @@
+---
+title: "Create cutadapt params files - WACO"
+subtitle: "last run: `r format(Sys.time(), '%B %d, %Y')`"
+author: "M Fisher, via Eily via Moncho"
+date: "2022-06-16"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+
+
+# Description
+
+Use *cutadapt* to remove Nextera indices and PCR primers from DNA sequences. 
+This RMarkdown doc is just a means to passing the parameters from the metadata file into a bash script.
+
+**Inputs** for this script: 
+
+1. file with primer sequences
+2. raw, demultiplexed sequencing data in fastq.gz files
+
+*IMPORTANT! this won't work unless you manually copy and paste in the full file path to params.txt file at bottom (code chunks = test_bash, run_cutadapt). Do that then knit.*
+<br>
+<br>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+```
+<br>
+
+# Run 2
+Input parameters
+```{r}
+# which sequencing run is being analyzed?
+run.num    <- 5
+# which primer was used in this run?
+run.primer <- "BF3"
+
+# probably don't need to change this, leave at 100 unless you have an issue
+minlength  <- data.frame(minlength=100)
+```
+<br>
+
+User directories
+```{r}
+# folder with fastq files
+fastq_dir       <- "data/raw_fastq/run_5"
+# folder for output
+output_dir      <- "data/cutadapt/run_5"
+# folder for sequencing metadata file
+meta_output_dir <- "data"
+# file with the primer sequences (include relative directory)
+primerfilename  <- "data/primer_sequences.csv"
+```
+<br>
+
+*Note: The columns in the primer sequences file should be as follows:  `primer` | `primerF` | `primerR`. The primer name in this file should match the name in the sequencing center metadata file -- if working across different loci, the locus name can be used in this column.*  
+<br>
+<br>
+
+
+## Input / output files
+
+### create sequencing metadata file
+
+The minimum info needed for the sequencing metadata file is:
+
+- Sample_name - The name that makes sense to you and your project (No spaces in the name)
+- Locus: The name of the locus you want to use (e.g. Leray_COI)
+- PrimerF: The nucleotide sequence of the forward primer - supports IUPAC characters 
+- PrimerR: Ditto for the reverse primer (also in 5' -> 3' direction)
+- file1: it should match exactly the output of the Miseq.
+- file2: Same for the second read.
+        
+
+Read in the .csv file with the primer sequences
+```{r}
+primer_seqs <- read_csv(here(primerfilename))
+```
+<br>
+
+Get all of the sequencing filenames
+```{r}
+## forward
+ffilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R1_001.fastq.gz")
+## reverse
+rfilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R2_001.fastq.gz")
+```
+<br>
+
+Grab the sample IDs and sample numbers ("name") from the filenames, arrange them in order of sample number, and combine the datasets.
+```{r eval=FALSE}
+fdat <- data.frame(file1=ffilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file1,"_L001_R1_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S")) %>%
+  arrange(as.numeric(Sample_name))
+rdat <- data.frame(file2=rfilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file2,"_L001_R2_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S")) %>%
+  arrange(as.numeric(Sample_name))
+sequencingmetafile <- full_join(fdat,rdat,by=c("Sample_name","sample_id")) %>%
+  dplyr::select(Sample_name,file1,file2)
+```
+```{r}
+metafile <- read_csv(here('data','metadata','run5_BF3_run_metadata.csv')) %>% 
+  mutate(Sample_name=as.character(Sample_name))
+fdat <- data.frame(file1=ffilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file1,"_L001_R1_001.fastq.gz")) %>%
+  separate(col=sample_name,into=c("Sample_name","row_num"), sep="_S") %>%
+  mutate(Sample_name=as.character(Sample_name)) %>% dplyr::select(-row_num)
+rdat <- data.frame(file2=rfilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file2,"_L001_R1_001.fastq.gz")) %>%
+  separate(col=sample_name,into=c("Sample_name","row_num"), sep="_S") %>%
+  mutate(Sample_name=as.character(Sample_name)) %>% dplyr::select(-row_num)
+
+sequencingmetafile <- left_join(metafile,fdat, by=c("Sample_name")) %>%
+  left_join(rdat) %>% dplyr::select(Sample_name,file1,file2)
+```
+<br>
+
+Add primer information 
+```{r eval=FALSE, include=FALSE}
+### if more than one primer was used, and primer is in sample name ###
+sequencingmetafile %<>%
+  mutate(primer=ifelse(grepl(primer_seqs$primer[1],file1), primer_seqs$primer[1],
+                   ifelse(grepl("LXT", file1), "LerayXT",
+                          ifelse(grepl(primer_seqs$primer[3],file1),"Leray",NA)))) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+```{r}
+### if only one primer was used ###
+sequencingmetafile %<>%
+  mutate(primer=run.primer) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+<br>
+
+Save file
+```{r}
+write_csv(sequencingmetafile, here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+<br>
+
+
+### store params 
+
+folder for (1) parameters file, and (2) cutadapt output from bash script
+```{r}
+outputfolder <- paste0(here(output_dir))
+dir.create(outputfolder)
+paramsfile <- paste0(outputfolder,"/params.txt")
+```
+<br>
+
+the parameters file will include...
+(1) sequencing metadata file name and directory
+```{r}
+sequencingmetadatafile <- paste0(here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+(2) full file path to fastq files
+```{r}
+fastqfolder <- paste0(here(fastq_dir))
+```
+<br>
+
+create and save the params file, which will be called in bash to run cutadapt.
+```{r}
+params2 <- c(fastqfolder,sequencingmetadatafile, outputfolder, minlength)
+tibble(values = as.character(params2), names = c("fastqfolder", "sequencingmetadatafile", "outputfolder", "minlength")) %>% 
+  pivot_wider(names_from = names,
+              values_from = values) %>%
+  write_csv(paramsfile)
+```
+<br>
+<br>
+
+## Cutadapt wrapper
+
+Run the following in the terminal. This wrapper script will print some parameter values to the terminal (see below) before running the core *cutadapt* script, which is `run.cutadapt.sh`. Note that output from `run.cutadapt.sh` will be saved into a log file, instead of printed to the terminal. 
+```{bash run_cutadapt, eval=FALSE}
+pwd
+bash scripts/process/1_cutadapt_wrapper.sh "C:/Users/mfisher5/Documents/EGC-Willapa-Bay/data/cutadapt/run_5/params.txt"
+```
+
+
+**This script requires downloading cutadapt**. I use the Windows 10 executable saved into the `R` folder; the executable file can be downloaded from github [here](https://github.com/marcelm/cutadapt/releases)
+
+
+
+# Run 3
+Input parameters
+```{r}
+# which sequencing run is being analyzed?
+run.num    <- 3
+# which primer was used in this run?
+run.primer <- "BF3"
+
+# probably don't need to change this, leave at 100 unless you have an issue
+minlength  <- data.frame(minlength=100)
+```
+<br>
+
+User directories
+```{r}
+# folder with fastq files
+fastq_dir       <- "data/raw_fastq/run_3"
+# folder for output
+output_dir      <- "data/cutadapt/run_3"
+# folder for sequencing metadata file
+meta_output_dir <- "data"
+# file with the primer sequences (include relative directory)
+primerfilename  <- "data/primer_sequences.csv"
+```
+<br>
+
+*Note: The columns in the primer sequences file should be as follows:  `primer` | `primerF` | `primerR`. The primer name in this file should match the name in the sequencing center metadata file -- if working across different loci, the locus name can be used in this column.*  
+<br>
+<br>
+
+
+## Input / output files
+
+### create sequencing metadata file
+
+The minimum info needed for the sequencing metadata file is:
+
+- Sample_name - The name that makes sense to you and your project (No spaces in the name)
+- Locus: The name of the locus you want to use (e.g. Leray_COI)
+- PrimerF: The nucleotide sequence of the forward primer - supports IUPAC characters 
+- PrimerR: Ditto for the reverse primer (also in 5' -> 3' direction)
+- file1: it should match exactly the output of the Miseq.
+- file2: Same for the second read.
+        
+
+Read in the .csv file with the primer sequences
+```{r}
+primer_seqs <- read_csv(here(primerfilename))
+```
+<br>
+
+Get all of the sequencing filenames
+```{r}
+## forward
+ffilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R1_001.fastq.gz")
+## reverse
+rfilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R2_001.fastq.gz")
+```
+<br>
+
+Grab the sample IDs and sample numbers ("name") from the filenames, arrange them in order of sample number, and combine the datasets.
+```{r}
+fdat <- data.frame(file1=ffilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file1,"_L001_R1_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S")) %>%
+  mutate(Sample_name=ifelse((startsWith(Sample_name, "0") & Sample_name!="0"), paste0("1",Sample_name),Sample_name)) %>% # for sample names > 100
+  arrange(as.numeric(Sample_name))
+rdat <- data.frame(file2=rfilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file2,"_L001_R2_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S"))  %>%
+  mutate(Sample_name=ifelse((startsWith(Sample_name, "0") & Sample_name!="0"), paste0("1",Sample_name),Sample_name)) %>% # for sample names > 100
+  arrange(as.numeric(Sample_name))
+sequencingmetafile <- full_join(fdat,rdat,by=c("Sample_name","sample_id")) %>%
+  dplyr::select(Sample_name,file1,file2)
+```
+<br>
+
+Add primer information 
+```{r eval=FALSE, include=FALSE}
+### if more than one primer was used, and primer is in sample name ###
+sequencingmetafile %<>%
+  mutate(primer=run.primer) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+```{r}
+### if only one primer was used ###
+sequencingmetafile %<>%
+  mutate(primer=run.primer) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+<br>
+
+Save file
+```{r}
+write_csv(sequencingmetafile, here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+<br>
+
+
+### store params 
+
+folder for (1) parameters file, and (2) cutadapt output from bash script
+```{r}
+outputfolder <- paste0(here(output_dir))
+dir.create(outputfolder)
+paramsfile <- paste0(outputfolder,"/params.txt")
+```
+<br>
+
+the parameters file will include...
+(1) sequencing metadata file name and directory
+```{r}
+sequencingmetadatafile <- paste0(here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+(2) full file path to fastq files
+```{r}
+fastqfolder <- paste0(here(fastq_dir))
+```
+<br>
+
+create and save the params file, which will be called in bash to run cutadapt.
+```{r}
+params2 <- c(fastqfolder,sequencingmetadatafile, outputfolder, minlength)
+tibble(values = as.character(params2), names = c("fastqfolder", "sequencingmetadatafile", "outputfolder", "minlength")) %>% 
+  pivot_wider(names_from = names,
+              values_from = values) %>%
+  write_csv(paramsfile)
+```
+<br>
+<br>
+
+## Cutadapt wrapper
+
+Run the following in the terminal. This wrapper script will print some parameter values to the terminal (see below) before running the core *cutadapt* script, which is `run.cutadapt.sh`. Note that output from `run.cutadapt.sh` will be saved into a log file, instead of printed to the terminal. 
+```{bash run_cutadapt, eval=FALSE}
+bash scripts/1_cutadapt_wrapper.sh "C:/Users/mfisher5/Documents/EGC-Willapa-Bay/data/cutadapt/run_3/params.txt"
+```
+
+
+**This script requires downloading cutadapt**. I use the Windows 10 executable saved into the `R` folder; the executable file can be downloaded from github [here](https://github.com/marcelm/cutadapt/releases)
+
+
+# Run 4
+Input parameters
+```{r}
+# which sequencing run is being analyzed?
+run.num    <- 4
+# which primer was used in this run?
+run.primer <- "BF3"
+
+# probably don't need to change this, leave at 100 unless you have an issue
+minlength  <- data.frame(minlength=100)
+```
+<br>
+
+User directories
+```{r}
+# folder with fastq files
+fastq_dir       <- "data/raw_fastq/run_4"
+# folder for output
+output_dir      <- "data/cutadapt/run_4"
+# folder for sequencing metadata file
+meta_output_dir <- "data"
+# file with the primer sequences (include relative directory)
+primerfilename  <- "data/primer_sequences.csv"
+```
+<br>
+
+*Note: The columns in the primer sequences file should be as follows:  `primer` | `primerF` | `primerR`. The primer name in this file should match the name in the sequencing center metadata file -- if working across different loci, the locus name can be used in this column.*  
+<br>
+<br>
+
+
+## Input / output files
+
+### create sequencing metadata file
+
+The minimum info needed for the sequencing metadata file is:
+
+- Sample_name - The name that makes sense to you and your project (No spaces in the name)
+- Locus: The name of the locus you want to use (e.g. Leray_COI)
+- PrimerF: The nucleotide sequence of the forward primer - supports IUPAC characters 
+- PrimerR: Ditto for the reverse primer (also in 5' -> 3' direction)
+- file1: it should match exactly the output of the Miseq.
+- file2: Same for the second read.
+        
+
+Read in the .csv file with the primer sequences
+```{r}
+primer_seqs <- read_csv(here(primerfilename))
+```
+<br>
+
+Get all of the sequencing filenames
+```{r}
+## forward
+ffilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R1_001.fastq.gz")
+## reverse
+rfilenames <- list.files(path = here(fastq_dir), 
+                         pattern="*R2_001.fastq.gz")
+```
+<br>
+
+Grab the sample IDs and sample numbers ("name") from the filenames, arrange them in order of sample number, and combine the datasets.
+```{r}
+fdat <- data.frame(file1=ffilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file1,"_L001_R1_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S")) %>%
+  mutate(Sample_name=ifelse((startsWith(Sample_name, "0") & Sample_name!="0"), paste0("1",Sample_name),Sample_name)) %>% # for sample names > 100
+  arrange(as.numeric(Sample_name))
+rdat <- data.frame(file2=rfilenames) %>%
+  # create sample name / sample ID from file name, without file suffix
+  mutate(sample_name=str_remove(file2,"_L001_R2_001.fastq.gz")) %>%
+  separate(col=sample_name, into=c("sample_id","Sample_name"), sep=-2) %>%
+  # clean up sample id and sample name
+  mutate(sample_id=str_remove(sample_id,"_S"),
+         sample_id=ifelse(str_sub(sample_id,-1)=="_",str_sub(sample_id,1,-2), sample_id),
+         Sample_name=str_remove(Sample_name,"_S"),
+         Sample_name=str_remove(Sample_name,"S"))  %>%
+  mutate(Sample_name=ifelse((startsWith(Sample_name, "0") & Sample_name!="0"), paste0("1",Sample_name),Sample_name)) %>% # for sample names > 100
+  arrange(as.numeric(Sample_name))
+sequencingmetafile <- full_join(fdat,rdat,by=c("Sample_name","sample_id")) %>%
+  dplyr::select(Sample_name,file1,file2)
+```
+<br>
+
+Add primer information 
+```{r eval=FALSE, include=FALSE}
+### if more than one primer was used, and primer is in sample name ###
+sequencingmetafile %<>%
+  mutate(primer=run.primer) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+```{r}
+### if only one primer was used ###
+sequencingmetafile %<>%
+  mutate(primer=run.primer) %>%
+  left_join(primer_seqs, by="primer") %>%
+  mutate(Locus=primer,
+         PrimerF=primerF,
+         PrimerR=primerR) %>%
+  dplyr::select(Sample_name,file1,file2,PrimerF,PrimerR,Locus)
+```
+<br>
+
+Save file
+```{r}
+write_csv(sequencingmetafile, here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+<br>
+
+
+### store params 
+
+folder for (1) parameters file, and (2) cutadapt output from bash script
+```{r}
+outputfolder <- paste0(here(output_dir))
+dir.create(outputfolder)
+paramsfile <- paste0(outputfolder,"/params.txt")
+```
+<br>
+
+the parameters file will include...
+(1) sequencing metadata file name and directory
+```{r}
+sequencingmetadatafile <- paste0(here(meta_output_dir, paste0("metadata-cutadapt-input-run", run.num, ".csv")))
+```
+<br>
+(2) full file path to fastq files
+```{r}
+fastqfolder <- paste0(here(fastq_dir))
+```
+<br>
+
+create and save the params file, which will be called in bash to run cutadapt.
+```{r}
+params2 <- c(fastqfolder,sequencingmetadatafile, outputfolder, minlength)
+tibble(values = as.character(params2), names = c("fastqfolder", "sequencingmetadatafile", "outputfolder", "minlength")) %>% 
+  pivot_wider(names_from = names,
+              values_from = values) %>%
+  write_csv(paramsfile)
+```
+<br>
+<br>
+
+## Cutadapt wrapper
+
+Run the following in the terminal. This wrapper script will print some parameter values to the terminal (see below) before running the core *cutadapt* script, which is `run.cutadapt.sh`. Note that output from `run.cutadapt.sh` will be saved into a log file, instead of printed to the terminal. 
+```{bash run_cutadapt, eval=FALSE}
+bash scripts/process/1_cutadapt_wrapper.sh "C:/Users/mfisher5/Documents/EGC-Willapa-Bay/data/cutadapt/run_4/params.txt"
+```
+
+
+**This script requires downloading cutadapt**. I use the Windows 10 executable saved into the `R` folder; the executable file can be downloaded from github [here](https://github.com/marcelm/cutadapt/releases)
+
