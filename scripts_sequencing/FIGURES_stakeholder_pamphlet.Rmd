@@ -225,7 +225,8 @@ dev.off()
 
 ### % crab per species
 ```{r}
-unqdat_sites %>% group_by(rank,taxon,taxon.corrected) %>%
+dat_sites %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+  group_by(rank,taxon,taxon.common) %>%
   summarise(n.crab=length(unique(sample))) %>%
   mutate(p.crab=n.crab/total.crab) %>%
   arrange(desc(p.crab)) %>% top_n(5)
@@ -237,44 +238,42 @@ For bivalves, crab, and fish
 
 
 ```{r}
-unqdat_sites_sp <- unqdat_sites %>% group_by(site,rank,taxon,taxon.corrected,phylum,class,order,family,taxon.group) %>%
+dat_sp <- dat %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+  filter(!is.na(taxon.common)) %>%
+  separate(site_month, into=c("site","month"), sep="-") %>%
+  group_by(site,rank,taxon,taxon.common,phylum,class,order,family,taxon.group) %>%
   summarise(n.crab=length(unique(sample))) %>%
-  left_join(unqdat_sites %>% 
+  left_join(dat %>% separate(site_month, into=c("site","month"), sep="-") %>%
               group_by(site) %>% 
               summarise(site.crab=length(unique(sample))), by="site") %>%
   mutate(p.crab=n.crab/site.crab*100) %>%
   arrange(desc(p.crab))
 
 
-plotdat <- unqdat_sites_sp %>% filter(order %in% c("Decapoda","Alismatales") | class %in% c("Bivalvia","Actinopteri")) %>%
+plotdat <- dat_sp %>% 
   rename(`Percent of Crabs\nwith food item`=p.crab) %>%
-  filter(!(grepl("Crangon",taxon.corrected)) & taxon != "Zosteraceae") %>%
-  mutate(site_type=ifelse(site %in% c("Long Beach","Oysterville"), "Clam Bed", "Monitoring"))
+  mutate(site_type=ifelse(site %in% c("Long Beach","Oysterville"), "Clam Bed", "Monitoring")) %>%
+  mutate(taxon.common=ifelse(taxon.common=="Shiner perch (C.aggregata)","Shiner perch (C. aggregata)",taxon.common))
 
-plotdat <- plotdat %>% mutate(taxon2=ifelse(taxon.corrected=="Mya arenaria","Soft-shell clam",
-                                                   ifelse(taxon.corrected=="Crangon franciscorum", "Sand shrimp",
-                                                          ifelse(taxon.corrected=="Hemigrapsus oregonensis", "Hairy shore crab",
-                                                                ifelse(taxon.corrected=="Leptocottus armatus","Pacific Staghorn\nsculpin",
-                                                                       ifelse(taxon.corrected=="Zosteraceae","Surfgrass/Eelgrass",
-                                                                              ifelse(taxon.corrected=="Metacarcinus magister", "Dungeness crab",
-                                                                                     ifelse(taxon.corrected=="Cymatogaster aggregata","Shiner perch",
-                                                                                            ifelse(taxon.corrected=="Kurtiella sp.","Small clam\n(Kurtiella sp.)",ifelse(taxon.corrected=="Pholis ornata","Saddleback gunnel",ifelse(taxon.corrected=="Ruditapes philippinarum","Manila clam",NA)))))))))))
 
-plotdat$taxon2 <- factor(plotdat$taxon2, levels=rev(c("Soft-shell clam","Manila clam","Small clam\n(Kurtiella sp.)",
-                                                  "Pacific Staghorn\nsculpin","Shiner perch","Saddleback gunnel","Hairy shore crab","Dungeness crab","Cordgrasses/Eelgrasses")))
+
+plotdat$taxon.common <- factor(plotdat$taxon.common, levels=rev(c("Soft-shell clam (M. arenaria)","Manila clam",
+                                                                  "Shore crab (H. oregonensis)", "Shore crab (Hemigrapsus spp.)","Dungeness crab",
+                                                                  "Sand shrimp (C. franciscorum)", "Shrimp (Crangon spp.)",
+                                                                  "Shiner perch (C. aggregata)","Pacific staghorn sculpin (L. armatus)","Saddleback gunnel (P. ornata)")))
 
 plotdat$site <- factor(plotdat$site, levels=c("Long Beach","Oysterville","Stackpole","Nahcotta"))
 
 col_palette4 <- c("#018571","#a6611a")
 col_palette2 <- c("#01665e","#c7eae5",
                   "#8c510a","#f6e8c3")
-
-ggplot(plotdat) +
-  geom_point(aes(x=taxon2,y=site,size=`Percent of Crabs\nwith food item`, col=site)) + 
-  geom_point(aes(x=taxon2,y=site,size=`Percent of Crabs\nwith food item`), pch=21) +
-  geom_rect(aes(xmin=6.5,xmax=7.5,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
-  geom_segment(aes(x=7,xend=6.80,y=2.25,yend=2.6), col="gray60") +
-  geom_text(data=data.frame(x=6.8,y=3.12,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=2) +
+plotdat %>% filter(!is.na(taxon.common)) %>%
+ggplot() +
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of Crabs\nwith food item`, col=site)) + 
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of Crabs\nwith food item`), pch=21) +
+  geom_rect(aes(xmin=9.5,xmax=8.5,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
+  geom_segment(aes(x=9,xend=8.80,y=2.25,yend=2.4), col="gray60") +
+  geom_text(data=data.frame(x=8.9,y=3.12,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=4) +
   scale_color_manual(values=col_palette2,name="") +
   scale_size_continuous(range=c(2,6)) +
   guides(color=FALSE) +
@@ -284,13 +283,14 @@ ggplot(plotdat) +
                                     legend.text=element_text(size=12), legend.title=element_text(size=13))
 ```
 ```{r}
-png(here('results','figures','pamphlet','prey-clams-crab-fish_by-site_CEGblast_pamphlet.png'),res=300,height=1500,width=1500,bg = 'transparent')
-ggplot(plotdat) +
-  geom_point(aes(x=taxon2,y=site,size=`Percent of Crabs\nwith food item`, col=site)) + 
-  geom_point(aes(x=taxon2,y=site,size=`Percent of Crabs\nwith food item`), pch=21) +
-  geom_rect(aes(xmin=6.75,xmax=7.25,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
-  geom_segment(aes(x=7,xend=6.80,y=2.25,yend=2.6), col="gray60") +
-  geom_text(data=data.frame(x=6.8,y=3.5,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=3) +
+png(here('figs','POSTER_prey-clams-crab-fish_by-site_dotplot.png'),res=300,height=1500,width=2000,bg = 'transparent')
+plotdat %>% filter(!is.na(taxon.common)) %>%
+ggplot() +
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of Crabs\nwith food item`, col=site)) + 
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of Crabs\nwith food item`), pch=21) +
+  geom_rect(aes(xmin=9.5,xmax=8.5,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
+  geom_segment(aes(x=9,xend=8.80,y=2.25,yend=2.4), col="gray60") +
+  geom_text(data=data.frame(x=8.9,y=3.32,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=4) +
   scale_color_manual(values=col_palette2,name="") +
   scale_size_continuous(range=c(2,6)) +
   guides(color=FALSE) +
