@@ -43,19 +43,19 @@ outdir      <- 'data/blast'
 What are the names of the processed blast file with taxonomy from script 6?
 ```{r}
 # hashes with unique staxids
-blast_file <- 'run2_bf3_sample_CEGblast_lca_taxonomy.csv'
+blast_file <- 'run4_bf3_sample_CEGblast_lca_taxonomy.csv'
 ```
 <br>
 
 What is the location / name of the metadata file for this sequencing run?
 ```{r}
-run_metadat_file <- 'data/metadata/run2_BF3_filtered_metadata.csv'
+run_metadat_file <- 'data/metadata/run4_BF3_filtered_metadata.csv'
 ```
 <br>
 
 And the run number and the marker
 ```{r}
-run.num <- 2
+run.num <- 4
 marker <- 'BF3'
 ```
 <br>
@@ -129,11 +129,11 @@ ggplot(data=control_dat, aes(x=sample_id, y=nReads, fill=taxon)) +
 ```{r echo=FALSE}
 # control_dat <- blast.dat.filter %>% filter(type=="Control" | taxon %in% c("Homo sapiens","Primates"))
 
-control_dat <- blast.dat.filter %>% filter((type=="Control" & taxon != "Carcinus maenas") | taxon %in% c("Homo sapiens","Primates"))
+control_dat <- blast.dat.filter %>% filter((type=="Control" & taxon != "Carcinus maenas"))
 ```
 <br>
 
-mark in the rest of the data. there was also some human DNA (oops!) that needs to be removed, which I've included in the 'control' category.
+mark in the rest of the data. 
 ```{r}
 blast.dat.filter <- blast.dat.filter %>% 
   filter(type=="Sample" | type=="Mock Community") %>%
@@ -141,6 +141,11 @@ blast.dat.filter <- blast.dat.filter %>%
 ```
 <br>
 
+there was also some human DNA (oops!) in some runs that needs to be removed
+```{r}
+blast.dat.filter %<>%
+  mutate(human_contamination=ifelse(control_rm==0 & taxon %in% c("Homo sapiens","Primates"), 1, 0))
+```
 
 ### Predator DNA
 
@@ -152,7 +157,7 @@ Any Green crab DNA will be marked as 'predator' DNA and removed.
 
 ```{r}
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(predator_rm=ifelse(control_rm==0 & (taxon =="Carcinus maenas" | taxon =="Carcinus aestuarii" | taxon =="Carcinus"), 1, 0))
+  mutate(predator_rm=ifelse(control_rm==0 & human_contamination==0 & (taxon =="Carcinus maenas" | taxon =="Carcinus aestuarii" | taxon =="Carcinus"), 1, 0))
 ```
 <br>
 <br>
@@ -174,7 +179,7 @@ to_remove_phyla <- c("Proteobacteria","Planctomycetes","Planctomycetota","Oomyco
 to_remove_taxa <- c("Paraphysomonas sp.", "Amoebozoa sp.")
 
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(baf_rm=ifelse(control_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa), 1, 0))
+  mutate(baf_rm=ifelse(control_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa), 1, 0))
 ``` 
 <br>
 <br>
@@ -204,7 +209,7 @@ to_remove_genus <- c("Scomber","Chloropicon")
 to_remove_class <- c("Chrysophyceae")
 
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(too_small_rm=ifelse(control_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus) | class %in% to_remove_class, 1, 0))
+  mutate(too_small_rm=ifelse(control_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus) | class %in% to_remove_class, 1, 0))
 ```
 <br>
 
@@ -305,12 +310,29 @@ ggplot(aes(x=sample_id,y=pReads,fill=reason)) +
 
 # Write out Taxonomy
 
+first, save a record of what / why ASVs were filtered
+```{r}
+blast.dat.filter %>%
+  filter(!is.na(rank)) %>%
+  # collapse non-target ASvs
+  mutate(nonTarget_rm=ifelse(baf_rm==1 | too_small_rm==1, 1, 0)) %>%
+  # get unique ASVs
+  group_by(Hash,rank,kingdom,phylum,class,order,family,genus,species,taxon,human_contamination,control_rm,predator_rm,nonTarget_rm,type) %>%
+  summarise(n.crab=length(unique(sample)),
+          reads.in.run=sum(nReads)) %>%
+  mutate(MiSeqRun=run.num) %>%
+  write_csv(here(outdir,paste0("run",run.num,"_",marker,"_taxonomy_track_filter.csv")))
+```
+
+
+
+
 remove all of the hashes marked for removal above. 
 ```{r}
 blast.dat.out <- blast.dat.filter %>%
   filter(!is.na(rank)) %>%
-  filter(control_rm==0 & predator_rm==0 & baf_rm==0 & too_small_rm==0) %>%
-  dplyr::select(-c(control_rm,predator_rm,baf_rm,too_small_rm))
+  filter(control_rm==0 & human_contamination==0 & predator_rm==0 & baf_rm==0 & too_small_rm==0) %>%
+  dplyr::select(-c(control_rm,human_contamination,predator_rm,baf_rm,too_small_rm))
 ```
 <br>
 

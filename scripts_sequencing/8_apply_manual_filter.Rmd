@@ -153,8 +153,6 @@ View(anti_join(final.dat,final.dat2))  # taxa that have lower taxonomic info tha
 ```
 
 Since some of the IDs were backed out to genus level or higher, based on manual checking of non-native status / percent identity in blast match, we have to again remove duplicated higher-level taxa from individual crab. So for example, if our manual change from an unclassified Ectocarpus species means that a crab has both an *Ectocarpus fasciculatus* and an *Ectocarpus* ID, we want to get rid of the *Ectocarpus* ID as a potentially non-unique taxa.
-
-
 ```{r}
 final.dat.unq.nest <- final.dat2 %>%
   rename(rank=rank.final,taxon=taxon.final) %>%
@@ -193,5 +191,62 @@ final.dat.unq %>%
 
 
 
+# 6. ASVs
 
+For the paper supplement, create a file with all unique ASVs that were matched to taxonomy in BLAST, and if/why they  were removed  from the final dataset.
+
+First, read in the previous filtering information from script 6
+```{r}
+for(r in run.nums){
+  if(r==first(run.nums)){
+    track_filter_s6 <- read_csv(here(blastdir, paste0("run",r,"_",marker,"_taxonomy_track_filter.csv")))
+  } else{
+    track_filter_s6 %<>% bind_rows(
+      read_csv(here(blastdir, paste0("run",r,"_",marker,"_taxonomy_track_filter.csv")))
+    )
+  }
+}
+```
+
+Then, mark ASVs removed manually
+```{r}
+track_filter <- track_filter_s6 %>%
+  left_join(manual.filter %>%
+              rename(manual_rm=filter),by=c("taxon","rank"))
+```
+
+Some manual filtering removed non-target taxa that weren't captured in script 6. For these, switch the `nonTarget_rm` column from `0` to `1` and delete the notes in the manual filter column.
+```{r}
+track_filter %<>% mutate(nonTarget_rm=ifelse(nonTarget_rm==0 & manual_rm %in% c("too small","non-target"), 1, 0)) %>%
+  mutate(manual_rm=ifelse(nonTarget_rm==1,0,
+                          ifelse(is.na(manual_rm),0,manual_rm)))
+```
+
+Do some re-arranging of columns for nicer output
+```{r}
+track_filter %<>%
+  mutate(manual_filter_notes=manual_rm) %>%
+  mutate(manual_rm=ifelse(manual_rm != 0, 1, 0)) %>%
+  mutate(retained=ifelse(!is.na(taxon.final) & manual_filter_notes==0,1,0)) %>%
+  rename(in_control=control_rm, predator=predator_rm, nonTarget=nonTarget_rm,manual_filter=manual_rm) %>%
+  pivot_longer(cols=c("human_contamination","in_control","predator","nonTarget","manual_filter","retained"), names_to="filter", values_to="tmpvals")
+
+track_filter %<>% filter(tmpvals==1) %>% dplyr::select(-tmpvals)
+```
+
+Attach the sequences to the unique identifiers 
+```{r}
+track_filter %<>%
+  filter(type %in% c("Sample","Samples")) %>% dplyr::select(-type) %>%
+  left_join(hash_keys, by=c("Hash","MiSeqRun"))
+
+any(is.na(track_filter$Sequence))
+```
+
+Save!
+```{r}
+track_filter %>%
+  dplyr::select(Hash,taxon,rank,kingdom,phylum,class,order,family,genus,species,MiSeqRun,n.crab,reads.in.run,taxon.final,rank.final,filter,manual_filter_notes,Sequence) %>%
+write_csv(here(indir,'S1_Table.csv'))
+```
 

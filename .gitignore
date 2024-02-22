@@ -14,4 +14,6 @@ scripts_sequencing/**.html
 figs/**.png
 .Rproj.user
 .Rhistory
+.RData
 Green-crab-dDNA.Rproj
+.RData

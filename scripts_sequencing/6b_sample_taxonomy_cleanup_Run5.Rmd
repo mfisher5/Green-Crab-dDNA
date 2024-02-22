@@ -120,19 +120,11 @@ To easier track how much data is being removed, I'm going to classify each hash 
 
 ### Controls
 
-get the hashes in the controls. **Controls not run through blast for run 5**
-```{r echo=FALSE, fig.height=3, fig.width=8, eval=FALSE}
-control_dat <- blast.dat.filter %>% filter(source=="Control")
-ggplot(data=control_dat, aes(x=sample_id, y=nReads, fill=taxon)) +
-  geom_col() +
-  facet_wrap(~sample_id, scales="free_y", ) +
-  theme_bw() + ggtitle("Controls - Taxa") + theme(axis.text.x=element_blank(),axis.title.x=element_blank())
-```
-<br>
+ **Controls not run through blast for run 5**
 ```{r echo=FALSE}
 # control_dat <- blast.dat.filter %>% filter(type=="Control" | taxon %in% c("Homo sapiens","Primates"))
-
-control_dat <- blast.dat.filter %>% filter((source=="Control" & taxon != "Carcinus maenas") | taxon %in% c("Homo sapiens","Primates"))
+control_dat <- blast.dat.filter %>% filter(source=="Control")
+control_dat <- blast.dat.filter %>% filter((source=="Control" & taxon != "Carcinus maenas"))
 ```
 <br>
 
@@ -140,7 +132,8 @@ mark in the rest of the data. there was also some human DNA (oops!) that needs t
 ```{r}
 blast.dat.filter <- blast.dat.filter %>% 
   filter(source=="Samples" | source=="Mock Community") %>%
-  mutate(control_rm=ifelse(Hash %in% control_dat$Hash,1,0))
+  mutate(control_rm=ifelse(Hash %in% control_dat$Hash,1,0)) %>%
+  mutate(human_contamination=ifelse(taxon %in% c("Homo sapiens","Primates"), 1, 0))
 ```
 <br>
 
@@ -177,7 +170,7 @@ to_remove_phyla <- c("Proteobacteria","Planctomycetes","Planctomycetota","Oomyco
 to_remove_taxa <- c("Paraphysomonas sp.", "Amoebozoa sp.","Homo sapiens")
 
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(baf_rm=ifelse(predator_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa), 1, 0))
+  mutate(baf_rm=ifelse(predator_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa), 1, 0))
 ``` 
 <br>
 <br>
@@ -202,11 +195,12 @@ print(blast.dat.filter %>% filter(phylum %in% c("Rhodophyta","Chlorophyta","Stre
 From that list, I'm going to remove the following:
 ```{r}
 to_remove_phyla <- c("Bacillariophyta", "Rotifera")
-to_remove_taxa  <- c("uncultured Bangiophyceae","Tetraselmis","Chromulinales","Chloropicon","Chloropicon primus","Chloroparvula pacifica","	Paraphysomonas sp.","uncultured Jiaozhou Bay zooplankton","Trebouxia aggregata","Lobosphaera incisa",	"Scenedesmus quadricauda","Trebouxiophyceae sp. M-hakoo 311","Pseudoralfsia verrucosa","Thecamonas trahens","Cyprideis torosa","Gallus gallus","Myrionema strangulans","Lobosphaera incisa","Trebouxiophyceae sp. M-hakoo 311","Bathycoccus prasinos","	Paraphysomonas sp.","uncultured organism","Fungi","uncultured fungus")
-to_remove_genus <- c("Scomber")
+to_remove_taxa  <- c("uncultured Bangiophyceae","Tetraselmis","Chromulinales","Chloropicon","Chloropicon primus","Chloroparvula pacifica","	Paraphysomonas sp.","uncultured Jiaozhou Bay zooplankton","Trebouxia aggregata","Lobosphaera incisa",	"Scenedesmus quadricauda","Trebouxiophyceae sp. M-hakoo 311","Pseudoralfsia verrucosa","Thecamonas trahens","Cyprideis torosa","Gallus gallus","Myrionema strangulans","Apoikiospumella mondseeiensis","Pedospumella sp.","Synechococcus")
+to_remove_genus <- c("Scomber","Chloropicon")
+to_remove_class <- c("Chrysophyceae")
 
 blast.dat.filter <- blast.dat.filter %>% 
-  mutate(too_small_rm=ifelse(baf_rm==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus), 1, 0))
+  mutate(too_small_rm=ifelse(baf_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus), 1, 0))
 ```
 <br>
 
@@ -295,6 +289,22 @@ ggplot(plotdat %>% filter(is.na(site_month)), aes(x=Sample_label,y=pReads,fill=r
 <br>
 
 # Write out Taxonomy
+
+first, save a record of what / why ASVs were filtered
+```{r}
+blast.dat.filter %>%
+  filter(!is.na(rank)) %>%
+  # collapse non-target ASvs
+  mutate(nonTarget_rm=ifelse(baf_rm==1 | too_small_rm==1, 1, 0)) %>%
+  # rename to go with other runs
+  rename(type=source) %>%
+  # get unique ASVs
+  group_by(Hash,rank,kingdom,phylum,class,order,family,genus,species,taxon,human_contamination,control_rm,predator_rm,nonTarget_rm,type) %>%
+  summarise(n.crab=length(unique(sample)),
+          reads.in.run=sum(nReads)) %>%
+  mutate(MiSeqRun=run.num) %>%
+  write_csv(here(outdir,paste0("run",run.num,"_",marker,"_taxonomy_track_filter.csv")))
+```
 
 remove all of the hashes marked for removal above. *but keep the green crab DNA in the mock community samples!*
 ```{r}
