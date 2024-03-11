@@ -1,0 +1,320 @@
+---
+title: "Results: Prey Diversity"
+author: "M Fisher"
+date: "2023-03-26"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+# Description
+
+Summarize the following across sequencing runs:
+
+1. Sample sizes:
+  a. how many crab were sequenced?
+  b. how many crab had prey information?
+
+2. Basic prey counts:
+  a. taxonomic depth - what proportion of reads were identified down to genus or species? 
+  b. taxonomic breadth - What was the unique number of taxa identified per site/month? per site?
+  
+3. Per site prey information:
+  a. for each taxon, what proportion of crabs at each site/month had that prey item? *(qc sidebar: of those, what proportion of technical replicates had that prey item?)*
+  b. eDNA index between sites
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE)
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(ggrepel)
+library(cowplot)
+library(janitor)
+library(magrittr)
+library(vegan)
+library(stargazer)
+
+# library(devtools)
+# install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
+library(pairwiseAdonis)
+
+# devtools::install_github("jfq3/ggordiplots")
+library(ggordiplots)
+# source(here('R','gg_ordiplot_custom.R'))
+source(here('R','eDNA_index.R'))
+source(here('R','get_unique_taxa.R'))
+
+##### User inputs #####
+run.nums <- c(2,3,4,5)
+marker  <- 'BF3'
+meta_dir <- 'data/metadata'
+results_dir <- 'data/results'
+# dir2 <- '../Green-crab-dDNA'
+```
+```{r data}
+# metadata from trapping
+meta.trap <- read_csv(here(meta_dir,'Willapa Bay EGC Samples - Sample Data.csv'))
+
+# metadata for run
+meta.run <- read_csv(here(meta_dir,'runs2-5_BF3_run_metadata.csv'))
+
+# sequencing data file - final manual filtered
+dat  <- read_csv(here(results_dir, 'allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+
+# count of crab dissected by site
+site_coords <- read_csv(here(meta_dir,'site_coords.csv'))
+
+set.seed(555)
+```
+
+# Sample Size
+
+How many crab were sequenced, per site and month?
+
+```{r}
+meta.run %>%
+  filter(!is.na(site_month)) %>%
+  group_by(site_month) %>%
+  summarise(`sequenced`=length(unique(sample)))
+
+```
+
+
+## n crab per step
+
+```{r fig.height=3, fig.width=5}
+dissected <- site_coords %>% group_by(site_name) %>% summarise(n_dissected=sum(n_dissected)) %>%
+  rename(Site=site_name)
+
+sequenced <- meta.run %>%
+  filter(!is.na(site_month)) %>%
+  separate(site_month, into=c("Site","Month"), sep="-") %>%
+  group_by(Site) %>%
+  summarise(`sequenced`=length(unique(sample)))
+
+success <- dat %>%
+  filter(!is.na(site_month)) %>%
+  separate(site_month, into=c("Site","Month"), sep="-") %>%
+  group_by(Site) %>%
+  summarise(`with prey`=length(unique(sample))) %>%
+  mutate(`with prey`=ifelse(is.na(`with prey`),0,`with prey`))
+
+ncrab_bySite <- full_join(sequenced,success,by="Site") %>%
+  mutate(`seq with prey` = round(`with prey`/`sequenced`,2)) 
+ncrab_bySite
+```
+
+
+```{r}
+dissectedM <- site_coords %>% group_by(sampling_month) %>% summarise(n_dissected=sum(n_dissected)) %>%
+  rename(Month=sampling_month) %>%
+  mutate(Month=ifelse(Month=="July","Jul",
+                      ifelse(Month=="September","Sep",Month)))
+sequencedM <- meta.run %>%
+  filter(!is.na(site_month)) %>%
+  separate(site_month, into=c("Site","Month"), sep="-") %>%
+  group_by(Month) %>%
+  summarise(`sequenced`=length(unique(sample)))
+
+successM <- dat %>%
+  filter(!is.na(site_month)) %>%
+  separate(site_month, into=c("Site","Month"), sep="-") %>%
+  group_by(Month) %>%
+  summarise(`with prey`=length(unique(sample))) %>%
+  mutate(`with prey`=ifelse(is.na(`with prey`),0,`with prey`))
+
+ncrab_byMonth <- full_join(sequencedM,successM,by="Month") %>%
+  mutate(`seq with prey` = round(`with prey`/`sequenced`,2)) 
+ncrab_byMonth
+```
+<br>
+
+## carapace widths
+
+Mean carapace widths (mm): 
+```{r}
+cw <- meta.trap %>%
+  mutate(sequenced=ifelse(Sample_label %in% meta.run$sample, "Sequenced", "Trapped"))
+
+cw %<>% mutate(site=ifelse(grepl("Stackpole",Site_Name), "Stackpole",
+                                 ifelse(grepl("Oysterville",Site_Name), "Oysterville",
+                                        ifelse(grepl("Nahcotta",Site_Name),"Nahcotta",
+                                               ifelse(grepl("Long Beach",Site_Name),"Long Beach", NA)))))
+
+cw %>% group_by(site,sequenced) %>% summarise(mean_cw=mean(CW_mm)) %>% pivot_wider(names_from=sequenced,values_from=mean_cw)
+```
+
+Range for **collected** crab?
+```{r}
+cw %>% group_by(Sex) %>% summarise(n.crab=length(unique(Sample_label)),
+                                                                      min.cw=min(CW_mm, na.rm = TRUE),
+                                                                      max.cw=max(CW_mm, na.rm = TRUE))
+```
+
+Range for **sequenced** crab?
+```{r}
+cw %>% filter(sequenced=="Sequenced") %>% group_by(Sex) %>% summarise(n.crab=length(unique(Sample_label)),
+                                                                      min.cw=min(CW_mm, na.rm = TRUE),
+                                                                      max.cw=max(CW_mm, na.rm = TRUE))
+```
+
+Range for sequenced crab **with prey**?
+```{r}
+meta.trap %>%
+  mutate(with_prey=ifelse(Sample_label %in% dat$sample, "with Prey", "Trapped")) %>%
+  mutate(site=ifelse(grepl("Stackpole",Site_Name), "Stackpole",
+                                 ifelse(grepl("Oysterville",Site_Name), "Oysterville",
+                                        ifelse(grepl("Nahcotta",Site_Name),"Nahcotta",
+                                               ifelse(grepl("Long Beach",Site_Name),"Long Beach", NA))))) %>% 
+  filter(with_prey=="with Prey") %>% group_by(Sex) %>% summarise(n.crab=length(unique(Sample_label)),
+                                                                      min.cw=min(CW_mm, na.rm = TRUE),
+                                                                      max.cw=max(CW_mm, na.rm = TRUE))
+```
+
+
+
+
+
+# Alpha Diversity 
+
+What was the unique number of taxa identified?
+
+## Across sites
+
+All sites
+```{r}
+length(unique(get_unique_taxa(taxa.df=dat, level="all", return.removed=FALSE) %>%
+  pull(taxon)))
+```
+
+By site type
+```{r}
+get_unique_taxa(taxa.df = dat %>%  separate(site_month, into=c("site","month"), sep="-"),
+                level="site",return.removed=FALSE) %>%
+  group_by(site) %>% summarise(n=length(unique(taxon)))
+```
+
+
+Take a quick look at what was removed
+```{r eval=FALSE}
+View((get_unique_taxa(taxa.df=dat %>%  separate(site_month, into=c("site","month"), sep="-"), level="site", return.removed=TRUE))[[2]])
+```
+
+
+## Per crab stomach
+
+
+```{r fig.height=3, fig.width=4}
+crab.tax.breadth <-dat %>% 
+  filter(!is.na(site_month)) %>%
+  group_by(site_month, sample) %>% 
+  summarise(n_taxa=length(unique(species)))
+
+ggplot(crab.tax.breadth, aes(x=n_taxa)) +
+  geom_histogram() + 
+  labs(x="Number of Prey Taxa in Stomach", y="Number of Crabs") +
+  scale_x_continuous(breaks=seq(1,13,by=2)) +
+  theme_bw()
+```
+```{r eval=FALSE}
+png(here('results','figures','alpha-diversity_per-crab_CEGblast.png'),res=300,height=800,width=800)
+ggplot(crab.tax.breadth, aes(x=n_taxa)) +
+  geom_histogram() + 
+  labs(x="Number of Prey Taxa in Stomach", y="Number of Crabs") +
+  scale_x_continuous(breaks=seq(1,13,by=2)) +
+  theme_bw()
+dev.off()
+```
+<br>
+
+What is in the crab with > 10 species??
+```{r}
+crab <- (filter(crab.tax.breadth, n_taxa > 10))$sample
+crab
+dat %>% filter(sample==crab) %>%
+  group_by(class,taxon,MiSeqRun) %>% summarise(totalReads=sum(nReads), n_tech=length(unique(tech)))
+```
+<br>
+
+How does number of prey taxa in stomach compare to read depth from that crab?
+
+How does number of prey taxa in stomach compare to fullness for that crab?
+
+
+
+# Beta diversity
+
+What is the $\beta$ diversity for prey taxon? (the ratio between regional and local prey diversity) The greater the similarity in community composition between multiple communities, the lower the value of β-diversity for that set of communities.
+```{r}
+prey.site.mat <- dat %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  dplyr::select(site, taxon) %>% distinct() %>%
+  mutate(presence=1) %>%
+  pivot_wider(id_cols="site", names_from="taxon",values_from="presence", values_fill=0)
+
+bdiv <- as.matrix(betadiver(prey.sp.site.mat, method="w")) 
+colnames(bdiv) <-c(prey.sp.site.mat$site); rownames(bdiv) <- c(prey.sp.site.mat$site)
+bdiv
+```
+
+
+How much changes if we just look at species-level identifications?
+```{r}
+preySP.site.mat <- dat %>%
+  filter(rank=="species") %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  dplyr::select(site, taxon) %>% distinct() %>%
+  mutate(presence=1) %>%
+  pivot_wider(id_cols="site", names_from="taxon",values_from="presence", values_fill=0)
+
+bdivSP <- as.matrix(betadiver(preySP.site.mat, method="w")) 
+colnames(bdivSP) <-c(preySP.site.mat$site); rownames(bdivSP) <- c(preySP.site.mat$site)
+bdivSP
+```
+
+
+Oysterville v Long Beach beta diversity is reduced (by 0.04); as is Oysterville and Long Beach v. Nahcotta (by 0.02, 0.06 respectively).
+
+
+
+
+# Specificity
+
+what **percent** of reads in the final data set were identified down to genus or species for prey species? 
+
+Across all sites
+```{r}
+total.reads <- sum(dat$nReads)
+all.tax.depth <- dat %>%
+  group_by(rank) %>%
+  summarise(level_reads=sum(nReads),
+            prop_level_reads=level_reads/total.reads,
+            per_level_reads=prop_level_reads*100)
+printvec <- round(pull(all.tax.depth,per_level_reads),3)
+names(printvec)<- pull(all.tax.depth,rank)
+
+printvec[printvec %>% order]
+```
+<br> 
+
+At each site
+```{r}
+site.tax.depth <- dat %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  group_by(site) %>% mutate(site_reads=sum(nReads)) %>%
+  ungroup() %>%
+  group_by(site,rank) %>%
+  summarise(level_reads=sum(nReads),
+            prop_level_reads=level_reads/site_reads,
+            per_level_reads=round(prop_level_reads*100,3)) %>%
+  ungroup() %>% distinct()
+
+site.tax.depth %>%
+  dplyr::select(site,rank,per_level_reads) %>%
+  pivot_wider(names_from=rank,values_from=per_level_reads)
+```
+
+

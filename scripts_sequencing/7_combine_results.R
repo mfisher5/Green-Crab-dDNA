@@ -155,21 +155,29 @@ check.filter <- dat.unq.filter %>% group_by(sample) %>% summarise(ntax_filtered=
   mutate(diff_tax=ntax_original-ntax_filtered)
 check.filter %>% ggplot(aes(x=diff_tax)) + geom_histogram()
 
-write_csv(dat.unq.filter, here('data','results','allRuns_BF3_filtered_unique_taxa.csv'))
+write_csv(dat.unq.filter, here('data','results','allRuns_BF3_filtered_unique_taxa_to-family-031124.csv'))
 
 # summarize taxonomy ------------------------------------------------------
 
 unq.summary <- dat.unq.filter %>%
-  group_by(taxon,rank,phylum,class,family,genus,species,type) %>%
+  group_by(taxon,rank,phylum,class,order,family,genus,species,type) %>%
   mutate(type=ifelse(type=="Samples","Sample",type)) %>%    # fix inconsistent naming
   summarise(n_crab=length(unique(sample)),
             miseqruns=paste0(unique(MiSeqRun),collapse=","),
             site_months=paste0(unique(site_month),collapse=","))
 write_csv(unq.summary, here('data','results','allRuns_BF3_filtered_unique_taxa_summary.csv'))
 
+## check with previous dataset? ##
+unq.summary2 <- read_csv(here('data','results','allRuns_BF3_filtered_unique_taxa_summary_to-family-031124.csv'),
+                         col_types='ccccccccicc') %>% 
+  mutate(version='mar') %>% dplyr::select(-order)
+unq.summary.check <- unq.summary %>% mutate(version2='feb')  %>% ungroup() %>% dplyr::select(-order,-site_months) %>%
+  left_join(unq.summary2 %>% dplyr::select(-site_months))
+
 
 
 # Sensitivity: to order? to class? -----------------------------------------
+## what gets filtered out by only taking higher taxonomic IDs to family?
 
 ### redo filtering above to order
 dat.unq2 <- dat.out %>%

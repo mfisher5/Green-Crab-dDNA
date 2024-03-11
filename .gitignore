@@ -16,4 +16,6 @@ figs/**.png
 .Rhistory
 .RData
 Green-crab-dDNA.Rproj
-.RData
+data/metadata/Willapa Bay EGC Samples - Sample Data.csv
+data/metadata/runs2-5_BF3_run_metadata.csv
+data/metadata/Willapa Bay EGC Samples - PCR cycles.csv

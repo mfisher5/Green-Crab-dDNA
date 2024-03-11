@@ -250,3 +250,31 @@ track_filter %>%
 write_csv(here(indir,'S1_Table.csv'))
 ```
 
+# 7. Compare to previous version?
+
+```{r}
+final.summary2 <- final.dat.unq %>%
+  group_by(taxon,rank,phylum,class,order,family,genus,species) %>%
+  summarise(n_crab=length(unique(sample)),
+            miseqruns=paste0(unique(MiSeqRun),collapse=","),
+            site_months=paste0(unique(site_month),collapse=","))
+
+final.summary <-  read_csv(here(indir, 'allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv'),
+                           col_types='ccccccccicc')
+```
+
+```{r}
+final.dat.unq0 <- read_csv(here(indir, 'allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+```
+
+```{r}
+compare.version <- final.summary2 %>% mutate(version='mar') %>%
+  left_join(final.summary %>% mutate(version='feb'))
+```
+
+```{r}
+compare.version <- final.dat.unq %>% mutate(version='mar') %>%
+  left_join(final.dat.unq0 %>% mutate(version='feb'))
+
+dim(compare.version);dim(final.dat.unq0);dim(final.dat.unq)
+```
