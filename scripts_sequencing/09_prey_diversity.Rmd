@@ -12,17 +12,21 @@ output:
 
 Summarize the following across sequencing runs:
 
-1. Sample sizes:
+1. Sample sizes
   a. how many crab were sequenced?
   b. how many crab had prey information?
-
-2. Basic prey counts:
-  a. taxonomic depth - what proportion of reads were identified down to genus or species? 
-  b. taxonomic breadth - What was the unique number of taxa identified per site/month? per site?
   
-3. Per site prey information:
-  a. for each taxon, what proportion of crabs at each site/month had that prey item? *(qc sidebar: of those, what proportion of technical replicates had that prey item?)*
-  b. eDNA index between sites
+2. Specificity: what proportion of reads were identified down to species? Genus? etc.
+
+3. Alpha diversity
+  a. What was the unique number of taxa identified overall?
+  b. What was the unique number of taxa identified per site or month?
+  
+3. Beta diversity
+
+4. Frequency of occurrence
+
+5. Calculate eDNA Index
 
 
 ```{r setup, include=FALSE}
@@ -178,6 +182,44 @@ meta.trap %>%
 
 
 
+# Specificity
+
+what **percent** of reads in the final data set were identified down to genus or species for prey species? 
+
+Across all sites
+```{r}
+total.reads <- sum(dat$nReads)
+all.tax.depth <- dat %>%
+  group_by(rank) %>%
+  summarise(level_reads=sum(nReads),
+            prop_level_reads=level_reads/total.reads,
+            per_level_reads=prop_level_reads*100)
+printvec <- round(pull(all.tax.depth,per_level_reads),3)
+names(printvec)<- pull(all.tax.depth,rank)
+
+printvec[printvec %>% order]
+```
+<br> 
+
+At each site
+```{r}
+site.tax.depth <- dat %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  group_by(site) %>% mutate(site_reads=sum(nReads)) %>%
+  ungroup() %>%
+  group_by(site,rank) %>%
+  summarise(level_reads=sum(nReads),
+            prop_level_reads=level_reads/site_reads,
+            per_level_reads=round(prop_level_reads*100,3)) %>%
+  ungroup() %>% distinct()
+
+site.tax.depth %>%
+  dplyr::select(site,rank,per_level_reads) %>%
+  pivot_wider(names_from=rank,values_from=per_level_reads)
+```
+
+
+
 # Alpha Diversity 
 
 What was the unique number of taxa identified?
@@ -201,6 +243,32 @@ get_unique_taxa(taxa.df = dat %>%  separate(site_month, into=c("site","month"), 
 Take a quick look at what was removed
 ```{r eval=FALSE}
 View((get_unique_taxa(taxa.df=dat %>%  separate(site_month, into=c("site","month"), sep="-"), level="site", return.removed=TRUE))[[2]])
+```
+
+
+### Table S6. Summary counts
+
+Counts by genus / family / order / class / phylum
+```{r}
+tableS6 <- dat %>% group_by(phylum, class, order, family, genus) %>% summarise(n.crab=length(unique(sample))) %>%
+  mutate(level="genus") %>%
+  bind_rows(
+    dat %>% group_by(phylum, class, order, family) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="family")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum, class, order) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="order")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum, class) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="class")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="phylum")
+  )
+```
+
+
+```{r}
+write_csv(tableS6, here('data','results','tableS6_higher_level_counts.csv'))
 ```
 
 
@@ -245,6 +313,7 @@ How does number of prey taxa in stomach compare to fullness for that crab?
 
 
 
+
 # Beta diversity
 
 What is the $\beta$ diversity for prey taxon? (the ratio between regional and local prey diversity) The greater the similarity in community composition between multiple communities, the lower the value of β-diversity for that set of communities.
@@ -281,40 +350,5 @@ Oysterville v Long Beach beta diversity is reduced (by 0.04); as is Oysterville 
 
 
 
-# Specificity
 
-what **percent** of reads in the final data set were identified down to genus or species for prey species? 
-
-Across all sites
-```{r}
-total.reads <- sum(dat$nReads)
-all.tax.depth <- dat %>%
-  group_by(rank) %>%
-  summarise(level_reads=sum(nReads),
-            prop_level_reads=level_reads/total.reads,
-            per_level_reads=prop_level_reads*100)
-printvec <- round(pull(all.tax.depth,per_level_reads),3)
-names(printvec)<- pull(all.tax.depth,rank)
-
-printvec[printvec %>% order]
-```
-<br> 
-
-At each site
-```{r}
-site.tax.depth <- dat %>%
-  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
-  group_by(site) %>% mutate(site_reads=sum(nReads)) %>%
-  ungroup() %>%
-  group_by(site,rank) %>%
-  summarise(level_reads=sum(nReads),
-            prop_level_reads=level_reads/site_reads,
-            per_level_reads=round(prop_level_reads*100,3)) %>%
-  ungroup() %>% distinct()
-
-site.tax.depth %>%
-  dplyr::select(site,rank,per_level_reads) %>%
-  pivot_wider(names_from=rank,values_from=per_level_reads)
-```
-
-
+# Frequency of occurrence
