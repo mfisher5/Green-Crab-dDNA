@@ -1,0 +1,216 @@
+---
+title: "Differences between sites"
+author: "M Fisher"
+date: "2023-05-26"
+output: 
+  html_document:
+    toc: yes
+---
+
+# Description
+
+Explore impacts of using different distance metrics on significance of between-site differences. The following are run using (1) presence / absence data and the Jaccard dissimilarity index, and (2) the semi-quantitative eDNA index and the Bray-Curtis distance.
+
+- PERMANOVA
+
+- PERMDISP + PCoA visualization
+
+- Post-hoc permutation tests on pairs of sites. 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE)
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(ggrepel)
+library(cowplot)
+library(janitor)
+library(magrittr)
+library(vegan)
+library(stargazer)
+
+# library(devtools)
+# install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
+library(pairwiseAdonis)
+
+# devtools::install_github("jfq3/ggordiplots")
+library(ggordiplots)
+source(here('R','gg_ordiplot_custom.R'))
+source(here('R','eDNA_index.R'))
+
+# User inputs
+indir   <- 'results'
+run.nums <- c(2,3,4,5)
+marker  <- 'BF3'
+metadata_dir <- 'data/metadata'
+writing <- FALSE
+```
+```{r data, include=FALSE}
+# metadata for run
+meta.run <- read_csv(here('data','metadata','runs2-5_BF3_run_metadata.csv'))
+
+dat <- read_csv(here('data','results','allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+
+site_coords <- read_csv(here('data','metadata','site_coords.csv'))
+```
+
+
+# Presence
+
+## PERMANOVA / PERMDISP
+
+First, run a PERMANOVA on a presence/absence matrix, using the Jaccard dissimilarity index.
+```{r}
+crab.sp.mat <- dat %>%
+  dplyr::select(sample, taxon) %>% distinct() %>%
+  mutate(presence=1) %>%
+  pivot_wider(id_cols="sample", names_from="taxon",values_from="presence", values_fill=0)
+crabs <- crab.sp.mat$sample
+crab.sp.mat <- as.matrix(crab.sp.mat %>% dplyr::select(-sample))
+rownames(crab.sp.mat) <- crabs
+
+indat <- dat %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  dplyr::select(sample, site, taxon) %>% distinct() %>%
+  mutate(presence=1) %>%
+  pivot_wider(id_cols=c("site","sample"), names_from="taxon",values_from="presence", values_fill=0)
+
+```
+
+```{r echo=TRUE}
+site.perm <- adonis2(indat[,3:dim(indat)[2]]~site, data=indat, method="jaccard")
+site.perm
+```
+
+The permanova is significant. 
+
+Is the significance due to the differences in centroids or due to the differences in dispersion of samples in principal coordinate space of dissimilarity (PCoA)?
+```{r}
+indat.dist <- vegdist(x=indat[,3:dim(indat)[2]],method="jaccard")
+site.perm.betadisper <- betadisper(d=indat.dist, group=indat$site)
+plot(site.perm.betadisper)
+anova(betadisper(d=indat.dist, group=indat$site))
+adonis2(dist(site.perm.betadisper$distances)~site.perm.betadisper$group)
+```
+Borderline but *technically* non-significant result from PERMDISP: groups do not significantly differ in dispersion and therefore the differences are due to differences in location 
+
+
+PCoA from the PERMDISP
+
+```{r}
+indat.sites <- indat %>% mutate(site_type=ifelse(site %in% c("Oysterville","Long Beach"), "Clam Bed", "Slough"))
+myplotPRESENCE <- gg_ordiplot_egc(ord=site.perm.betadisper, groups=indat$site, hull=FALSE, ellipse=FALSE, label=FALSE, spiders=TRUE)
+
+myplotPRESENCE$plot + 
+  scale_shape_manual(values=c(15,17), name="Site Type") +
+  scale_linetype_manual(values=c(1,1), name="Site Type")  + 
+  scale_color_manual(values=c("#018571","#f8ab5b","#4fc1af","#a6611a"), name="Sites") +
+  labs(x="PCoA Dim 1",y="PCoA Dim 2") +
+  theme_bw() + theme(axis.text=element_blank(),axis.ticks=element_blank())
+```
+
+
+## Post-hoc pairwise tests
+
+So, which paired location comparisons that were significantly different?
+```{r echo=TRUE}
+pairwise.adonis2(indat.dist~site,data=indat,nperm=999)
+```
+
+
+
+# eDNA Index
+
+eDNA index based on read counts that are calculated by: (a) summing reads across all replicates, and then (b) dividing by the number of replicates for that crab, because different crab have different numbers of replicates, inflating read values.
+```{r}
+crab.techs <- dat %>%
+  group_by(sample) %>% summarise(nTech=length(unique(tech)))
+crab.reads.mat <- dat %>%
+  group_by(sample, taxon) %>% summarise(techReads=sum(nReads)) %>%
+  left_join(crab.techs) %>%
+  mutate(adjReads=techReads/nTech) %>%
+  dplyr::select(sample,taxon,adjReads) %>%
+  pivot_wider(id_cols="sample", names_from="taxon",values_from="adjReads", values_fill=0) %>%
+  column_to_rownames("sample")
+
+index.mat <- eDNAINDEX(x=t(crab.reads.mat))
+
+index.df <- as.data.frame(t(index.mat)) %>%
+  rownames_to_column("sample") %>% 
+  pivot_longer(cols=2:(dim(index.mat)[1]+1), names_to="taxon",values_to="DNAindex") %>%
+  pivot_wider(names_from=taxon,values_from=DNAindex)
+```
+```{r}
+index2.indat <- left_join(index.df, indat %>% dplyr::select(site,sample) %>% distinct(),by="sample") %>%
+  dplyr::select(site,all_of(colnames(index.df)))
+```
+
+## PERMANOVA / PERMDISP
+
+Bray-curtis
+```{r echo=TRUE}
+site.index2.perm <- adonis2(index2.indat[,3:dim(index2.indat)[2]]~site, data=index2.indat, method="bray")
+site.index2.perm
+```
+The permanova is significant
+
+Is the significance due to the differences in centroids or due to the differences in dispersion of samples in principal coordinate space of dissimilarity (PCoA)?
+```{r}
+index2.indat.dist <- vegdist(x=index2.indat[,3:dim(index2.indat)[2]],method="bray")
+site.index2.perm.betadisper <- betadisper(d=index2.indat.dist, group=index2.indat$site)
+plot(site.index2.perm.betadisper)
+anova(betadisper(d=index2.indat.dist, group=index2.indat$site))
+adonis2(dist(site.index2.perm.betadisper$distances)~site.index2.perm.betadisper$group)
+```
+Non-significant result from PERMDISP: groups do not differ in dispersion and therefore the differences are entirely due to differences in location 
+
+
+PCoA from the PERMDISP
+
+```{r}
+myplotINDEX <- gg_ordiplot_egc(ord=site.index2.perm.betadisper, groups=index2.indat$site, hull=FALSE, ellipse=FALSE, label=FALSE, spiders=TRUE)
+
+myplotINDEX$plot + 
+  scale_shape_manual(values=c(15,17), name="Site Type") +
+  scale_linetype_manual(values=c(1,1), name="Site Type")  + 
+  scale_color_manual(values=c("#018571","#f8ab5b","#4fc1af","#a6611a"), name="Sites") +
+  labs(x="PCoA Dim 1",y="PCoA Dim 2") +
+  theme_bw() + theme(axis.text=element_blank(),axis.ticks=element_blank(),legend.text=element_text(size=14),
+                     legend.title=element_text(size=14))
+```
+
+## Post-hoc pairwise tests
+
+So, which paired location comparisons that were significantly different?
+```{r echo=TRUE}
+pairwise.adonis2(index2.indat.dist~site,data=index2.indat,nperm=999)
+```
+
+
+# Figure 3
+```{r}
+
+fig3a <- myplotPRESENCE$plot + 
+  scale_shape_manual(values=c(15,17), name="Site Type") +
+  scale_linetype_manual(values=c(1,1), name="Site Type")  + 
+  scale_color_manual(values=c("#018571","#f8ab5b","#4fc1af","#a6611a"), name="Sites") +
+  labs(x="PCoA Dim 1",y="PCoA Dim 2") +
+  theme_bw() + theme(axis.text=element_blank(),axis.ticks=element_blank(), legend.position="none")
+
+fig3b <- myplotINDEX$plot + 
+  scale_shape_manual(values=c(15,17), name="Site Type") +
+  scale_linetype_manual(values=c(1,1), name="Site Type")  + 
+  scale_color_manual(values=c("#018571","#f8ab5b","#4fc1af","#a6611a"), name="Sites") +
+  labs(x="PCoA Dim 1",y="PCoA Dim 2") +
+  theme_bw() + theme(axis.text=element_blank(),axis.ticks=element_blank(),legend.text=element_text(size=14),
+                     legend.title=element_text(size=14))
+
+```
+
+```{r echo=TRUE, eval=writing}
+png(here('figs','Figure3_PCoA.png'),res=300,height=1800,width=3800)
+plot_grid(fig3a,fig3b,rel_widths=c(0.72,1),labels=c("a","b"))
+dev.off()
+```
+

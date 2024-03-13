@@ -14,19 +14,19 @@ Summarize the following across sequencing runs:
 
 1. Sample sizes
   a. how many crab were sequenced?
-  b. how many crab had prey information?
-  
+  b. how many crab had prey information? **Table 1**
+  c. how large were the crab that were sequenced v trapped? **Table 1**
+
 2. Specificity: what proportion of reads were identified down to species? Genus? etc.
 
 3. Alpha diversity
   a. What was the unique number of taxa identified overall?
-  b. What was the unique number of taxa identified per site or month?
+  b. What was the unique number of taxa identified per site or month?  **Table 1**
   
-3. Beta diversity
+3. Beta diversity **Table 2**
 
-4. Frequency of occurrence
+4. Frequency of occurrence **Figure 2**
 
-5. Calculate eDNA Index
 
 
 ```{r setup, include=FALSE}
@@ -56,7 +56,7 @@ run.nums <- c(2,3,4,5)
 marker  <- 'BF3'
 meta_dir <- 'data/metadata'
 results_dir <- 'data/results'
-# dir2 <- '../Green-crab-dDNA'
+writing <- FALSE
 ```
 ```{r data}
 # metadata from trapping
@@ -83,11 +83,24 @@ meta.run %>%
   filter(!is.na(site_month)) %>%
   group_by(site_month) %>%
   summarise(`sequenced`=length(unique(sample)))
-
 ```
 
 
 ## n crab per step
+
+```{r fig.height=3, fig.width=5}
+site_coords %>% summarise(n_dissected=sum(n_dissected))
+
+meta.run %>%
+  filter(!is.na(site_month)) %>%
+  summarise(`sequenced`=length(unique(sample)))
+
+dat %>%
+  filter(!is.na(site_month)) %>%
+  summarise(`with prey`=length(unique(sample))) %>%
+  mutate(`with prey`=ifelse(is.na(`with prey`),0,`with prey`))
+
+```
 
 ```{r fig.height=3, fig.width=5}
 dissected <- site_coords %>% group_by(site_name) %>% summarise(n_dissected=sum(n_dissected)) %>%
@@ -179,9 +192,6 @@ meta.trap %>%
 ```
 
 
-
-
-
 # Specificity
 
 what **percent** of reads in the final data set were identified down to genus or species for prey species? 
@@ -230,6 +240,8 @@ All sites
 ```{r}
 length(unique(get_unique_taxa(taxa.df=dat, level="all", return.removed=FALSE) %>%
   pull(taxon)))
+
+length(unique(dat$taxon))
 ```
 
 By site type
@@ -237,6 +249,10 @@ By site type
 get_unique_taxa(taxa.df = dat %>%  separate(site_month, into=c("site","month"), sep="-"),
                 level="site",return.removed=FALSE) %>%
   group_by(site) %>% summarise(n=length(unique(taxon)))
+
+dat %>% separate(site_month, into=c("site","month"), sep="-") %>%
+  group_by(site) %>%
+  summarise(n=length(unique(taxon)))
 ```
 
 
@@ -267,7 +283,7 @@ tableS6 <- dat %>% group_by(phylum, class, order, family, genus) %>% summarise(n
 ```
 
 
-```{r}
+```{r eval=writing}
 write_csv(tableS6, here('data','results','tableS6_higher_level_counts.csv'))
 ```
 
@@ -287,7 +303,7 @@ ggplot(crab.tax.breadth, aes(x=n_taxa)) +
   scale_x_continuous(breaks=seq(1,13,by=2)) +
   theme_bw()
 ```
-```{r eval=FALSE}
+```{r eval=writing}
 png(here('figs','FigS2_alpha-diversity_per-crab.png'),res=300,height=800,width=800)
 ggplot(crab.tax.breadth, aes(x=n_taxa)) +
   geom_histogram() + 
@@ -318,8 +334,8 @@ prey.site.mat <- dat %>%
   mutate(presence=1) %>%
   pivot_wider(id_cols="site", names_from="taxon",values_from="presence", values_fill=0)
 
-bdiv <- as.matrix(betadiver(prey.sp.site.mat, method="w")) 
-colnames(bdiv) <-c(prey.sp.site.mat$site); rownames(bdiv) <- c(prey.sp.site.mat$site)
+bdiv <- as.matrix(betadiver(prey.site.mat, method="w")) 
+colnames(bdiv) <-c(prey.site.mat$site); rownames(bdiv) <- c(prey.site.mat$site)
 bdiv
 ```
 
@@ -407,16 +423,16 @@ plot2b <- ggplot(plotdat.fo2) +
   geom_vline(aes(xintercept=7.5)) + geom_vline(aes(xintercept=9.5)) + geom_vline(aes(xintercept=14.5)) + 
   geom_vline(aes(xintercept=15.5)) + 
   geom_text(data=add_groups_df,aes(x=x,y=y,label=label),size=5) +
-  labs(x="Prey Taxon", y="Frequency of Occurrence (FO%)") +
+  labs(x="Prey Taxon", y="Frequency of occurrence (FO%)") +
   scale_fill_manual(values=c("#018571","#f8ab5b","#4fc1af","#a6611a"), name="Site") +
-  theme_bw() + theme(axis.text.x=element_text(angle=60, hjust=1,size=12),
+  theme_bw() + theme(axis.text.x=element_text(angle=60, hjust=1,size=12, face="italic"),
                      legend.text=element_text(size=12),legend.title=element_text(size=12),
                      axis.title=element_text(size=13))
 plot2b
 ```
 
 
-```{r}
+```{r eval=writing}
 top_row <- plot_grid(plot2a,NULL,ncol=2,rel_widths=c(1,0.22))
 
 png(here('figs','Fig2_FO.png'),res=300,width=2500,height=3200)
@@ -425,11 +441,43 @@ dev.off()
 ```
 
 
-Save the FO%
+do above, but for all species (not just those that occur in more than 3 crabs)
 ```{r}
+plotdat.fo3 <- dat %>% 
+  mutate(plot.phylum=ifelse(is.na(phylum), "Phaeophyceae", phylum)) %>%
+  separate(site_month,sep="-",into=c("site","month"), remove=FALSE) %>%
+  group_by(site,taxon,plot.phylum) %>%
+  summarise(ncrab=length(unique(sample))) %>%
+  mutate(pcrab=(ncrab/total.crab*100)) %>%
+  left_join(plotdat.fo %>% dplyr::select(plot.phylum,nphylum)) %>%
+  arrange(plot.phylum,desc(pcrab))
+```
+
+create a fourth data frame that does counts by site type
+```{r}
+total.crab.site.type <- dat %>% 
+  separate(site_month,sep="-",into=c("site","month"), remove=FALSE) %>%
+  mutate(site_type=ifelse(site %in% c("Oysterville","Long Beach"), "clam bed","slough")) %>%
+  group_by(site_type) %>%
+  summarise(site.crab=length(unique(sample)))
+
+
+plotdat.fo4 <- plotdat.fo3 %>%
+  mutate(site_type=ifelse(site %in% c("Oysterville","Long Beach"), "clam bed","slough")) %>%
+  group_by(taxon, phylum, plot.phylum, nphylum, site_type) %>%
+  summarise(ncrab=sum(ncrab)) %>%
+  left_join(total.crab.site.type, by="site_type") %>%
+  mutate(pcrab=ncrab/site.crab) %>%
+  rename(site=site_type) %>% dplyr::select(-site.crab)
+```
+
+
+Save the FO%
+```{r eval=writing}
 plotdat.fo %>%
   mutate(site="overall") %>%
-  bind_rows(plotdat.fo2) %>%
+  bind_rows(plotdat.fo3) %>%
+  bind_rows(plotdat.fo4) %>%
   write_csv(here('data','results','Fig2table_FO.csv'))
 ```
 
