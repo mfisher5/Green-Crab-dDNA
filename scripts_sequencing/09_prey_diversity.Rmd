@@ -238,23 +238,28 @@ What was the unique number of taxa identified?
 
 All sites
 ```{r}
+length(unique(dat$taxon))
+```
+
+*Corrected for potential duplicates at higher taxonomic levels*
+```{r}
 length(unique(get_unique_taxa(taxa.df=dat, level="all", return.removed=FALSE) %>%
   pull(taxon)))
-
-length(unique(dat$taxon))
 ```
 
 By site type
 ```{r}
-get_unique_taxa(taxa.df = dat %>%  separate(site_month, into=c("site","month"), sep="-"),
-                level="site",return.removed=FALSE) %>%
-  group_by(site) %>% summarise(n=length(unique(taxon)))
-
 dat %>% separate(site_month, into=c("site","month"), sep="-") %>%
   group_by(site) %>%
   summarise(n=length(unique(taxon)))
 ```
 
+*Corrected for potential duplicates at higher taxonomic levels*
+```{r}
+get_unique_taxa(taxa.df = dat %>%  separate(site_month, into=c("site","month"), sep="-"),
+                level="site",return.removed=FALSE) %>%
+  group_by(site) %>% summarise(n=length(unique(taxon)))
+```
 
 Take a quick look at what was removed
 ```{r eval=FALSE}
@@ -262,35 +267,9 @@ View((get_unique_taxa(taxa.df=dat %>%  separate(site_month, into=c("site","month
 ```
 
 
-### Table S6. Summary counts
-
-Counts by genus / family / order / class / phylum
-```{r}
-tableS6 <- dat %>% group_by(phylum, class, order, family, genus) %>% summarise(n.crab=length(unique(sample))) %>%
-  mutate(level="genus") %>%
-  bind_rows(
-    dat %>% group_by(phylum, class, order, family) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="family")
-  ) %>%
-  bind_rows(
-    dat %>% group_by(phylum, class, order) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="order")
-  ) %>%
-  bind_rows(
-    dat %>% group_by(phylum, class) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="class")
-  ) %>%
-  bind_rows(
-    dat %>% group_by(phylum) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="phylum")
-  )
-```
-
-
-```{r eval=writing}
-write_csv(tableS6, here('data','results','tableS6_higher_level_counts.csv'))
-```
-
-
 ## Per crab stomach
 
-
+**Figure S2**
 ```{r fig.height=3, fig.width=4}
 crab.tax.breadth <-dat %>% 
   filter(!is.na(site_month)) %>%
@@ -300,7 +279,7 @@ crab.tax.breadth <-dat %>%
 ggplot(crab.tax.breadth, aes(x=n_taxa)) +
   geom_histogram() + 
   labs(x="Number of Prey Taxa in Stomach", y="Number of Crabs") +
-  scale_x_continuous(breaks=seq(1,13,by=2)) +
+  scale_x_continuous(breaks=seq(1,15,by=2)) +
   theme_bw()
 ```
 ```{r eval=writing}
@@ -322,6 +301,34 @@ dat %>% filter(sample==crab) %>%
   group_by(class,taxon,MiSeqRun) %>% summarise(totalReads=sum(nReads), n_tech=length(unique(tech)))
 ```
 <br>
+
+
+**Figure S3**
+
+```{r fig.height=3, fig.width=4}
+site.tax.breadth <- dat %>% group_by(site_month) %>% summarise(n_taxa=length(unique(taxon)), n_crabs=length(unique(sample))) %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=FALSE) %>%
+  mutate(site_type=ifelse(site %in% c("Long Beach","Oysterville"),"Clam Bed","Slough"))
+site.tax.breadth$site <- factor(site.tax.breadth$site,levels=c("Long Beach","Oysterville","Nahcotta","Stackpole"))
+
+col_palette <- c("#01665e","#a6611a")
+ggplot(site.tax.breadth, aes(x=n_crabs,y=n_taxa, col=site_type)) +
+  geom_point(size=3) +
+  geom_text_repel(aes(label=site_month), size=3, col="black",min.segment.length = 0.01) + 
+  labs(x="Number of crabs",y="Number of Taxa") + scale_color_manual(values=col_palette, name="Site Type") +
+  xlim(c(0,12)) +
+  theme_bw()
+```
+```{r}
+png(here('figs','FigureS3_alphaVsample.png'),res=300,height=1000,width=1400)
+ggplot(site.tax.breadth, aes(x=n_crabs,y=n_taxa, col=site_type)) +
+  geom_point(size=3) +
+  geom_text_repel(aes(label=site_month), size=3, col="black",min.segment.length = 0.01) + 
+  labs(x="Number of crabs",y="Number of taxa") + scale_color_manual(values=col_palette, name="Site Type") +
+  xlim(c(0,12)) +
+  theme_bw()
+dev.off()
+```
 
 
 # Beta diversity
@@ -362,6 +369,9 @@ Oysterville v Long Beach beta diversity is reduced (by 0.04); as is Oysterville 
 
 
 # Frequency of occurrence
+
+
+## Figure 2
 
 Directly comparable to Fig 1 Cordone et al. by site 
 
@@ -453,6 +463,7 @@ plotdat.fo3 <- dat %>%
   arrange(plot.phylum,desc(pcrab))
 ```
 
+
 create a fourth data frame that does counts by site type
 ```{r}
 total.crab.site.type <- dat %>% 
@@ -481,6 +492,33 @@ plotdat.fo %>%
   write_csv(here('data','results','Fig2table_FO.csv'))
 ```
 
+
+## Table S4. 
+
+FO at higher taxonomic levels
+
+Counts by genus / family / order / class / phylum
+```{r}
+tableS6 <- dat %>% group_by(phylum, class, order, family, genus) %>% summarise(n.crab=length(unique(sample))) %>%
+  mutate(level="genus") %>%
+  bind_rows(
+    dat %>% group_by(phylum, class, order, family) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="family")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum, class, order) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="order")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum, class) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="class")
+  ) %>%
+  bind_rows(
+    dat %>% group_by(phylum) %>% summarise(n.crab=length(unique(sample))) %>% mutate(level="phylum")
+  )
+```
+
+
+```{r eval=writing}
+write_csv(tableS4, here('data','results','S4_Table_higher_level_counts.csv'))
+```
 
 
 
