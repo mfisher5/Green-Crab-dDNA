@@ -208,31 +208,66 @@ for(r in run.nums){
 }
 ```
 
-Then, mark ASVs removed manually
+Re-read in the final, manually filtered data set
+```{r}
+manual.filter <- read_csv(here(indir,'allRuns_BF3_filtered_unique_taxa_summary_MANUALfilter.csv'))
+
+final.dat2 <- read_csv(here(indir, 'allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+```
+
+Mark ASVs removed manually
 ```{r}
 track_filter <- track_filter_s6 %>%
   left_join(manual.filter %>%
               rename(manual_rm=filter),by=c("taxon","rank"))
 ```
 
-Some manual filtering removed non-target taxa that weren't captured in script 6. For these, switch the `nonTarget_rm` column from `0` to `1` and delete the notes in the manual filter column.
+
+Some manual filtering removed non-target taxa that weren't captured in script 6. For these, switch the `nonTarget_rm` column from `0` to `1` and delete the notes in the manual filter column. Then differentiate between taxa that were removed in the manual filter, and taxa that were edited (e.g., backed out to genus) during the manual filtering step. 
 ```{r}
 track_filter %<>% mutate(nonTarget_rm=ifelse(nonTarget_rm==0 & manual_rm %in% c("too small","non-target"), 1, 0)) %>%
   mutate(manual_rm=ifelse(nonTarget_rm==1,0,
-                          ifelse(is.na(manual_rm),0,manual_rm)))
+                          ifelse(is.na(manual_rm),0,manual_rm))) %>%
+  mutate(manual_edit_notes=ifelse(!is.na(manual_rm) & !is.na(rank.final), manual_rm,0))
+
+track_filter %<>% mutate(manual_rm=ifelse(manual_edit_notes!=0,0,manual_rm))
+```
+
+
+We did some additional filtering of ASVs to account for duplicates at higher taxonomic levels, after applying the manual filter above. Mark these as removed too.
+```{r}
+tmp_filter <- track_filter %>% filter(!is.na(taxon.final) & manual_rm==0 & manual_edit_notes==0) %>%
+  filter(type %in% c("Sample","Samples"))
+
+any(!(final.dat2$Hash %in% tmp_filter$Hash)) # if TRUE, use next code block
+```
+```{r}
+tmp_filter <- tmp_filter %>% mutate(manual_rm=ifelse(Hash %in% final.dat2$Hash, "0", "not unique low-specificity ID"))
+
+tmp_to_edit <- tmp_filter %>% filter(manual_rm != "0") 
+# View(tmp_to_edit)
+
+track_filter %<>% 
+  anti_join(tmp_to_edit %>% dplyr::select(-manual_rm)) %>%
+  bind_rows(tmp_to_edit)
+# View(filter(track_filter, Hash %in% tmp_to_edit$Hash))
 ```
 
 Do some re-arranging of columns for nicer output
 ```{r}
 track_filter %<>%
-  mutate(manual_filter_notes=manual_rm) %>%
+  mutate(manual_filter_notes=ifelse(manual_rm != 0, manual_rm, 0)) %>%
   mutate(manual_rm=ifelse(manual_rm != 0, 1, 0)) %>%
-  mutate(retained=ifelse(!is.na(taxon.final) & manual_filter_notes==0,1,0)) %>%
+  mutate(retained=ifelse(!is.na(taxon.final) & manual_rm==0,1,0)) %>%
   rename(in_control=control_rm, predator=predator_rm, nonTarget=nonTarget_rm,manual_filter=manual_rm) %>%
   pivot_longer(cols=c("human_contamination","in_control","predator","nonTarget","manual_filter","retained"), names_to="filter", values_to="tmpvals")
 
 track_filter %<>% filter(tmpvals==1) %>% dplyr::select(-tmpvals)
+
+track_filter %<>% mutate(manual_filter_notes=ifelse(manual_edit_notes!="0",manual_edit_notes,manual_filter_notes))
+track_filter %<>% dplyr::select(-manual_edit_notes)
 ```
+
 
 Attach the sequences to the unique identifiers 
 ```{r}
@@ -243,12 +278,58 @@ track_filter %<>%
 any(is.na(track_filter$Sequence))
 ```
 
+Double check the ASVs marked 'retain' against our final data set.
+```{r}
+track_filter_retain <- filter(track_filter, filter=="retained")
+
+# did we retain any hashes that aren't in the final data set? If TRUE, go to code block below
+any(!(track_filter_retain$Hash %in% final.dat2$Hash))
+# View(filter(track_filter_retain, !(Hash %in% final.dat2$Hash)))
+
+# did we fail to retain hashes in the final data set?
+any(!(final.dat2$Hash %in% track_filter_retain$Hash))
+# check_hashes <- final.dat2$Hash[which(!(final.dat2$Hash %in% track_filter_retain$Hash))]
+# View(filter(track_filter, Hash %in% check_hashes))
+```
+```{r}
+tmp_filter <- track_filter_retain %>% filter(!(Hash %in% final.dat2$Hash)) %>%
+  mutate(filter="manual_filter") %>%
+  mutate(manual_filter_notes2="not unique low-specificity ID") %>%
+  unite(col="manual_filter_notes", manual_filter_notes2,manual_filter_notes, sep=". AND ")
+
+tmp_to_edit <- tmp_filter %>% filter(filter=="manual_filter") 
+# View(tmp_to_edit)
+
+track_filter %<>% 
+  anti_join(tmp_to_edit %>% dplyr::select(-filter, -manual_filter_notes)) %>%
+  bind_rows(tmp_to_edit)
+# View(filter(track_filter, Hash %in% tmp_to_edit$Hash))
+
+
+```
+Double check the ASVs marked 'retain' against our final data set.
+```{r}
+track_filter_retain <- filter(track_filter, filter=="retained")
+
+# did we retain any hashes that aren't in the final data set? 
+all(track_filter_retain$Hash %in% final.dat2$Hash)
+
+# did we fail to retain hashes in the final data set?
+all(final.dat2$Hash %in% track_filter_retain$Hash)
+```
+Whew.
+
 Save!
 ```{r}
 track_filter %>%
   dplyr::select(Hash,taxon,rank,kingdom,phylum,class,order,family,genus,species,MiSeqRun,n.crab,reads.in.run,taxon.final,rank.final,filter,manual_filter_notes,Sequence) %>%
 write_csv(here(indir,'S1_Table.csv'))
 ```
+
+
+
+
+
 
 # 7. Compare to previous version?
 

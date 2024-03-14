@@ -30,7 +30,7 @@ library(here)
 library(ggplot2)
 library(ggrepel)
 
-writing=TRUE  ## true to write files, false to knit for doc
+writing=FALSE  ## true to write files, false to knit for doc
 ```
 
 Specify user directories
@@ -313,7 +313,7 @@ ggplot(aes(x=sample_id,y=pReads,fill=reason)) +
 first, save a record of what / why ASVs were filtered
 ```{r}
 blast.dat.filter %>%
-  filter(!is.na(rank)) %>%
+  filter(!is.na(rank)) %>%  #missing IDs should already be gone, but just in case
   # collapse non-target ASvs
   mutate(nonTarget_rm=ifelse(baf_rm==1 | too_small_rm==1, 1, 0)) %>%
   # get unique ASVs
