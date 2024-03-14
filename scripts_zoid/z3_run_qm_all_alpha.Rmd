@@ -1,5 +1,5 @@
 ---
-title: "Run 2 Shelton et al. Quant eDNA Model"
+title: "Shelton et al. Quant eDNA Model"
 output: 
   html_document:
     toc: yes
