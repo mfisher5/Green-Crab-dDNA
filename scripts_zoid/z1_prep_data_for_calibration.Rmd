@@ -542,6 +542,7 @@ write_csv(Obs_PCRcycles,here('../../','data','qm_model','qm_model_SAMPLEpcr.csv'
 if(knitting){
 Obs_PCRcycles <- read_csv(here('../../','data','qm_model','qm_model_SAMPLEpcr.csv'))
 }
+```
 
 ## sample run
 
