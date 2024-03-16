@@ -1,0 +1,257 @@
+---
+title: 'Fig 4: Mixture Model Results'
+author: "M Fisher"
+date: "2023-09-01"
+output: html_document
+---
+
+## Description
+
+Show quant mixture model / zoid results
+  (a) tracks percent reads through all steps after blast
+  (b) shows what proportion of all prey reads are represented by 
+            the calibrated prey species
+  (c) shows the zoid "average crab" proportions
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(magrittr)
+library(here)
+library(grid)
+library(cowplot)
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+```
+
+## Data
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+track_reads <- read_csv(here('../','data','zoid','Crabs4zoid_track_reads_08-29-2023.csv'))
+
+track_prey <- read_csv(here('../','data','zoid','Crabs4zoid_track_prey_08-29-2023.csv'))
+
+fitted_vals_1 <- read_csv(here('../','data','results','zoid_fitted_vals_preyD100_2023-08-29.csv'))
+
+fitted_vals_clambed <- read_csv(here('../','data','results','zoid_fitted_vals_CLAMBED_preyD100_2023-08-29.csv'))
+
+fitted_vals_slough <- read_csv(here('../','data','results','zoid_fitted_vals_SLOUGH_preyD100_2023-08-29.csv'))
+
+fitted_vals_bysite <- fitted_vals_clambed %>% mutate(site_type="Clam Bed") %>%
+  bind_rows(fitted_vals_slough %>% mutate(site_type="Slough"))
+```
+
+
+
+Create key with prey names for figure against scientific names (used in zoid input/output)
+```{r}
+prey_names <- data.frame(scientific = c("Metacarcinus magister",
+                                        "Crangon franciscorum","Cymatogaster aggregata",
+                                        "Batillaria attramentaria",
+                                        "Mya arenaria","Leptocottus armatus",
+                                        "Hemigrapsus oregonensis","Ruditapes philippinarum"),
+                         common = c("Dungeness crab\n(C. magister)",
+                                    "Sand shrimp\n (C. franciscorum)","Shiner perch\n(C. aggregata)",
+                                    "Mud snail\n(B. attramentaria)",
+                                    "Soft-shell clam\n(M. arenaria)","Staghorn sculpin\n(L. armatus)",
+                                    "Hairy shore crab\n(H. oregonensis)","Manila clam\n(R. philippinarum)"))
+
+
+```
+
+Set color scales
+```{r}
+filter_colors_df2 <- data.frame(filter=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated"),
+                                color=c("black",gray.colors(n=4,start=0.2,end=0.7),"darkred","coral2"))
+
+species_grayscale <- data.frame(common=c("Dungeness crab\n(C. magister)",
+                                "Sand shrimp\n (C. franciscorum)","Shiner perch\n(C. aggregata)",
+                                "Mud snail\n(B. attramentaria)",
+                                "Soft-shell clam\n(M. arenaria)","Staghorn sculpin\n(L. armatus)",
+                                "Hairy shore crab\n(H. oregonensis)","Manila clam\n(R. philippinarum)"),
+                                color=gray.colors(start=0,end=0.75,n=8))
+```
+
+
+
+
+## Read change by step
+
+```{r}
+track_reads$step <- factor(track_reads$step,levels=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated"))
+```
+
+
+```{r}
+plot1 <- ggplot(track_reads,aes(x=step,y=prop_reads_remaining, col=step)) + 
+  geom_boxplot()  + 
+  geom_jitter() + 
+  scale_color_manual(values=filter_colors_df2$color) +
+  labs(y="Proportion of reads remaining",x="") + 
+  theme_bw() +
+  theme(legend.position="none",axis.text.x=element_text(angle=45, hjust=1))
+plot1
+```
+
+
+
+## proportion of all prey represented by calibrated prey
+
+```{r}
+plot2 <- track_prey %>% filter(calibrated=="yes") %>%
+  pivot_longer(cols=c("pTaxa","pReads"), names_to="metric",values_to="proportion") %>%
+  mutate(metric=ifelse(metric=="pTaxa","unique taxa","reads")) %>%
+  mutate(site_type=ifelse(site_type=="clam bed","Clam Bed","Slough")) %>%
+  ggplot(aes(x=metric,y=proportion)) +
+  geom_boxplot(color="coral2") + 
+  geom_jitter(alpha=0.4, color="coral2") +
+  facet_wrap(~site_type) +
+  scale_y_continuous(position="right") +
+  labs(x="",y="Proportion calibrated of all prey") +
+  theme_bw() + theme(axis.text.x=element_text(angle=45, hjust=1)) +
+  theme(panel.border=element_rect(color="darkred",linewidth=2),
+        plot.margin=margin(t=5.5,r=5.5,b=32,l=5.5,unit="pt"))
+plot2
+
+
+# rect <- rectGrob(
+#   x = unit(0.05, "in"),
+#   y = unit(0.25, "npc") - unit(1, "in"),
+#   width = unit(5.35, "in"),
+#   height = unit(4.55, "in"),
+#   hjust = 0, vjust = 0,
+#   gp = gpar(col = "lightblue", fill=NA,lwd=2)
+# )
+# 
+# plot2l <- ggdraw(plot2) + draw_grob(rect)
+```
+
+
+
+
+
+
+## zoid average crab
+
+Overall
+```{r}
+plot3 <- fitted_vals_1 %>%
+  mutate(species=ifelse(species=="Mya","Mya arenaria",species)) %>%
+  left_join(prey_names,by=c("species"="scientific")) %>%
+  arrange(mean) %>%
+  ggplot(aes(x=reorder(common,-mean),y=mean)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=lo,ymax=hi,color=forcats::fct_reorder(common,-mean)), width=0.5) +
+  scale_color_grey(name="Prey Species", start=0,end=0.75) +
+  labs(x="",y="proportion of DNA in average crab") +
+  ylim(c(0.05,0.20)) +
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=45, hjust=1), legend.position="none",
+        panel.border=element_rect(color="coral2",linewidth=2))
+plot3
+```
+
+clam bed v. slough -- means with error
+```{r}
+fitted_vals_bysite$site_type <- factor(fitted_vals_bysite$site_type, levels=c("Clam Bed","Slough"))
+plot3s <- fitted_vals_bysite %>%
+  mutate(species=ifelse(species=="Mya","Mya arenaria",species)) %>%
+  left_join(prey_names,by=c("species"="scientific")) %>%
+  arrange(mean) %>%
+  # ggplot(aes(x=reorder(common,-mean),y=mean)) + 
+  ggplot(aes(x=forcats::fct_reorder(common,-mean),y=mean)) +
+  geom_point(aes(pch=site_type)) +
+  geom_errorbar(aes(ymin=lo,ymax=hi,color=forcats::fct_reorder(common,-mean)), width=0.5) +
+  facet_wrap(~site_type,scales="free_y", ncol=1,strip.position="right") +
+  scale_color_grey(name="Prey Species", start=0,end=0.75) +
+  scale_shape_manual(values=c(15,17)) +
+  labs(x="",y="proportion of DNA in average crab") +
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=45, hjust=1), legend.position="none",
+        panel.border=element_rect(color="coral2",linewidth=2), 
+        panel.spacing = unit(0,"lines"))
+plot3s
+```
+
+clam bed v slough -- stacked barplot
+```{r}
+fitted_vals_bysite$site_type <- factor(fitted_vals_bysite$site_type, levels=c("Clam Bed","Slough"))
+
+plot3b <- fitted_vals_bysite %>%
+  mutate(species=ifelse(species=="Mya","Mya arenaria",species)) %>%
+  dplyr::select(site_type,species,mean) %>% distinct() %>%
+  left_join(prey_names,by=c("species"="scientific")) %>%
+  left_join(species_grayscale) %>%
+  arrange(mean) %>%
+  ggplot(aes(x=site_type,y=mean,fill=forcats::fct_reorder(common,-mean),label=common)) + 
+  geom_col(position="stack") +
+  # geom_text(position="stack", vjust=1,color="white") +
+  geom_text(aes(x=site_type,y=mean,label=round(mean,2)), 
+            hjust=-1,vjust=1,color="white",position="stack",size=4) +
+  geom_hline(aes(yintercept=0)) +
+  scale_fill_grey(name="Prey Species", start=0,end=0.75) +
+  labs(x="",y="Proportion of DNA in average crab") +
+  theme_bw() +
+  theme(axis.text.x=element_text(size=12), axis.title.y=element_text(size=12),
+        legend.position="right",
+        panel.border=element_rect(color="coral2",linewidth=2),
+        legend.key.height = unit(2,"line"),
+        plot.margin = margin(t=20.5,r=5.5,b=2.5,l=5.5,unit="pt"))
+plot3b
+```
+
+
+## Figure 4
+
+
+```{r}
+bottom2 <- plot_grid(plot1 + theme(plot.margin=margin(t=5.5,r=5.5,b=-5,l=5.5,unit="pt")),
+                 plot2 + theme(plot.margin=margin(t=5.5,r=5.5,b=27,l=5.5,unit="pt")),
+                 ncol=2, labels=c("b","c"),label_y = 1.075)
+
+# plot_grid(plot3b,bottom2,nrow=2,labels=c("","a"),label_y = 1.1, rel_widths=c(1,1))
+
+# png(here('../../','figures','qm_to_zoid_bysite_bar.png'),res=300,width=2000,height=2000)
+# plot_grid(top2,plot3b,nrow=2,labels=c("","c"),label_y = 1.1)
+# dev.off()
+
+tiff(here('../','figs','Fig4.tif'),res=300,width=2000,height=2200)
+plot_grid(plot3b,bottom2,nrow=2,labels=c("","a"),label_y = 2.05, rel_widths=c(1,1), rel_heights=c(1, 0.9))
+dev.off()
+```
+
+
+## Supplement
+
+across all sites
+```{r}
+top <- plot_grid(plot1,plot2,ncol=2, labels=c("a","b"),label_y = 0.3)
+top
+plot_grid(top,plot3,nrow=2,labels=c("","c"),label_y = 0.15)
+
+png(here('../../','figures','qm_to_zoid.png'),res=300,width=2000,height=2000)
+plot_grid(top,plot3,nrow=2,labels=c("","c"),label_y = 0.15)
+dev.off()
+```
+
+by site type - point
+```{r}
+plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
+
+png(here('../../','figures','qm_to_zoid_bysite.png'),res=300,width=2000,height=2000)
+plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
+dev.off()
+```
+
+
+

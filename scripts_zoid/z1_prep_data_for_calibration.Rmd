@@ -25,7 +25,7 @@ library(here)
 library(ggplot2)
 library(ggrepel)
 
-source(here('../../','R','format_metabarcoding_data_forQM_RPK.R'))
+source(here('../','R','format_metabarcoding_data_forQM_RPK.R'))
 ```
 
 
@@ -33,9 +33,9 @@ User inputs:
 ```{r}
 # Mock communities #
 ## input DNA proportions
-prop_in_file <- here('../../','data','metadata','egc_mcomm_dna_inputs.csv')
+prop_in_file <- here('../','data','metadata','egc_mcomm_dna_inputs.csv')
 ## filtered BLAST data, with taxonomy
-tax_file <- here('../../','data','results','allRuns_BF3_filtered_FINAL_unique_taxa.csv') # also for sample data
+tax_file <- here('.../','data','results','allRuns_BF3_filtered_FINAL_unique_taxa.csv') # also for sample data
 
 
 # Sample data #
@@ -62,7 +62,6 @@ should contain information for both the mock communities and the samples.
 Read in the filtered blast data with taxonomy
 ```{r}
 tax <- read_csv(tax_file) 
-tax_info <- read_csv(tax_info)
 ```
 
 **Mock community** tax data

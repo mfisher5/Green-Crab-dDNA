@@ -22,3 +22,8 @@ data/metadata/runs2-5_BF3_run_metadata.csv
 data/metadata/Willapa Bay EGC Samples - PCR cycles.csv
 data/metadata/*.rds
 data/*.rds
+data/metadata/LC09_L1TP_047028_20240223_20240223_02_T1_refl.tif
+data/results/S1_Table.xlsx
+data/zoid/QM_Bayes_my_dDNA_data_observation.rds
+data/zoid/Crabs4zoid_track_reads_08-29-2023.csv
+data/zoid/Crabs4zoid_track_prey_08-29-2023.csv

@@ -77,11 +77,12 @@ site_coords <- read_csv(here('data/metadata/site_coords.csv')) %>%
 # carapace widths
 cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv'))
 
-
-
-# Site Map (1a) -----------------------------------------------------------
-
 mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct()
+
+
+
+# Site Map  Stamen (1a) -----------------------------------------------------------
+
 
 sitemap <- ggmap(mymap) +
   geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) + 
@@ -100,6 +101,62 @@ sitemap <- ggmap(mymap) +
         legend.text=element_text(size=12), legend.position="top",
         plot.margin=unit(c(0,0,0,0), "cm"))
 sitemap
+
+# Site Map no Background (1a) --------------------------------------------------
+
+county_map <- map_data("county", region="Washington")
+states <- map_data("state")
+west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
+
+
+sitemap <- ggplot() +
+  geom_polygon(data = west_coast, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray60",color="white") +
+  geom_polygon(data = county_map, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray30",color="black") +
+  geom_point(data=mapdat, aes(x=longitude+0.06,y=latitude, col=type), size=5) + 
+  geom_label_repel(data=mapdat, aes(x=longitude+0.06,y=latitude, label=site_name),
+                   segment.colour = 'black',
+                   nudge_x=0.5,nudge_y=0.01,
+                   force=1, force_pull=0.01, segment.size=1, size=6) +
+  geom_text(aes(x=-123.98,y=46.64,label="italic('Willapa\r\n     Bay')"), col="deepskyblue4", size=5, parse=TRUE) +
+  geom_text(aes(x=-123.87,y=46.245,label="italic('Columbia River')"), col="deepskyblue4", size=4, parse=TRUE) +
+  ylab("Latitude") + xlab("Longitude") +
+  scale_color_manual(values=c("#018571","#a6611a")) +
+  coord_fixed(xlim=c(-124.25,-123.4),ylim=c(46,47), ratio=1.3) +
+  theme_bw() + theme(axis.title=element_blank(),
+                     axis.text=element_text(size=10),
+                     legend.title=element_blank(),
+                     legend.text=element_text(size=12), legend.position="top",
+                     plot.margin=unit(c(0,0,0,0), "cm"),
+                     panel.background=element_rect(fill="lightblue"))
+
+sitemap
+
+
+# Site Map Landsat --------------------------------------------------------
+
+# load spatial packages
+library(raster)
+library(rgdal)
+library(stars)
+library(sp)
+library(here)
+
+DEM <- read_stars(here('data','metadata','LC09_L1TP_047028_20240223_20240223_02_T1_refl.tif'))
+
+DEM_df <- as.data.frame(DEM, xy = TRUE) %>%
+  #--- remove cells with NA for any of the layers ---#
+  na.omit()
+
+temp<-st_as_sf(DEM)
+
+ggplot()+
+  geom_sf(data=DEM)
 
 # Count crab at each step -------------------------------------------------
 dissected <- site_coords %>% group_by(site_name) %>% summarise(n_dissected=sum(n_dissected)) %>%
@@ -174,7 +231,9 @@ plot_grid(sitemap,plot_CW,ncol=2, rel_widths=c(1,0.92))
 dev.off()
 
 
-
+tiff(here('figs','Figure1_rmaps.tif'),res=300, height=2000,width=2700)
+plot_grid(sitemap,plot_CW,ncol=2, rel_widths=c(1,0.92))
+dev.off()
 
 
 # Figure S1 ---------------------------------------------------------------

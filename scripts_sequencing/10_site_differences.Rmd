@@ -214,3 +214,8 @@ plot_grid(fig3a,fig3b,rel_widths=c(0.72,1),labels=c("a","b"))
 dev.off()
 ```
 
+```{r echo=TRUE, eval=writing}
+tiff(here('figs','Fig3.tif'),res=300,height=1800,width=3800)
+plot_grid(fig3a,fig3b,rel_widths=c(0.72,1),labels=c("a","b"))
+dev.off()
+```

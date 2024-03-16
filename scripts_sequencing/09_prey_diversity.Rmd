@@ -41,12 +41,6 @@ library(magrittr)
 library(vegan)
 library(stargazer)
 
-# library(devtools)
-# install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
-library(pairwiseAdonis)
-
-# devtools::install_github("jfq3/ggordiplots")
-library(ggordiplots)
 # source(here('R','gg_ordiplot_custom.R'))
 source(here('R','eDNA_index.R'))
 source(here('R','get_unique_taxa.R'))
@@ -445,7 +439,11 @@ plot2b
 ```{r eval=writing}
 top_row <- plot_grid(plot2a,NULL,ncol=2,rel_widths=c(1,0.22))
 
-png(here('figs','Fig2_FO.png'),res=300,width=2500,height=3200)
+# png(here('figs','Fig2_FO.png'),res=300,width=2500,height=3200)
+# plot_grid(top_row,plot2b,ncol=1,nrow=2,rel_heights=c(0.8,1), labels=c("a","b"))
+# dev.off()
+
+tiff(here('figs','Fig2.tif'),res=300,width=2500,height=3200)
 plot_grid(top_row,plot2b,ncol=1,nrow=2,rel_heights=c(0.8,1), labels=c("a","b"))
 dev.off()
 ```
