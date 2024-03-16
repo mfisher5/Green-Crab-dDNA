@@ -27,19 +27,267 @@ gg_color_hue <- function(n) {
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 
+filter_colors_df <- data.frame(filter=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated","leftover"),
+                               color=c("black",gray.colors(n=1,start=0.2,end=0.2),"darkgreen",gray.colors(n=2,start=0.55,end=0.7),"lightblue","darkorange","gray80"))
+
+filter_colors_df2 <- data.frame(filter=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated"),
+                               color=c("black",gray.colors(n=1,start=0.2,end=0.2),"darkgreen",gray.colors(n=2,start=0.55,end=0.7),"lightblue","darkorange"))
+
+
+```
+```{r}
+miseqruns=c(2,3,4,5)
 ```
 
-## Data
+## Part 1: track reads
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Data 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+quant model input
+```{r}
+load(here('../','data','zoid',"qm_model_dataLIST_2023-8-29.rds"))
+```
+
+
+quant model output
+```{r}
+QM_Bayes_filter <- read_csv(here('../','data','zoid','QM_Bayes_posterior_means_filtered_08-29-2023.csv'))
+
+keep_crab <- QM_Bayes_filter %>% filter(name!="Carcinus maenas") %>% pull(crab)
+```
+
+dDNA data:
+
+
+*all prey in final data set*
+```{r}
+tax.prey.clean <- read_csv(here::here('../','data','results','allRuns_BF3_filtered_FINAL_unique_taxa.csv'))
+tax.prey <- read_csv(here::here('../','data','results','allRuns_BF3_filtered_unique_taxa.csv'))
+```
+
+*record of ASV filtering for all that matched to BLAST*
+Raw BLAST output: matches to database**
+```{r blast}
+miseqruns <- unique(tax.prey$MiSeqRun)
+for(r in miseqruns){
+  if(r==miseqruns[1]){
+    tax.unfiltered <- read_csv(here('../','data','blast',paste0('run',r,'_bf3_sample_CEGblast_lca_taxonomy.csv'))) %>% mutate(sample_id=as.character(sample_id))
+    tax.unfiltered %<>% mutate(MiSeqRun=r)
+  } else{
+    tax.unfiltered <- tax.unfiltered %>% 
+      bind_rows(read_csv(here(here('../','data','blast',paste0('run',r,'_bf3_sample_CEGblast_lca_taxonomy.csv')))) %>% mutate(sample_id=as.character(sample_id)) %>% mutate(MiSeqRun=r))
+  }
+}
+
+tax.unfiltered %<>% dplyr::select(-dataset)
+
+# grab controls
+tax.controls <- tax.unfiltered %>% filter(sample_id %in% c("WACO21-ENegative","WACO21-PCRNegative","WACO21-Positive","93","PositiveControl","NegativeControl"))
+  
+# just samples we're interested in
+tax.unfiltered.sub <- tax.unfiltered %>% left_join(dplyr::select(tax.prey,Sample_name,sample,tech,MiSeqRun) %>% distinct(), by=c("Sample_name","MiSeqRun")) %>%
+  filter(sample %in% keep_crab)
+```
+
+Check what IDs are present for *Mya* genus
+```{r}
+filter(tax.unfiltered.sub, genus=="Mya") %>% dplyr::select(sample,tech,taxon,rank) %>% distinct()
+```
+
+And in our quant model output, how is *Mya* represented?
+```{r}
+"Mya arenaria" %in% QM_Bayes_filter$name 
+"Mya" %in% QM_Bayes_filter$name 
+```
+
+
+
+### Track reads
+
+Get total reads
+```{r}
+total.reads.df <- tax.unfiltered.sub %>%
+  group_by(sample,tech) %>% summarise(total_reads=sum(nReads))
+```
+
+
+Get missing reads 
+```{r}
+tax.missing.summary <- tax.unfiltered.sub %>%
+  filter(is.na(taxon)) %>%
+  group_by(sample,tech) %>% summarise(Treads=sum(nReads)) %>%
+  mutate(step="missing")
+```
+
+Get control reads
+```{r}
+tax.controls.summary <- tax.unfiltered.sub %>%
+  filter(Hash %in% tax.controls$Hash) %>%
+  group_by(sample,tech) %>% summarise(Treads=sum(nReads)) %>%
+  mutate(step="control")
+```
+
+
+Get predator reads
+```{r}
+tax.egc <- tax.unfiltered.sub %>% filter(taxon %in% c("Carcinus maenas","Carcinus"))
+
+tax.egc.summary <- tax.egc %>% group_by(sample,tech) %>%
+  summarise(Treads=sum(nReads)) %>%
+  mutate(step="predator")
+```
+
+Breaking down other reads
+```{r}
+other.tax <- tax.unfiltered.sub %>%
+  filter(!(is.na(taxon))) %>%  # missing
+  filter(!(taxon %in% c("Carcinus maenas","Carcinus"))) %>% # predator
+  filter(!(Hash %in% tax.controls$Hash)) %>%    # control
+  mutate(step=ifelse(Hash %in% tax.prey$Hash & taxon %in% tax.prey.clean$taxon, "prey",
+                     ifelse(grepl("Scomber",taxon),"bait", "non-target, non-specific"))) %>%
+  mutate(step=ifelse(taxon %in% EGC_obs[[1]]$species | taxon=="Mya arenaria", "calibrated",step))
+
+other.tax.summary <- other.tax %>% group_by(sample,tech,step) %>%
+  summarise(Treads=sum(nReads))
+```
+
+just check that Mya / Mya arenaria is marked as calibrated
+```{r}
+other.tax %>% filter(taxon %in% c("Mya","Mya arenaria")) %>% pull(step)
+```
+
+### Read distribution / change by step
+
+Read distribution
+```{r echo=FALSE}
+all.summary <- bind_rows(tax.missing.summary,tax.controls.summary,tax.egc.summary,other.tax.summary) %>%
+  left_join(total.reads.df, by=c("sample","tech")) %>%
+  mutate(pReads=Treads/total_reads)
+```
+
+
+```{r echo=FALSE}
+all.summary$step <- factor(all.summary$step,levels=c("missing","control","bait","non-target, non-specific","predator","prey","calibrated"))
+ggplot(all.summary,aes(x=step,y=pReads, col=step)) + 
+  geom_boxplot()  + 
+  geom_jitter() + 
+  scale_color_manual(values=filter_colors_df$color) +
+  labs(y="Proportion of Sample Reads") + theme(legend.position="none")
+```
+
+
+Read change by step
+
+```{r echo=FALSE}
+all.sequential <- total.reads.df %>%
+  left_join(tax.missing.summary, by=c("sample","tech")) %>%
+  mutate(missing=total_reads-Treads) %>% 
+  dplyr::select(sample,tech,total_reads,missing) %>%
+  left_join(tax.egc.summary) %>%  mutate(Treads=ifelse(is.na(Treads), 0, Treads)) %>%
+  mutate(predator=missing-Treads) %>%
+  dplyr::select(sample,tech,total_reads,missing,predator) %>%
+  left_join(other.tax.summary %>% pivot_wider(names_from=step,values_from=Treads, values_fill=0), by=c("sample","tech")) %>%
+  mutate(bait=predator-bait) %>%
+  mutate(`non-target, non-specific`=bait-`non-target, non-specific`) %>%
+  mutate(prey=`non-target, non-specific`-prey) %>%
+  mutate(leftover=prey-calibrated) %>%
+  mutate_at(c("missing","predator","bait","non-target, non-specific", "prey", "calibrated","leftover"), ~.x/total_reads) %>%
+  mutate(total_reads=1) %>% rename(`total reads`=total_reads) %>%
+  pivot_longer(cols=3:10, names_to="step",values_to="prop_reads_remaining")
+```
+
+```{r echo=FALSE}
+all.sequential$step <- factor(all.sequential$step,levels=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated","leftover"))
+ggplot(all.sequential,aes(x=step,y=prop_reads_remaining, col=step)) + 
+  geom_boxplot()  + 
+  geom_jitter() + 
+  scale_color_manual(values=filter_colors_df$color) +
+  labs(y="Proportion of Sample Reads Remaining",x="Filtering Step") + theme(legend.position="none")
+```
+
+
+Save the data frame, for making figure 1
+```{r}
+if(!knitting){
+  
+write_csv(all.sequential %>% filter(step!="leftover"), here('../','data','zoid','zoid_track_reads_calibrated_crab.csv'))
+  
+}
+```
+
+
+### Prey Reads 
+
+Zoom in on what proportion of all prey identified (% unique taxa, % reads) are represented by the calibrated prey.
+```{r echo=FALSE}
+checked.prey <- tax.prey.clean %>%
+  mutate(calibrated=ifelse(taxon %in% EGC_obs[[1]]$species | taxon == "Mya arenaria", "yes", "no"))
+
+## proportion taxa / reads
+checked.prey.summary <- checked.prey %>%
+  mutate(site_type=ifelse(grepl("Oysterville",site_month) | grepl("Long Beach",site_month), "clam bed","slough")) %>%
+  group_by(sample) %>%
+  mutate(sample.taxa=length(unique(taxon)),sample.reads=sum(nReads)) %>%
+  ungroup() %>%
+  group_by(site_type,sample,calibrated,sample.taxa,sample.reads) %>%
+  summarise(n.taxa=length(unique(taxon)),n.reads=sum(nReads)) %>%
+  mutate(pTaxa=n.taxa/sample.taxa,
+         pReads=n.reads/sample.reads) %>%
+  filter(grepl("MC",sample)==FALSE)
+```
+
+
+Proportion taxa / reads overall:
+```{r echo=FALSE}
+checked.prey.summary %>% filter(calibrated=="yes") %>%
+  pivot_longer(cols=c("pTaxa","pReads"), names_to="metric",values_to="proportion") %>%
+  mutate(metric=ifelse(metric=="pTaxa","Unique Taxa","Reads")) %>%
+  ggplot(aes(x=metric,y=proportion)) +
+  geom_boxplot(color="darkorange") + 
+  geom_jitter(alpha=0.6,color="darkorange") +
+  labs(x="",y="proportion prey calibrated per crab") + theme_bw() +
+  theme(panel.background=element_rect(color="lightblue"))
+```
+
+
+Proportion taxa / reads by site type:
+```{r echo=FALSE}
+checked.prey.summary %>% filter(calibrated=="yes") %>%
+  pivot_longer(cols=c("pTaxa","pReads"), names_to="metric",values_to="proportion") %>%
+  mutate(metric=ifelse(metric=="pTaxa","Unique Taxa","Reads")) %>%
+  ggplot(aes(x=metric,y=proportion)) +
+  geom_boxplot(color="darkorange") + 
+  geom_jitter(alpha=0.6, color="darkorange") +
+  facet_wrap(~site_type) +
+  labs(x="",y="proportion prey calibrated per crab") + theme_bw() +
+  theme(panel.background=element_rect(color="lightblue"),
+        strip.background=element_rect(color="lightblue"))
+```
+
+
+
+Save the data framef or making figure 1
+```{r}
+if(!knitting){
+  
+write_csv(checked.prey.summary, here('../','data','zoid','zoid_track_prey_calibrated_crabs.csv'))
+  
+}
+```
+
+
+
+
+
+## Part 2: Figures
+
+### Data
 
 ```{r cars}
 
-track_reads <- read_csv(here('../','data','zoid','Crabs4zoid_track_reads_08-29-2023.csv'))
+track_reads <- read_csv(here('../','data','zoid','zoid_track_reads_calibrated_crab.csv'))
 
-track_prey <- read_csv(here('../','data','zoid','Crabs4zoid_track_prey_08-29-2023.csv'))
+track_prey <- read_csv(here('../','data','zoid','zoid_track_prey_calibrated_crabs.csv'))
 
 fitted_vals_1 <- read_csv(here('../','data','results','zoid_fitted_vals_preyD100_2023-08-29.csv'))
 
@@ -85,7 +333,7 @@ species_grayscale <- data.frame(common=c("Dungeness crab\n(C. magister)",
 
 
 
-## Read change by step
+### Read change by step
 
 ```{r}
 track_reads$step <- factor(track_reads$step,levels=c("total reads","missing","predator","bait","non-target, non-specific","prey","calibrated"))
@@ -95,7 +343,7 @@ track_reads$step <- factor(track_reads$step,levels=c("total reads","missing","pr
 ```{r}
 plot1 <- ggplot(track_reads,aes(x=step,y=prop_reads_remaining, col=step)) + 
   geom_boxplot()  + 
-  geom_jitter() + 
+  geom_jitter(width=0.2) + 
   scale_color_manual(values=filter_colors_df2$color) +
   labs(y="Proportion of reads remaining",x="") + 
   theme_bw() +
@@ -105,7 +353,7 @@ plot1
 
 
 
-## proportion of all prey represented by calibrated prey
+### proportion of all prey represented by calibrated prey
 
 ```{r}
 plot2 <- track_prey %>% filter(calibrated=="yes") %>%
@@ -114,7 +362,7 @@ plot2 <- track_prey %>% filter(calibrated=="yes") %>%
   mutate(site_type=ifelse(site_type=="clam bed","Clam Bed","Slough")) %>%
   ggplot(aes(x=metric,y=proportion)) +
   geom_boxplot(color="coral2") + 
-  geom_jitter(alpha=0.4, color="coral2") +
+  geom_jitter(alpha=0.6, color="coral2", width=0.2) +
   facet_wrap(~site_type) +
   scale_y_continuous(position="right") +
   labs(x="",y="Proportion calibrated of all prey") +
@@ -141,7 +389,7 @@ plot2
 
 
 
-## zoid average crab
+### zoid average crab
 
 Overall
 ```{r}
@@ -161,27 +409,6 @@ plot3 <- fitted_vals_1 %>%
 plot3
 ```
 
-clam bed v. slough -- means with error
-```{r}
-fitted_vals_bysite$site_type <- factor(fitted_vals_bysite$site_type, levels=c("Clam Bed","Slough"))
-plot3s <- fitted_vals_bysite %>%
-  mutate(species=ifelse(species=="Mya","Mya arenaria",species)) %>%
-  left_join(prey_names,by=c("species"="scientific")) %>%
-  arrange(mean) %>%
-  # ggplot(aes(x=reorder(common,-mean),y=mean)) + 
-  ggplot(aes(x=forcats::fct_reorder(common,-mean),y=mean)) +
-  geom_point(aes(pch=site_type)) +
-  geom_errorbar(aes(ymin=lo,ymax=hi,color=forcats::fct_reorder(common,-mean)), width=0.5) +
-  facet_wrap(~site_type,scales="free_y", ncol=1,strip.position="right") +
-  scale_color_grey(name="Prey Species", start=0,end=0.75) +
-  scale_shape_manual(values=c(15,17)) +
-  labs(x="",y="proportion of DNA in average crab") +
-  theme_bw() +
-  theme(axis.text.x=element_text(angle=45, hjust=1), legend.position="none",
-        panel.border=element_rect(color="coral2",linewidth=2), 
-        panel.spacing = unit(0,"lines"))
-plot3s
-```
 
 clam bed v slough -- stacked barplot
 ```{r}
@@ -211,7 +438,7 @@ plot3b
 ```
 
 
-## Figure 4
+### Figure 4
 
 
 ```{r}
@@ -233,25 +460,61 @@ dev.off()
 
 ## Supplement
 
+
+
+### Fig S6
+
+clam bed v. slough -- means with error
+```{r}
+fitted_vals_bysite$site_type <- factor(fitted_vals_bysite$site_type, levels=c("Clam Bed","Slough"))
+plot3s <- fitted_vals_bysite %>%
+  mutate(species=ifelse(species=="Mya","Mya arenaria",species)) %>%
+  left_join(prey_names,by=c("species"="scientific")) %>%
+  arrange(mean) %>%
+  # ggplot(aes(x=reorder(common,-mean),y=mean)) + 
+  ggplot(aes(x=forcats::fct_reorder(common,-mean),y=mean)) +
+  geom_point(aes(pch=site_type)) +
+  geom_errorbar(aes(ymin=lo,ymax=hi,color=forcats::fct_reorder(common,-mean)), width=0.5) +
+  facet_wrap(~site_type,scales="free_y", ncol=1,strip.position="right") +
+  scale_color_grey(name="Prey Species", start=0,end=0.75) +
+  scale_shape_manual(values=c(15,17)) +
+  labs(x="",y="Proportion of DNA in average crab") +
+  theme_bw() +
+  theme(axis.text.x=element_text(angle=45, hjust=1), legend.position="none",
+        panel.border=element_rect(color="coral2",linewidth=2), 
+        panel.spacing = unit(0,"lines"))
+plot3s
+```
+
+```{r}
+png(here('../','figs','S6_Fig.png'),res=300,width=1600,height=1200)
+plot3s
+dev.off()
+```
+
+
+
+### Extras 
+
+by site type - point
+```{r}
+plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
+
+png(here('../','figs','FigSy_Fig4-as scatterplot.png'),res=300,width=2000,height=2000)
+plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
+dev.off()
+```
+
+
+### Bonus
+
 across all sites
 ```{r}
 top <- plot_grid(plot1,plot2,ncol=2, labels=c("a","b"),label_y = 0.3)
 top
 plot_grid(top,plot3,nrow=2,labels=c("","c"),label_y = 0.15)
 
-png(here('../../','figures','qm_to_zoid.png'),res=300,width=2000,height=2000)
+png(here('../','figs','FigSx_Fig4-all-sites.png'),res=300,width=2000,height=2000)
 plot_grid(top,plot3,nrow=2,labels=c("","c"),label_y = 0.15)
 dev.off()
 ```
-
-by site type - point
-```{r}
-plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
-
-png(here('../../','figures','qm_to_zoid_bysite.png'),res=300,width=2000,height=2000)
-plot_grid(top,plot3s,nrow=2,labels=c("","c"),label_y = 0.15)
-dev.off()
-```
-
-
-

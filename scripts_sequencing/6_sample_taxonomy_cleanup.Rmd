@@ -70,7 +70,7 @@ metadat <- read_csv(here(run_metadat_file))
 
 Clean up the blast data, separate the sample-rep into a sample ID and replicate number, and then join to metadata information.
 ```{r}
-blast.dat.filter <- blast.dat %>%
+blast.dat2 <- blast.dat %>%
   dplyr::select(1:14) %>%
   mutate(type=ifelse(grepl("Positive", sample_id) | grepl("PCRNegative",sample_id) | grepl("ENegative",sample_id) | grepl("Negative",sample_id), "Control",
                      ifelse(grepl("MC",sample_id),"Mock Community","Sample"))) %>%
@@ -81,8 +81,8 @@ blast.dat.filter <- blast.dat %>%
   mutate(sample_id=as.character(sample_id))
 
 # blast.dat.filter <- left_join(blast.dat.filter, metadat,by=c("sample_id"="Sample_label","Sample_name","Locus"))
-blast.dat.filter <- left_join(blast.dat.filter, metadat,by=c("sample_id"="Sample_label","Sample_name","sample","tech"))
-dim(blast.dat.filter)
+blast.dat2 <- left_join(blast.dat2, metadat,by=c("sample_id"="Sample_label","Sample_name","sample","tech"))
+all(blast.dat$Hash %in% blast.dat2$Hash)
 ```
 <br>
 <br>
@@ -92,7 +92,7 @@ dim(blast.dat.filter)
 What proportion of Hashes have no taxonomic information available?
 
 ```{r}
-blast.dat.filter %>%
+blast.dat2 %>%
   dplyr::select(sample,Hash,rank) %>%
   distinct() %>%
   group_by(sample) %>%
@@ -106,7 +106,8 @@ blast.dat.filter %>%
 ```
 
 ```{r}
-blast.dat.filter %<>% filter(!is.na(rank))
+blast.dat.matched <- blast.dat2 %>% filter(!is.na(rank))
+View(filter(blast.dat2, !(Hash %in% blast.dat.matched$Hash) & !is.na(taxon)))
 ```
 <br>
 
@@ -119,7 +120,7 @@ To easier track how much data is being removed, I'm going to classify each hash 
 
 get the hashes in the controls. **Not run through BLAST for Run 2, set to eval=FALSE**
 ```{r echo=FALSE, fig.height=3, fig.width=8, eval=FALSE}
-control_dat <- blast.dat.filter %>% filter(type=="Control")
+control_dat <- blast.dat.matched %>% filter(type=="Control")
 ggplot(data=control_dat, aes(x=sample_id, y=nReads, fill=taxon)) +
   geom_col() +
   facet_wrap(~sample_id, scales="free_y", ) +
@@ -129,15 +130,17 @@ ggplot(data=control_dat, aes(x=sample_id, y=nReads, fill=taxon)) +
 ```{r echo=FALSE}
 # control_dat <- blast.dat.filter %>% filter(type=="Control" | taxon %in% c("Homo sapiens","Primates"))
 
-control_dat <- blast.dat.filter %>% filter((type=="Control" & taxon != "Carcinus maenas"))
+control_dat <- blast.dat.matched %>% filter((type=="Control" & taxon != "Carcinus maenas"))
 ```
 <br>
 
 mark in the rest of the data. 
 ```{r}
-blast.dat.filter <- blast.dat.filter %>% 
-  filter(type=="Sample" | type=="Mock Community") %>%
+blast.dat.filter <- blast.dat.matched %>% 
+  filter(type=="Sample" | type=="Mock Community" | type=="Samples") %>%
   mutate(control_rm=ifelse(Hash %in% control_dat$Hash,1,0))
+
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ```
 <br>
 
@@ -145,6 +148,8 @@ there was also some human DNA (oops!) in some runs that needs to be removed
 ```{r}
 blast.dat.filter %<>%
   mutate(human_contamination=ifelse(control_rm==0 & taxon %in% c("Homo sapiens","Primates"), 1, 0))
+
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ```
 
 ### Predator DNA
@@ -158,6 +163,7 @@ Any Green crab DNA will be marked as 'predator' DNA and removed.
 ```{r}
 blast.dat.filter <- blast.dat.filter %>% 
   mutate(predator_rm=ifelse(control_rm==0 & human_contamination==0 & (taxon =="Carcinus maenas" | taxon =="Carcinus aestuarii" | taxon =="Carcinus"), 1, 0))
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ```
 <br>
 <br>
@@ -180,6 +186,7 @@ to_remove_taxa <- c("Paraphysomonas sp.", "Amoebozoa sp.")
 
 blast.dat.filter <- blast.dat.filter %>% 
   mutate(baf_rm=ifelse(control_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa), 1, 0))
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ``` 
 <br>
 <br>
@@ -210,6 +217,7 @@ to_remove_class <- c("Chrysophyceae")
 
 blast.dat.filter <- blast.dat.filter %>% 
   mutate(too_small_rm=ifelse(control_rm==0 & human_contamination==0 & (phylum %in% to_remove_phyla | taxon %in% to_remove_taxa | genus %in% to_remove_genus) | class %in% to_remove_class, 1, 0))
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ```
 <br>
 
@@ -222,6 +230,7 @@ Are there any hashes from the mock communities in the other samples? Could this 
 mc_dat <- blast.dat.filter %>% filter(type=="Mock Community")
 blast.dat.filter <- blast.dat.filter %>% 
   mutate(mc_rm=ifelse(Hash %in% mc_dat$Hash,1,0))
+all(blast.dat.matched$Hash %in% blast.dat.filter$Hash)
 ```
 
 
@@ -312,7 +321,7 @@ ggplot(aes(x=sample_id,y=pReads,fill=reason)) +
 
 first, save a record of what / why ASVs were filtered
 ```{r}
-blast.dat.filter %>%
+blast.dat.filter.long <- blast.dat.filter %>%
   filter(!is.na(rank)) %>%  #missing IDs should already be gone, but just in case
   # collapse non-target ASvs
   mutate(nonTarget_rm=ifelse(baf_rm==1 | too_small_rm==1, 1, 0)) %>%
@@ -320,7 +329,12 @@ blast.dat.filter %>%
   group_by(Hash,rank,kingdom,phylum,class,order,family,genus,species,taxon,human_contamination,control_rm,predator_rm,nonTarget_rm,type) %>%
   summarise(n.crab=length(unique(sample)),
           reads.in.run=sum(nReads)) %>%
-  mutate(MiSeqRun=run.num) %>%
+  mutate(MiSeqRun=run.num)
+
+all((blast.dat2 %>% filter(!is.na(rank)))$Hash %in% blast.dat.filter.long$Hash)
+
+
+blast.dat.filter.long %>%
   write_csv(here(outdir,paste0("run",run.num,"_",marker,"_taxonomy_track_filter.csv")))
 ```
 

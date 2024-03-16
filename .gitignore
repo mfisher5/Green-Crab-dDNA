@@ -27,3 +27,10 @@ data/results/S1_Table.xlsx
 data/zoid/QM_Bayes_my_dDNA_data_observation.rds
 data/zoid/Crabs4zoid_track_reads_08-29-2023.csv
 data/zoid/Crabs4zoid_track_prey_08-29-2023.csv
+data/zoid/zoid_track_prey_calibrated_crabs.csv
+data/zoid/zoid_track_reads_calibrated_crab.csv
+data/zoid/qm_model_dataLIST_2023-8-29.rds
+data/zoid/QM_Bayes_posterior_means_filtered_08-29-2023.csv
+figs/Fig4.tif
+figs/Fig4.tif
+figs/Fig4.tif
