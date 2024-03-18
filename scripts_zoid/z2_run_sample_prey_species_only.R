@@ -21,26 +21,10 @@ source("calibrate_metabarcoding_RPK.R")
 # Low sample-size warnings aren’t serious; you can either ignore them or else run the chains for longer.
 
 
-# FIRST RUN: rename Zosteraceae to Zostera marina -------------------------
-load("qm_model_dataLIST_2023-5-20.rds")
-
-# Although the family Zosteraceae was identified in stomach contents, it is 
-# possible that these results represent a mixture of different eelgrass and surf grass species, 
-# and so it would be inappropriate to apply a calibration derived only from Z. marina.
-# So that the model doesn't match the two across the mock and sample data sets, change the 
-# mock data set so that taxon name is "Zostera marina"
-
-new_mock <- EGC_obs[[1]] %>%
-  mutate(species=ifelse(species=="Zosteraceae", "Zostera marina",species)) %>%
-  dplyr::select(all_of(colnames(EGC_obs[[1]])))
-
-EGC_obs[[1]] <- new_mock
-saveRDS(EGC_obs, here("qm_model_dataLIST_Zmar_2023-5-27.rds"))
-
 
 # Set up Data -------------------------------------------------------------
 
-EGC_obs <- readRDS(here("qm_model_dataLIST_Zmar_2023-5-27.rds"))
+EGC_obs <- readRDS(here('../','data','zoid',"zoid_dataLIST_2023-8-29.rds"))
 
 
 
@@ -58,20 +42,6 @@ n_pcr_samples <- read_csv(here('qm_model_SAMPLEpcr.csv'))
 
 EGC_obs[[2]] %>% 
   filter(station == "WACO21-097" & species == "Alitta")
-
-#insert missing zeros
-EGC_obs[[1]] <- EGC_obs[[1]] %>% 
-  unite(Community, CommType, tech, col = "Sample", remove = T, sep = "#") %>% 
-  pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
-  pivot_longer(-c(species, totReads, propReads, b_proportion, N_pcr_mock), names_to = "Sample", values_to = "Nreads") %>% 
-  separate(Sample, into = c("Community", "CommType", "tech"), sep = "#")
-
-EGC_obs[[2]] <- EGC_obs[[2]] %>% 
-  unite(station, creek, time, tech, col = "Sample", remove = T, sep = "#") %>% 
-  pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
-  pivot_longer(-c(species), names_to = "Sample", values_to = "Nreads") %>% 
-  separate(Sample, into = c("station", "creek", "time", "tech"), sep = "#")
-
 
 unique(EGC_obs[[2]]$station)
 

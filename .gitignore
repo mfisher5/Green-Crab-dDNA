@@ -34,3 +34,6 @@ data/zoid/QM_Bayes_posterior_means_filtered_08-29-2023.csv
 figs/Fig4.tif
 figs/Fig4.tif
 figs/Fig4.tif
+data/metadata/LC09_WillapaBay_Clip.tif
+data/zoid/zoid_MOCK_matchedTaxonomy.csv
+data/zoid/zoid_SAMPLEdata_taxonomy.csv
