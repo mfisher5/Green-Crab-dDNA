@@ -25,6 +25,7 @@ library(magrittr)
 library(ggrepel)
 library(janitor)
 library(cowplot)
+library(ggmap)
 
 # Data --------------------------------------------------------------------
 
@@ -44,98 +45,11 @@ cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv
 mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct()
 
 
-
-# Site Map  Stamen (1a) -----------------------------------------------------------
-
-library(ggmap)
-
-register_stadiamaps(skey, write = FALSE)
-
-# myLocation <- c(-124.2, 46, -123.7, 47.4)
-myLocation <- c(-124.5, 46, -123.5, 47.5)
-
-
-## terrain
-# mymap <- get_stadiamap(bbox=myLocation,maptype="stamen_terrain_background",crop=FALSE)
-# saveRDS(mymap, file=here('data','stamen_map_terrain_wide_WAcoast.rds'))
-mymap <- readRDS(file=here('data','stamen_map_terrain_wide_WAcoast.rds'))
-
-## toner
-# mymap <- get_stadiamap(bbox=myLocation,maptype="stamen_toner_background",crop=FALSE)
-# saveRDS(mymap, file=here('data','stamen_map_toner_wide_WillapaBay.rds'))
-mymap <- readRDS(here('data','stamen_map_toner_wide_WillapaBay.rds'))
-
-
-attr_mymap <- attr(mymap, "bb")    # save attributes from original
-
-# change background color in raster from black to dark blue
-mymap[mymap == "#000000"] <- "#2f567f"
-
-# correct class, attributes
-class(mymap) <- c("ggmap", "raster")
-attr(mymap, "bb") <- attr_mymap
-ggmap(mymap)  # check map
-
-sitemap <- ggmap(mymap) +
-  geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) + 
-  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
-                   segment.colour = 'black',
-                   nudge_x=0.22,nudge_y=0.01,
-                   force=1, force_pull=0.2, segment.size=0.5, size=6) +
-  geom_text(aes(x=-123.98,y=46.64,label="italic('Willapa\n Bay')"), col="deepskyblue4", size=4, parse=TRUE) +
-  geom_text(aes(x=-123.87,y=46.22,label="italic('Columbia River')"), col="deepskyblue4", size=4, parse=TRUE) +
-  ylab("Latitude") + xlab("Longitude") +
-  scale_color_manual(values=c("#018571","#a6611a")) +
-  coord_fixed(xlim=c(-124.15,-123.7),ylim=c(46.15,46.9)) +
-  theme(axis.title=element_blank(),
-        axis.text=element_text(size=10),
-        legend.title=element_blank(),
-        legend.text=element_text(size=12), legend.position="top",
-        plot.margin=unit(c(0,0,0,0), "cm"))
-sitemap
-
-# Area Map (no Background (1a inset) --------------------------------------------------
-
-county_map <- map_data("county", region="Washington")
-
-
-inset=ggplot() +
-  geom_polygon(data = county_map, 
-               aes(x = long, 
-                   y = lat, 
-                   group = group), fill="gray30",color="gray30") +
-  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=2) +
-  coord_fixed(xlim=c(-124.7,-120),ylim=c(45.7,48.9)) +
-  theme_void() + theme(panel.background=element_rect(fill=NA,color="black"))
-
-inset
-
-# Site Map USGS National Map ----------------------------------------------
+# DATA Site Map USGS National Map ----------------------------------------------
 
 library(terrainr)
 library(tmaptools)
 library(sf)
-
-# get southern part of bay
-location_of_interest <- tmaptools::geocode_OSM("Nemah Washington")$coords
-
-location_of_interest <- data.frame(
-  x = location_of_interest[["x"]],
-  y = location_of_interest[["y"]]
-)
-
-location_of_interest <- st_as_sf(
-  location_of_interest, 
-  coords = c("x", "y"), 
-  crs = 4326
-)
-
-output_tiles <- get_tiles(area_of_interest,
-                           services = c("ortho"),
-                           resolution = 30 # pixel side length in meters
-)
-
-
 
 # get northern part of bay
 location2_of_interest <- tmaptools::geocode_OSM("Bay Center Washington")$coords
@@ -144,14 +58,11 @@ location2_of_interest <- data.frame(
   x = location2_of_interest[["x"]],
   y = location2_of_interest[["y"]]
 )
-
 location2_of_interest <- st_as_sf(
   location2_of_interest, 
   coords = c("x", "y"), 
   crs = 4326
 )
-
-
 
 area2_of_interest <- set_bbox_side_length(location2_of_interest, 32000)
 
@@ -160,6 +71,7 @@ output2_tiles <- get_tiles(area2_of_interest,
                            resolution = 30 # pixel side length in meters
 )
 
+saveRDS(output2_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output2.rds'))
 
 # get west part of bay
 location3_of_interest <- tmaptools::geocode_OSM("Klipsan Beach Washington")$coords
@@ -168,14 +80,11 @@ location3_of_interest <- data.frame(
   x = location3_of_interest[["x"]],
   y = location3_of_interest[["y"]]
 )
-
 location3_of_interest <- st_as_sf(
   location3_of_interest, 
   coords = c("x", "y"), 
   crs = 4326
 )
-
-
 
 area3_of_interest <- set_bbox_side_length(location3_of_interest, 30000)
 
@@ -183,6 +92,8 @@ output3_tiles <- get_tiles(area3_of_interest,
                            services = c("ortho"),
                            resolution = 30 # pixel side length in meters
 )
+saveRDS(output3_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output3.rds'))
+
 
 # get east part of bay
 location4_of_interest <- tmaptools::geocode_OSM("Naselle Washington")$coords
@@ -191,14 +102,11 @@ location4_of_interest <- data.frame(
   x = location4_of_interest[["x"]],
   y = location4_of_interest[["y"]]
 )
-
 location4_of_interest <- st_as_sf(
   location4_of_interest, 
   coords = c("x", "y"), 
   crs = 4326
 )
-
-
 
 area4_of_interest <- set_bbox_side_length(location4_of_interest, 30000)
 
@@ -206,18 +114,28 @@ output4_tiles <- get_tiles(area4_of_interest,
                            services = c("ortho"),
                            resolution = 30 # pixel side length in meters
 )
+saveRDS(output4_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output4.rds'))
 
+
+# MAPPING Site Map USGS National Map (1a) ---------------------------------
+
+library(terrainr)
+library(tmaptools)
+library(sf)
+
+# read back in map tiles
+output2_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output2.rds'))
+output3_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output3.rds'))
+output4_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output4.rds'))
 
 # map
-sitemap <- ggplot() + 
-  geom_spatial_rgb(data = output_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
+sitemap <- ggplot() +  
   geom_spatial_rgb(data = output2_tiles[["ortho"]],
                    aes(x = x, y = y, r = red, g = green, b = blue)) + 
   geom_spatial_rgb(data = output3_tiles[["ortho"]],
                    aes(x = x, y = y, r = red, g = green, b = blue)) + 
-  # geom_spatial_rgb(data = output4_tiles[["ortho"]],
-  #                  aes(x = x, y = y, r = red, g = green, b = blue)) + 
+  geom_spatial_rgb(data = output4_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
   geom_point(data=mapdat, aes(x=longitude,y=latitude, fill=type), size=6) +
   # geom_point(data=mapdat, aes(x=longitude,y=latitude), pch=1, col="white", size=7) + 
   geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
@@ -235,6 +153,23 @@ sitemap <- ggplot() +
                      plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"),
                      panel.background=element_rect(fill="#133e5a"))
 
+
+
+# WA state Map (1a inset) --------------------------------------------------
+
+county_map <- map_data("county", region="Washington")
+
+
+inset=ggplot() +
+  geom_polygon(data = county_map, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray30",color="gray30") +
+  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=2) +
+  coord_fixed(xlim=c(-124.7,-120),ylim=c(45.7,48.9)) +
+  theme_void() + theme(panel.background=element_rect(fill="white",color="white", linewidth=3))
+
+inset
 
 # Count crab at each step -------------------------------------------------
 dissected <- site_coords %>% group_by(site_name) %>% summarise(n_dissected=sum(n_dissected)) %>%
@@ -297,11 +232,6 @@ plot_CW <- ggplot(plotdat, aes(x=CW_mm, fill=sequenced)) +
 plot_CW
 
 
-
-
-
-
-
 # Final Figure ------------------------------------------------------------
 
 png(here('figs','Figure1.png'),res=300, height=2000,width=2700)
@@ -348,122 +278,50 @@ dev.off()
 
 
 
+# Site Map  Stamen (1a) -----------------------------------------------------------
+
+library(ggmap)
+
+register_stadiamaps(skey, write = FALSE)
+myLocation <- c(-124.5, 46, -123.5, 47.5)
+
+## terrain
+# mymap <- get_stadiamap(bbox=myLocation,maptype="stamen_terrain_background",crop=FALSE)
+# saveRDS(mymap, file=here('data','stamen_map_terrain_wide_WAcoast.rds'))
+mymap <- readRDS(file=here('data','stamen_map_terrain_wide_WAcoast.rds'))
+
+## toner
+# mymap <- get_stadiamap(bbox=myLocation,maptype="stamen_toner_background",crop=FALSE)
+# saveRDS(mymap, file=here('data','stamen_map_toner_wide_WillapaBay.rds'))
+mymap <- readRDS(here('data','stamen_map_toner_wide_WillapaBay.rds'))
 
 
-# Site Map Landsat --------------------------------------------------------
+attr_mymap <- attr(mymap, "bb")    # save attributes from original
 
-# load spatial packages
-library(raster)
-library(rgdal)
-library(stars)
-library(sf)
-library(here)
-library(tidyverse)
+# change background color in raster from black to dark blue
+mymap[mymap == "#000000"] <- "#2f567f"
 
-states <- map_data("state")
-west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
+# correct class, attributes
+class(mymap) <- c("ggmap", "raster")
+attr(mymap, "bb") <- attr_mymap
+ggmap(mymap)  # check map
 
-site_coords_sub <- dplyr::select(site_coords, type, site_name,latitude,longitude) %>% 
-  rename(x=longitude,y=latitude) %>% distinct()
-
-site_coords_sf <- sf::st_as_sf(site_coords_sub, coords=c("x","y"),crs = st_crs(4326))
-set_st_crs(site_coords_sf) <- "espg:4326"
-site_coords_plot <- st_transform(site_coords_sf,  crs="EPSG:32610")
-
-
-west_coast <- subset(maps::map("state", plot = FALSE, fill = TRUE))
-
-states_as_sf <- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
-new_states <- st_transform(states_as_sf, crs="EPSG:32610")
-# show base map
-ggplot(site_coords_sf) +
-  geom_sf() 
-
-
-counties_as_sf <- sf::st_as_sf(maps::map("county", region="Washington", plot = FALSE, fill = TRUE))
-new_counties <- st_transform(counties_as_sf, crs="EPSG:32610")
-
-ggplot(counties_as_sf) +
-  geom_sf()
-
-ggplot(new_counties) +
-  geom_sf()
-
-counties_as_sf <- county_map %>% st_as_sf(coords=c("long", "lat"),crs=4326)
-new_counties <- st_transform(counties_as_sf, crs=crs(DEM))
-
-
-DEM <- read_stars(here('data','metadata','LC09_WillapaBay_Clip.tif'))
-d = st_dimensions(DEM)
-
-
-df <- as.data.frame(DEM, xy= TRUE) %>% pivot_wider(names_from="band",values_from="LC09_WillapaBay_Clip.tif")
-df <- df%>% rename(Red=`1`,Green=`2`,Blue=`3`)
-
-prismatic::color(rgb(r = df$Red,              #Specify Bands
-                     g = df$Green,
-                     b = df$Blue,
-                     maxColorValue = 255))[200:1000] #subsample
-
-
-
-df_subset <- df[1:100000,]
-
-ggplot(data=df, aes(x=x,y=y))+                   #plot map
-  geom_raster(aes(fill = rgb(r = Red,
-                             g = Green,
-                             b = Blue,
-                             maxColorValue = 255))) +
-  geom_sf(data=site_coords_plot,inherit.aes=FALSE)
-
-scale_fill_identity()
-
-
-
-
-ggplot() +
-  geom_stars(data = DEM,
-             fill = rgb(r = Red,
-                        g = Green,
-                        b = Blue,
-                        maxColorValue = 255),
-             show.legend = FALSE) +
-  scale_fill_identity()
-
-
-
-# slightly smaller bbox:
-bb = st_bbox(c(xmin = offset[1] + 2.1 * res[1],
-               ymin = offset[2] + 10.9 * res[2],
-               xmax = offset[1] +  9.9 * res[1],
-               ymax = offset[2] +  3.1 * res[2]), crs = st_crs(DEM))
-DEM[bb]
-
-
-DEM.crop <- st_crop(DEM, bb)
-plot(DEM.crop)
-
-DEM.sf <- sf::st_as_sf(DEM)
-st_crop(pol, xmin = 0, ymin = 0, xmax = 1, ymax = 1))
-
-gplot(DEM) +
-  geom_tile(aes(fill = value)) +
-  scale_fill_gradientn(colours = (terrain.colors(225)))
-
-DEM <- read_stars(here('data','metadata','LC09_L1TP_047028_20240223_20240223_02_T1_refl.tif'))
-
-new = st_crs('OGC:CRS84')
-
-ggplot() +
-  geom_stars(data = DEM)
-
-DEM_df <- as.data.frame(DEM, xy = TRUE) %>%
-  #--- remove cells with NA for any of the layers ---#
-  na.omit()
-
-temp<-st_as_sf(DEM)
-
-ggplot(new_counties) + 
-  geom_sf(aes(fill="gray"))
+sitemap <- ggmap(mymap) +
+  geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) + 
+  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
+                   segment.colour = 'black',
+                   nudge_x=0.22,nudge_y=0.01,
+                   force=1, force_pull=0.2, segment.size=0.5, size=6) +
+  geom_text(aes(x=-123.98,y=46.64,label="italic('Willapa\n Bay')"), col="deepskyblue4", size=4, parse=TRUE) +
+  geom_text(aes(x=-123.87,y=46.22,label="italic('Columbia River')"), col="deepskyblue4", size=4, parse=TRUE) +
+  ylab("Latitude") + xlab("Longitude") +
+  scale_color_manual(values=c("#018571","#a6611a")) +
+  coord_fixed(xlim=c(-124.15,-123.7),ylim=c(46.15,46.9)) +
+  theme(axis.title=element_blank(),
+        axis.text=element_text(size=10),
+        legend.title=element_blank(),
+        legend.text=element_text(size=12), legend.position="top",
+        plot.margin=unit(c(0,0,0,0), "cm"))
+sitemap
 
 
