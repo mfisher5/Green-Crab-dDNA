@@ -64,14 +64,22 @@ location2_of_interest <- st_as_sf(
   crs = 4326
 )
 
-area2_of_interest <- set_bbox_side_length(location2_of_interest, 32000)
+area2_of_interest <- set_bbox_side_length(location2_of_interest, 30000)
 
 output2_tiles <- get_tiles(area2_of_interest,
                            services = c("ortho"),
                            resolution = 30 # pixel side length in meters
 )
 
-saveRDS(output2_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output2.rds'))
+
+file.rename(from=output2_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_.tif'))
+tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
+
+
+# file.rename(from=output2_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc7fc34577.tif'))
+# tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc7fc34577.tif'))
+
+
 
 # get west part of bay
 location3_of_interest <- tmaptools::geocode_OSM("Klipsan Beach Washington")$coords
@@ -92,8 +100,8 @@ output3_tiles <- get_tiles(area3_of_interest,
                            services = c("ortho"),
                            resolution = 30 # pixel side length in meters
 )
-saveRDS(output3_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output3.rds'))
-
+file.rename(from=output3_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
+tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
 
 # get east part of bay
 location4_of_interest <- tmaptools::geocode_OSM("Naselle Washington")$coords
@@ -114,7 +122,8 @@ output4_tiles <- get_tiles(area4_of_interest,
                            services = c("ortho"),
                            resolution = 30 # pixel side length in meters
 )
-saveRDS(output4_tiles, here('data','metadata','WillapaBayTerrain_NationalMap_output4.rds'))
+file.rename(from=output4_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_file1ebc498433ea.tif'))
+tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc498433ea.tif'))
 
 
 # MAPPING Site Map USGS National Map (1a) ---------------------------------
@@ -125,8 +134,15 @@ library(sf)
 
 # read back in map tiles
 output2_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output2.rds'))
-output3_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output3.rds'))
-output4_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output4.rds'))
+output3_tiles2<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap30m_output3.rds'))
+output4_tiles2<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap30m_output4.rds'))
+
+ggplot() +   
+  geom_spatial_rgb(data = tmpdat,
+                   aes(x = x, y = y, r = red, g = green, b = blue))
+  geom_spatial_rgb(data = output4_tiles2,
+                   aes(x = x, y = y, r = red, g = green, b = blue))
+
 
 # map
 sitemap <- ggplot() +  
@@ -158,16 +174,20 @@ sitemap <- ggplot() +
 # WA state Map (1a inset) --------------------------------------------------
 
 county_map <- map_data("county", region="Washington")
+or_county_map <- map_data("county", region="Oregon")
 
-
-inset=ggplot() +
+inset <- ggplot() +
   geom_polygon(data = county_map, 
                aes(x = long, 
                    y = lat, 
-                   group = group), fill="gray30",color="gray30") +
+                   group = group), fill="gray40",color="gray30") +
+  geom_polygon(data = or_county_map, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray70",color="gray70") +
   geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=2) +
   coord_fixed(xlim=c(-124.7,-120),ylim=c(45.7,48.9)) +
-  theme_void() + theme(panel.background=element_rect(fill="white",color="white", linewidth=3))
+  theme_void() + theme(panel.background=element_rect(fill="white",color="white"))
 
 inset
 
