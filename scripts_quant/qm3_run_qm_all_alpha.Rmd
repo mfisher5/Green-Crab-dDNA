@@ -63,30 +63,7 @@ rm(EGC_obs2)
 ```
 
 
-I forgot to make sure that we get an amplification efficiency for *Cottus asper*, so let's just pick another fish in the diet data set and replace it with *Cottus*.
-
-```{r}
-EGC_obs[[2]] %<>% mutate(species=ifelse(species=="Pholis ornata", "Cottus",species))
-```
-
-
-
-### re-format data
-
-insert missing zeros, and rename the levels of the data to match eDNA naming conventions.
-```{r}
-EGC_obs[[1]] <- EGC_obs[[1]] %>% 
-  unite(Community, CommType, tech, col = "Sample", remove = T, sep = "#") %>% 
-  pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
-  pivot_longer(-c(species, totReads, propReads, b_proportion, N_pcr_mock), names_to = "Sample", values_to = "Nreads") %>% 
-  separate(Sample, into = c("Community", "CommType", "tech"), sep = "#")
-
-EGC_obs[[2]] <- EGC_obs[[2]] %>% 
-  unite(station, creek, time, tech, col = "Sample", remove = T, sep = "#") %>% 
-  pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
-  pivot_longer(-c(species), names_to = "Sample", values_to = "Nreads") %>% 
-  separate(Sample, into = c("station", "creek", "time", "tech"), sep = "#")
-```
+### minimum read depths
 
 Filter samples according to a minimum read-depth cutoff of n=100
 ```{r}
@@ -156,7 +133,7 @@ QM_Bayes_alpha$Bayes_alpha_est
 
 first, the input data frame
 ```{r}
-write_csv(QM_Bayes_alpha$Bayes_alpha_est,here('../../','data','qm_model','QM_Bayes_out_AlphaRun_alpha_est.csv'))
+write_csv(QM_Bayes_alpha$Bayes_alpha_est,here('../','data','zoid','QM_Bayes_out_AlphaRun_alpha_est.csv'))
 ```
 
 

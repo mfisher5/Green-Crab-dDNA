@@ -15,12 +15,12 @@ output:
 
 ## Description
 
-Prepare the metabarcoding data for use in the quantitative model run using `zoid` R package. This includes adding predator (*Carcinus meanas*) DNA back into the taxonomy data set, cross-referencing species between the mock community and sample (stomach content) data, and formatting the data frames to match the input format required by `zoid`.
+Prepare the metabarcoding data for use in the quantitative model run using custom R code from Ryan Kelly, Ole Shelton. This includes adding predator (*Carcinus meanas*) DNA back into the taxonomy data set, cross-referencing species between the mock community and sample (stomach content) data, and formatting the data frames to match the input format required by the quant model.
 
 <br>
 
 *Run notes*
-  - re-run Mar 18 2024 for documentation. No changes to final data from previous runs of zoid.
+  - re-run Mar 18 2024 for documentation. No changes to final data from previous runs of quant models.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -203,16 +203,15 @@ check_pident
 
 By the same rules as applied to the sample data, we should back this ID out to *Crangon*. 
 
-```{r eval=FALSE}
+```{r}
+mc.tax %<>% mutate(taxon=ifelse(taxon=="Crangon crangon","Crangon",taxon)) %>%
+  mutate(species=ifelse(taxon=="Crangon",NA,species))
 ```
 
 
 **Get rid of DNA that was not intentionally put into the mock communities**
 ```{r}
 mc.tax.filter <- mc.tax %>%
-  # re-name Crangon crangon IDs based on rationale above.
-  mutate(taxon=ifelse(taxon=="Crangon crangon","Crangon",taxon)) %>%
-  mutate(species=ifelse(taxon=="Crangon",NA,species)) %>%
   # FILTER
   filter(taxon %in% indat$species | taxon %in% c("Cottus","Mya","Carcinus","Crangon","Zosteraceae")) %>%
   # fix rank column
@@ -222,21 +221,19 @@ mc.tax.filter <- mc.tax %>%
 **Save.**
 ```{r}
 if(isFALSE(knitting)){
-mc.tax.filter %>% write_csv(here('../','data','results','MockCommunities_BF3_filtered_input_taxa.csv'))
+mc.tax.filter %>% write_csv(here('../','data','results','MockCommunities_BF3_filtered_FINAL_input_taxa.csv'))
 }
 ```
 
 
-### adjust taxa for zoid
+### adjust taxa for QM
 
-We want to make sure that when we run zoid, the IDs from the mocks match up to the corresponding IDs in the sample data.
-
-
+We want to make sure that when we run the quant model, the IDs from the mocks match up to the corresponding IDs in the sample data.
 
 How did the IDs from the mocks / input list show up in the sample dDNA data?
 ```{r}
-unique(mc.tax.filter$taxon)[which(unique(mc.tax.filter$taxon) %in% tax$taxon)]
-unique(indat$species)[which(unique(indat$species) %in% tax$taxon)]
+unique(mc.tax.filter$taxon)[which(unique(mc.tax.filter$taxon) %in% sample.tax$taxon)]
+unique(indat$species)[which(unique(indat$species) %in% sample.tax$taxon)]
 
 ```
 Unlike the mock community sequencing data, we have *Mya arenaria* IDs in the sample data (as opposed to *Mya*).
@@ -248,44 +245,66 @@ As in the mocks, the sample data has *Zosteraceae* IDs. But we don't want to app
 
 Which species from the mock community lab list / sequencing data are missing from the sample data?
 ```{r}
-unique(indat$species)[which(!(unique(indat$species) %in% tax$species) & !(unique(indat$species) %in% sample.egc$species))]
+unique(indat$species)[which(!(unique(indat$species) %in% sample.tax$species) & !(unique(indat$species) %in% sample.egc$species))]
 
-unique(mc.tax.filter$taxon)[which(!(unique(mc.tax.filter$taxon) %in% tax$taxon) & !(unique(mc.tax.filter$taxon) %in% sample.egc$taxon))]
+unique(mc.tax.filter$taxon)[which(!(unique(mc.tax.filter$taxon) %in% sample.tax$taxon) & !(unique(mc.tax.filter$taxon) %in% sample.egc$taxon))]
 ```
 In the sample data, we don't have *Cottus asper* or *Cottus* IDs.
 Again, in the sample data, we don't have *Zostera marina* IDs.
-
 
 <br>
 
 This means we'll do two runs of the quant model: one with all the species in the mocks to get alpha values, and one with only the species in the sample data to get posterior mean DNA proportions. 
 
-This also means that for the sample run, we want to manually edit *Mya* to *Mya arenaria*, *Crangon* to *Crangon franciscorum*, and *Zosteraceae* to *Zostera marina* in the mocks data that will go into zoid. 
-
-
-
-Do this in a new column, 'taxon.species'
-```{r}
-mc.tax.edit <- mc.tax.filter %>%
-  mutate(taxon.species=ifelse(taxon=="Zosteraceae","Zostera marina",
-                              ifelse(taxon=="Cottus","Cottus asper",
-                                     ifelse(taxon=="Mya","Mya arenaria",taxon))))
-```
-
 
 **In theory,** since we Sanger sequenced the *Crangon franciscorum* DNA that was included in the mocks to verify the species-level visual identification, *Crangon* IDs in the mocks (derived from *Crangon crangon* BLAST output with lower percent identities) should be *Crangon franciscorum*. So we could modify all *Crangon* IDs to *Crangon franciscorum*. But I don't feel super comfortable modifying the data in this way (what if some of the *Crangon* DNA represents tag-jumping from samples from a different *Crangon* species). So I'll include this code here, but not run it.
 ```{r eval=FALSE}
-unique(filter(mc.tax.edit,taxon=="Crangon franciscorum")$sample)  # should be in A,B,D,E
+unique(filter(mc.tax.filter,taxon=="Crangon franciscorum")$sample)  # should be in A,B,D,E
 # mc.tax.edit %<>% mutate(taxon.species=ifelse(taxon=="Crangon","Crangon franciscorum",taxon))
 ```
 
 
-### summarise reads
+#### alpha run 
+
+For the alpha run, manually edit *Mya* to *Mya arenaria*, and *Cottus* to *Cottus asper*. Get rid of the non-specific *Crangon* IDs.
+
+
+Do this in a new column, 'taxon.species'
+```{r}
+mc.tax.edit2 <- mc.tax.filter %>%
+  mutate(taxon.species=ifelse(taxon=="Cottus","Cottus asper",
+                                     ifelse(taxon=="Mya","Mya arenaria",taxon))) %>%
+  filter(taxon.species != "Crangon")
+```
+
+
+```{r}
+unique(mc.tax.edit2$taxon.species)
+```
+
+
+#### sample run 
+
+For the sample run, we *also* want to manually edit *Zosteraceae* to *Zostera marina* to avoid matching it to sample data.
+
+Do this in a new column, 'taxon.species'
+```{r}
+mc.tax.edit <- mc.tax.edit2 %>%
+  mutate(taxon.species=ifelse(taxon=="Zosteraceae","Zostera marina",taxon.species))
+
+unique(mc.tax.edit$taxon.species)
+```
+
+
+
+
+### summarise reads: sample run
 
 mock community: get read counts for all taxa. Use the new column `species.taxon` 
 ```{r}
-mc.reads <- mc.tax.edit  %>%
-  filter(taxon.species %in% indat$species) %>%
+mc.reads.samples <- mc.tax.edit  %>%
+  # filter(taxon.species %in% indat$species) %>%
+  # filter(taxon.species %in% sample.tax$taxon) %>%
   mutate(nReads=ifelse(is.na(nReads),0,nReads)) %>%
   group_by(sample,tech,MiSeqRun) %>%
   mutate(techReads=sum(nReads)) %>%
@@ -302,59 +321,125 @@ mc.reads <- mc.tax.edit  %>%
 
 Which species in the metadata aren't matched to read counts?
 ```{r}
-unique(filter(mc.reads,is.na(MiSeqRun))$taxon.species)
+unique(filter(mc.reads.samples,is.na(MiSeqRun))$taxon.species)
 ```
 great, none.
 
 Add back in the input information (lab proportions)
 
 ```{r}
-mc.reads %<>% left_join(indat,by=c("sample","MiSeqRun","taxon.species"="species")) %>%
+mc.reads.samples %<>% left_join(indat,by=c("sample","MiSeqRun","taxon.species"="species")) %>%
   filter(!is.na(dna_relative_proportion))
 ```
 
 
-#### optional: compare to previous version?
-
-Get the older data set and grab only the columns to match / compare
-```{r}
-old.mc <- read_csv(here('../../','EGC-Willapa-Bay','data','qm_model','qm_model_MCinput_all-matched_CEGblast.csv'))
-
-
-old.mc %<>% rename(techReads=totalSpReads) %>% 
-  pivot_longer(cols=c(taxReads,taxHashes,p.taxReads,techReads), names_to='compare',values_to='reads_old')
-
-old.mc %<>% dplyr::select(sample,tech,MiSeqRun,taxon.species,sample_label,dna_ng,dna_relative_proportion,compare,reads_old)
-```
-
-Join old to new data
-```{r}
-mc.reads.check <- mc.reads %>%  
-  pivot_longer(cols=c(taxReads,taxHashes,p.taxReads,techReads), names_to='compare',values_to='reads_new') %>%
-  left_join(old.mc)
-```
-
-Look for mismatches
-```{r}
-mc.mismatch <- filter(mc.reads.check, round(reads_old,4) != round(reads_new,4))
-dim(mc.mismatch)
-unique(mc.mismatch$compare)
-```
-
-#### save
 
 ```{r}
 if(isFALSE(knitting)){
-write_csv(mc.reads,here('../','data','zoid','zoid_MOCK_matchedTaxonomy.csv'))
+write_csv(mc.reads.samples,here('../','data','quant_modeling','QM_MOCKdata_input_samples_run.csv'))
 }
 ```
 
 
-### zoid input format
+
+
+
+### summarise reads: alpha run
+
+mock community: get read counts for all taxa. Use the new column `species.taxon` 
+```{r}
+mc.reads.alpha <- mc.tax.edit2  %>%
+  mutate(nReads=ifelse(is.na(nReads),0,nReads)) %>%
+  group_by(sample,tech,MiSeqRun) %>%
+  mutate(techReads=sum(nReads)) %>%
+  ungroup() %>%
+  mutate(taxon.species = as.character(taxon.species)) %>%
+  group_by(sample, taxon.species, tech, genus,techReads,MiSeqRun) %>%
+  summarise(taxReads=sum(nReads),
+            taxReps=length(unique(tech)),
+            taxHashes=length(unique(Hash))) %>%
+  mutate(taxReads=ifelse(is.na(taxReads),0,taxReads),
+         taxHashes=ifelse(is.na(taxHashes),0,taxHashes)) %>%
+   mutate(p.taxReads=taxReads/techReads)
+```
+
+Which species in the metadata aren't matched to read counts?
+```{r}
+unique(filter(mc.reads.alpha,is.na(MiSeqRun))$taxon.species)
+```
+great, none.
+
+Add back in the input information (lab proportions)
 
 ```{r}
-mock.a <- mc.reads %>%
-  filter(taxon.species %in% indat$species) %>%
+mc.reads.alpha %<>% left_join(indat %>% mutate(species=ifelse(species=="Zostera marina","Zosteraceae",species)),
+                              by=c("sample","MiSeqRun","taxon.species"="species")) %>%
+  filter(!is.na(dna_relative_proportion))
+
+unique(mc.reads.alpha$taxon.species)
+
+```
+
+
+### QM input format: sample run
+
+```{r}
+mock.s <- mc.reads.samples %>%
+  ungroup() %>%
+  mutate(CommType=ifelse(grepl("even",sample_label),"Even","Skew")) %>%
+  mutate(N_pcr_mock=sum(35,5)) %>%
+  rename("species"=taxon.species,"Nreads"=taxReads,"Community"=sample,
+         "b_proportion"=dna_relative_proportion,"totReads"=techReads,"propReads"=p.taxReads) %>%
+  dplyr::select(Community,CommType,tech,species,Nreads,totReads,propReads,b_proportion,N_pcr_mock)
+
+head(mock.s)
+```
+
+insert missing zeros. 
+the quant model requires zeros any time a species is not present (e.g., green crab is missing from certain mock communities on purpose)
+```{r}
+dim(mock.s)
+mock.s <- mock.s %>% 
+  unite(Community, CommType, tech, col = "Sample", remove = T, sep = "#") %>% 
+  dplyr::select(-totReads,-propReads) %>%
+  pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
+  pivot_longer(-c(species,b_proportion, N_pcr_mock), names_to = "Sample", values_to = "Nreads") %>% 
+  separate(Sample, into = c("Community", "CommType", "tech"), sep = "#") %>%
+  left_join(mock.s %>%dplyr::select(Community,tech,totReads) %>% mutate(tech=as.character(tech)) %>% distinct()) %>%
+  mutate(propReads=Nreads/totReads)
+
+dim(mock.s)
+```
+
+#### optional: compare to previous version?
+
+
+Get the older data set and grab only the columns to match / compare
+```{r}
+load(here('../../','EGC-Willapa-Bay','quant_dDNA','qm_model_final','qm_model_dataLIST_2023-8-29.rds'))
+old.mc <- EGC_obs[[1]]
+```
+
+Join old to new data & look for mismatches
+```{r}
+mc.reads.check <- mock.s %>%  
+  dplyr::select(Community,tech,species,propReads) %>% rename(propReads_new=propReads) %>%
+  mutate(tech=as.character(tech)) %>%
+  left_join(old.mc %>% dplyr::select(Community,tech,species,propReads) %>% 
+              rename(propReads_old=propReads) %>% mutate(tech=as.character(tech))) %>%
+  mutate(delta_propReads=propReads_new-propReads_old) 
+mc.reads.check %>% filter(delta_propReads > 0)
+```
+
+
+
+
+
+
+### QM input format: alpha run
+
+```{r}
+mock.a <- mc.reads.alpha %>%
   ungroup() %>%
   mutate(CommType=ifelse(grepl("even",sample_label),"Even","Skew")) %>%
   mutate(N_pcr_mock=sum(35,5)) %>%
@@ -366,18 +451,39 @@ head(mock.a)
 ```
 
 insert missing zeros. 
-zoid requires zeros any time a species is not present (e.g., green crab is missing from certain mock communities on purpose)
+the quant model requires zeros any time a species is not present (e.g., green crab is missing from certain mock communities on purpose)
 ```{r}
 dim(mock.a)
 mock.a <- mock.a %>% 
   unite(Community, CommType, tech, col = "Sample", remove = T, sep = "#") %>% 
+  dplyr::select(-totReads,-propReads) %>%
   pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
-  pivot_longer(-c(species, totReads, propReads, b_proportion, N_pcr_mock), names_to = "Sample", values_to = "Nreads") %>% 
-  separate(Sample, into = c("Community", "CommType", "tech"), sep = "#")
+  pivot_longer(-c(species, b_proportion, N_pcr_mock), names_to = "Sample", values_to = "Nreads") %>% 
+  separate(Sample, into = c("Community", "CommType", "tech"), sep = "#") %>%
+  left_join(mock.a %>%
+              dplyr::select(Community,tech,totReads) %>% mutate(tech=as.character(tech)) %>% distinct()) %>% mutate(propReads=Nreads/totReads)
 
 dim(mock.a)
 ```
 
+#### optional: compare to previous version?
+
+Get the older data set and grab only the columns to match / compare
+```{r}
+load(here('../../','EGC-Willapa-Bay','quant_dDNA','qm_model_final','qm_model_dataLIST_matchAlpha_2023-8-29.rds'))
+old.mc <- EGC_obs[[1]]
+```
+
+Join old to new data & look for mismatches
+```{r}
+mc.reads.check <- mock.a %>%  
+  dplyr::select(Community,tech,species,propReads) %>% rename(propReads_new=propReads) %>%
+  mutate(tech=as.character(tech)) %>%
+  left_join(old.mc %>% dplyr::select(Community,tech,species,propReads) %>% 
+              rename(propReads_old=propReads) %>% mutate(tech=as.character(tech))) %>%
+  mutate(delta_propReads=propReads_new-propReads_old) 
+mc.reads.check %>% filter(delta_propReads > 0)
+```
 
 
 ## Diet data prep
@@ -485,7 +591,7 @@ sample.tax.thin %<>% filter(!(grepl("Control",sample)))
 
 ```{r}
 if(isFALSE(knitting)){
-write_csv(sample.tax.thin,here('../','data','zoid','zoid_SAMPLEdata_taxonomy.csv'))
+write_csv(sample.tax.thin,here('../','data','quant_modeling','QM_SAMPLEdata_taxonomy.csv'))
 }
 ```
 
@@ -518,7 +624,7 @@ Obs_PCRcycles %>% group_by(sample_id) %>% summarise(n=n()) %>% filter(n>1)
 Save
 ```{r}
 if(isFALSE(knitting)){
-write_csv(Obs_PCRcycles,here('../','data','zoid','zoid_SAMPLEdata_PCR.csv'))
+write_csv(Obs_PCRcycles,here('../','data','quant_modeling','QM_SAMPLEdata_PCR.csv'))
 }
 ```
 
@@ -540,7 +646,7 @@ insert missing zeros
 ```{r}
 dim(metabarcoding)
 metabarcoding %<>% 
-  unite(station, creek, time, tech, col = "Sample", remove = T, sep = "#") %>% 
+  unite(station, creek, time, tech, col = "Sample", remove = T, sep = "#") %>%
   pivot_wider(names_from = Sample, values_from = Nreads, values_fill = 0) %>% 
   pivot_longer(-c(species), names_to = "Sample", values_to = "Nreads") %>% 
   separate(Sample, into = c("station", "creek", "time", "tech"), sep = "#")
@@ -552,7 +658,7 @@ dim(metabarcoding)
 
 ### optional: compare to old data
 ```{r eval=FALSE}
-load(file=here('../','data','zoid','qm_model_dataLIST_2023-8-29.rds')); old.dat <- EGC_obs[[2]]
+load(file=here('../../','EGC-Willapa-Bay','quant_dDNA','qm_model_final','qm_model_dataLIST_2023-8-29.rds')); old.dat <- EGC_obs[[2]]
 rm(EGC_obs)
 ```
 ```{r eval=FALSE}
@@ -564,42 +670,57 @@ View(check.dat %>%
 
 
 
-# Save QM input
+## Save QM input
 
-## sample run
+### sample run
+
 
 ```{r}
-EGC_obs <- list(mock.a,metabarcoding)
+unique(intersect(mock.s$species, metabarcoding$species))
+```
+
+```{r}
+EGC_obs <- list(mock.s,metabarcoding)
 names(EGC_obs) <- c("mock","metabarcoding")
 
-head(mock.a)
+head(mock.s)
 head(metabarcoding)
 
-unique(intersect(mock.a$species, metabarcoding$species))
-mock.a$species[which(!(mock.a$species %in% metabarcoding$species))]
+unique(intersect(mock.s$species, metabarcoding$species))
+mock.s$species[which(!(mock.s$species %in% metabarcoding$species))]
 ```
 
 Save: the metabarcoding_data object, and the mock / metabarcoding dataframes in a list
 ```{r}
 if(isFALSE(knitting)){
-save(EGC_obs,file=here('qm_model_dataLIST_2023-8-29.rds'))
+save(EGC_obs,file=here('../','data','quant_modeling','QM_dataLIST_sampleRun.rds'))
 }
 ```
 
 
-
 ## alpha run
-
-For this run, keep the 
+ 
 ```{r}
+unique(mock.a$species)
+```
+
+
+To get an amplification efficiency for *Cottus asper*, just pick another fish in the diet data set and replace it with *Cottus*.
+```{r}
+metabarcoding.a <- metabarcoding %>% mutate(species=ifelse(species=="Pholis ornata", "Cottus asper",species))
+
+metabarcoding.a %>% filter(species=="Cottus asper" & Nreads > 0)
+```
+```{r}
+unique(mock.a$species)[which(!(unique(mock.a$species) %in% unique(metabarcoding.a$species)))]
 ```
 
 ```{r}
-EGC_obs2 <- list(mock.a,metabarcoding)
+EGC_obs2 <- list(mock.a,metabarcoding.a)
 names(EGC_obs2) <- c("mock","metabarcoding")
 
 head(mock.a)
-head(metabarcoding)
+head(metabarcoding.a)
 
 unique(intersect(mock.a$species, metabarcoding$species))
 mock.a$species[which(!(mock.a$species %in% metabarcoding$species))]
@@ -608,7 +729,7 @@ mock.a$species[which(!(mock.a$species %in% metabarcoding$species))]
 Save: the metabarcoding_data object, and the mock / metabarcoding dataframes in a list
 ```{r}
 if(isFALSE(knitting)){
-save(EGC_obs2,file=here('qm_model_dataLIST_matchAlpha_2023-8-29.rds'))
+save(EGC_obs2,file=here('QM_dataLIST_alphaRun.rds'))
 }
 ```
 
