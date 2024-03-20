@@ -23,9 +23,7 @@ library(tidyverse)
 library(here)
 library(magrittr)
 library(ggrepel)
-library(janitor)
 library(cowplot)
-library(ggmap)
 
 # Data --------------------------------------------------------------------
 
@@ -44,6 +42,10 @@ cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv
 
 mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct()
 
+mapdat <- data.frame(site_name=c("Stackpole","Nahcotta","Long Beach","Oysterville"),
+                     latitude=c(-124.03,-124.03,-124.017,-124.017),
+                     longitude=c(46.598,46.492,46.434,46.554),
+                     type=c("Slough","Clam Bed","Slough","Clam Bed"))
 
 # DATA Site Map USGS National Map ----------------------------------------------
 
@@ -63,23 +65,13 @@ location2_of_interest <- st_as_sf(
   coords = c("x", "y"), 
   crs = 4326
 )
-
-area2_of_interest <- set_bbox_side_length(location2_of_interest, 30000)
-
-output2_tiles <- get_tiles(area2_of_interest,
+output2_tiles <- get_tiles(set_bbox_side_length(location2_of_interest, 30000),
                            services = c("ortho"),
-                           resolution = 30 # pixel side length in meters
+                           resolution = 70 # pixel side length in meters
 )
 
 
-file.rename(from=output2_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_.tif'))
-tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
-
-
-# file.rename(from=output2_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc7fc34577.tif'))
-# tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc7fc34577.tif'))
-
-
+# file.rename(from=output2_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho60m_2.tif'))
 
 # get west part of bay
 location3_of_interest <- tmaptools::geocode_OSM("Klipsan Beach Washington")$coords
@@ -93,15 +85,11 @@ location3_of_interest <- st_as_sf(
   coords = c("x", "y"), 
   crs = 4326
 )
-
-area3_of_interest <- set_bbox_side_length(location3_of_interest, 30000)
-
-output3_tiles <- get_tiles(area3_of_interest,
+output3_tiles <- get_tiles(set_bbox_side_length(location3_of_interest, 30000),
                            services = c("ortho"),
-                           resolution = 30 # pixel side length in meters
+                           resolution = 70 # pixel side length in meters
 )
-file.rename(from=output3_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
-tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc3c826cfd.tif'))
+# file.rename(from=output3_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc3c826cfd.tif'))
 
 # get east part of bay
 location4_of_interest <- tmaptools::geocode_OSM("Naselle Washington")$coords
@@ -115,81 +103,91 @@ location4_of_interest <- st_as_sf(
   coords = c("x", "y"), 
   crs = 4326
 )
-
-area4_of_interest <- set_bbox_side_length(location4_of_interest, 30000)
-
-output4_tiles <- get_tiles(area4_of_interest,
+output4_tiles <- get_tiles(set_bbox_side_length(location4_of_interest, 30000),
                            services = c("ortho"),
-                           resolution = 30 # pixel side length in meters
+                           resolution = 70 # pixel side length in meters
 )
-file.rename(from=output4_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho_file1ebc498433ea.tif'))
-tmpdat <- terra::rast(here('data','metadata','USGSNAIPPlus_ortho_file1ebc498433ea.tif'))
 
+location5_of_interest <- tmaptools::geocode_OSM("Raymond Washington")$coords
+
+location5_of_interest <- data.frame(
+  x = location5_of_interest[["x"]],
+  y = location5_of_interest[["y"]]
+)
+location5_of_interest <- st_as_sf(
+  location5_of_interest, 
+  coords = c("x", "y"), 
+  crs = 4326
+)
+output5_tiles <- get_tiles(set_bbox_side_length(location5_of_interest, 20000),
+                           services = c("ortho"),
+                           resolution = 70 # pixel side length in meters
+)
+# file.rename(from=output4_tiles$ortho,to=here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc498433ea.tif'))
+
+# WA state Map (1a inset) --------------------------------------------------
+
+inset <- ggplot() +
+  geom_polygon(data = map_data("county", region="Washington"), 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray40",color="gray40") +
+  geom_polygon(data = map_data("county", region="Oregon"), 
+               aes(x = long, 
+                   y = lat, 
+                   group = group), fill="gray70",color="gray70") +
+  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=0.5) +
+  coord_fixed(xlim=c(-124.7,-122),ylim=c(45.5,48.9)) +
+  theme_void() + theme(panel.background=element_rect(fill="white",color="white"))
+
+inset
 
 # MAPPING Site Map USGS National Map (1a) ---------------------------------
 
 library(terrainr)
-library(tmaptools)
 library(sf)
 
 # read back in map tiles
-output2_tiles<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap_output2.rds'))
-output3_tiles2<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap30m_output3.rds'))
-output4_tiles2<- readRDS(here('data','metadata','WillapaBayTerrain_NationalMap30m_output4.rds'))
+# output2_tiles<-terra::rast(here('data','metadata','USGSNAIPPlus_ortho_2.tif'))
+# output3_tiles<-terra::rast(here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc3c826cfd.tif'))
+# output4_tiles<-terra::rast(here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc498433ea.tif'))
 
-ggplot() +   
-  geom_spatial_rgb(data = tmpdat,
-                   aes(x = x, y = y, r = red, g = green, b = blue))
-  geom_spatial_rgb(data = output4_tiles2,
-                   aes(x = x, y = y, r = red, g = green, b = blue))
+mapdat_sf <- sf::st_as_sf(mapdat,coords = c("latitude","longitude"))
+mapdat_sf <- sf::st_set_crs(mapdat_sf, 4326)
 
-
-# map
-sitemap <- ggplot() +  
+tiff(here('figs','Figure1a.tif'),res=300, height=2000,width=2700)
+ggdraw(ggplot() +  
   geom_spatial_rgb(data = output2_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
   geom_spatial_rgb(data = output3_tiles[["ortho"]],
                    aes(x = x, y = y, r = red, g = green, b = blue)) + 
   geom_spatial_rgb(data = output4_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) +
-  geom_point(data=mapdat, aes(x=longitude,y=latitude, fill=type), size=6) +
-  # geom_point(data=mapdat, aes(x=longitude,y=latitude), pch=1, col="white", size=7) + 
-  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
-                   segment.colour = 'white',
-                   nudge_x=0.22,nudge_y=0.01,
-                   force=1, force_pull=0.2, segment.size=0.5, size=6) + 
+                   aes(x = x, y = y, r = red, g = green, b = blue))  +
+    geom_spatial_rgb(data = output5_tiles[["ortho"]],
+                     aes(x = x, y = y, r = red, g = green, b = blue))  +
+  geom_rect(aes(ymin=46.375,ymax=46.56,xmin=-124.12,xmax=-124.0655), fill="#1D4054") +
+  geom_sf(data=mapdat_sf, aes(color=type), size=6) + 
+  geom_sf(data=mapdat_sf, pch=1,color="white", size=6) +
+  ggrepel::geom_label_repel(
+    data = head(mapdat_sf),
+    aes(label = site_name, geometry = geometry),
+    stat = "sf_coordinates", size=6,
+    min.segment.length = 0,nudge_x=0.2,nudge_y=c(0.02,-0.02,-0.02,0.02),segment.colour = 'white'
+  ) +
   ylab("Latitude") + xlab("Longitude") +
   scale_color_manual(values=c("#018571","#a6611a")) +
-  coord_sf(xlim=c(-124.1, -123.8),ylim=c(46.3,46.8),crs = 4326) + 
+  coord_sf(xlim=c(-124.1, -123.75),ylim=c(46.3,46.79),crs = 4326) + 
   theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
                      axis.title=element_blank(),
                      axis.text.y=element_text(size=10),
                      legend.title=element_blank(),
                      legend.text=element_text(size=12), legend.position="top",
-                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"),
-                     panel.background=element_rect(fill="#133e5a"))
+                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
+) + draw_plot(inset, x=0.6,y=0.1,width=0.1,height=0.13)
+dev.off()
 
 
 
-# WA state Map (1a inset) --------------------------------------------------
-
-county_map <- map_data("county", region="Washington")
-or_county_map <- map_data("county", region="Oregon")
-
-inset <- ggplot() +
-  geom_polygon(data = county_map, 
-               aes(x = long, 
-                   y = lat, 
-                   group = group), fill="gray40",color="gray30") +
-  geom_polygon(data = or_county_map, 
-               aes(x = long, 
-                   y = lat, 
-                   group = group), fill="gray70",color="gray70") +
-  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=2) +
-  coord_fixed(xlim=c(-124.7,-120),ylim=c(45.7,48.9)) +
-  theme_void() + theme(panel.background=element_rect(fill="white",color="white"))
-
-inset
 
 # Count crab at each step -------------------------------------------------
 dissected <- site_coords %>% group_by(site_name) %>% summarise(n_dissected=sum(n_dissected)) %>%
@@ -254,8 +252,52 @@ plot_CW
 
 # Final Figure ------------------------------------------------------------
 
+tiff(here('figs','Figure1a.tif'),res=300, height=2000,width=2700)
+ggplot() +  
+  geom_spatial_rgb(data = output2_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
+  geom_spatial_rgb(data = output3_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
+  geom_spatial_rgb(data = output4_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
+  ylab("Latitude") + xlab("Longitude") +
+  coord_sf(xlim=c(-124.1, -123.8),ylim=c(46.3,46.8),crs = 4326) + 
+  theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
+                     axis.title=element_blank(),
+                     axis.text.y=element_text(size=10),
+                     legend.title=element_blank(),
+                     legend.text=element_text(size=12), legend.position="top",
+                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
+dev.off()
+
+tiff(here('figs','Figure1a-2.tif'),res=300, height=2000,width=2700)
+ggplot() +  
+  geom_spatial_rgb(data = output2_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
+  geom_spatial_rgb(data = output3_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
+  geom_spatial_rgb(data = output4_tiles[["ortho"]],
+                   aes(x = x, y = y, r = red, g = green, b = blue)) +
+  geom_point(data=mapdat, aes(x=longitude,y=latitude, fill=type), size=6) +
+  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
+                   segment.colour = 'white',
+                   nudge_x=0.22,nudge_y=0.01,
+                   force=1, force_pull=0.2, segment.size=0.5, size=6) + 
+  ylab("Latitude") + xlab("Longitude") +
+  scale_color_manual(values=c("#018571","#a6611a")) +
+  coord_sf(xlim=c(-124.1, -123.8),ylim=c(46.3,46.8),crs = 4326) + 
+  theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
+                     axis.title=element_blank(),
+                     axis.text.y=element_text(size=10),
+                     legend.title=element_blank(),
+                     legend.text=element_text(size=12), legend.position="top",
+                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
+dev.off()
+
+
 png(here('figs','Figure1.png'),res=300, height=2000,width=2700)
-plot_grid(sitemap,plot_CW,ncol=2, rel_widths=c(1,0.92))
+plot_grid(sitemap,
+           plot_CW,ncol=2, rel_widths=c(1,0.92))
 dev.off()
 
 

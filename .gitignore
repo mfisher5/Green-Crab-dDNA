@@ -32,6 +32,4 @@ data/metadata/LC09_WillapaBay_Clip.tif
 data/zoid/zoid_MOCK_matchedTaxonomy.csv
 data/zoid/zoid_SAMPLEdata_taxonomy.csv
 scripts_quant/scripts_zoid.Rproj
-data/metadata/USGSNAIPPlus_ortho60m_file1ebc7fc34577.tif
-data/metadata/USGSNAIPPlus_ortho_file1ebc3c826cfd.tif
-data/metadata/USGSNAIPPlus_ortho_file1ebc498433ea.tif
+data/metadata/*.tif
