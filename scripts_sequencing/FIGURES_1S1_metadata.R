@@ -36,18 +36,22 @@ dat <- read_csv(here('data','results','allRuns_BF3_filtered_FINAL_unique_taxa.cs
 # site coordinates
 site_coords <- read_csv(here('data/metadata/site_coords.csv')) %>%
   mutate(type=ifelse(type=="Sentinel","Slough",type))
+# mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct()
+
 
 # carapace widths
 cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv'))
 
-mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct()
 
+# site coords again, because geom_sf doesn't like the tibble-- and converted to sf 
 mapdat <- data.frame(site_name=c("Stackpole","Nahcotta","Long Beach","Oysterville"),
-                     latitude=c(-124.03,-124.03,-124.017,-124.017),
-                     longitude=c(46.598,46.492,46.434,46.554),
+                     latitude=c(-124.037698,-124.031611,-124.017641,-124.016617),
+                     longitude=c(46.597556,46.492106,46.434368,46.554265),
                      type=c("Slough","Clam Bed","Slough","Clam Bed"))
+mapdat_sf <- sf::st_as_sf(mapdat,coords = c("latitude","longitude"))
+mapdat_sf <- sf::st_set_crs(mapdat_sf, 4326)
 
-# DATA Site Map USGS National Map ----------------------------------------------
+# Data: USGS National Map ----------------------------------------------
 
 library(terrainr)
 library(tmaptools)
@@ -136,9 +140,9 @@ inset <- ggplot() +
                aes(x = long, 
                    y = lat, 
                    group = group), fill="gray70",color="gray70") +
-  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.7,xmin=-124.2), fill=NA,color="red",size=0.5) +
+  geom_rect(aes(ymin=46.2, ymax=46.85,xmax=-123.5,xmin=-124.2), fill=NA,color="red",size=0.5) +
   coord_fixed(xlim=c(-124.7,-122),ylim=c(45.5,48.9)) +
-  theme_void() + theme(panel.background=element_rect(fill="white",color="white"))
+  theme_void() + theme(panel.background=element_rect(fill="white",color="white", linewidth=2))
 
 inset
 
@@ -152,11 +156,7 @@ library(sf)
 # output3_tiles<-terra::rast(here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc3c826cfd.tif'))
 # output4_tiles<-terra::rast(here('data','metadata','USGSNAIPPlus_ortho60m_file1ebc498433ea.tif'))
 
-mapdat_sf <- sf::st_as_sf(mapdat,coords = c("latitude","longitude"))
-mapdat_sf <- sf::st_set_crs(mapdat_sf, 4326)
-
-tiff(here('figs','Figure1a.tif'),res=300, height=2000,width=2700)
-ggdraw(ggplot() +  
+ggplot() +  
   geom_spatial_rgb(data = output2_tiles[["ortho"]],
                    aes(x = x, y = y, r = red, g = green, b = blue)) +
   geom_spatial_rgb(data = output3_tiles[["ortho"]],
@@ -183,8 +183,7 @@ ggdraw(ggplot() +
                      legend.title=element_blank(),
                      legend.text=element_text(size=12), legend.position="top",
                      plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
-) + draw_plot(inset, x=0.6,y=0.1,width=0.1,height=0.13)
-dev.off()
+
 
 
 
@@ -223,18 +222,19 @@ cw %<>%
                                   ifelse(grepl("Nahcotta",Site_Name),"Nahcotta",
                                          ifelse(grepl("Long Beach",Site_Name),"Long Beach", NA)))))
 ## calculate mean CW by site
-cw %>% group_by(site,sequenced) %>% summarise(mean_cw=mean(CW_mm)) %>% pivot_wider(names_from=sequenced,values_from=mean_cw)
+cw %>% group_by(site,sequenced) %>% summarise(mean_cw=mean(CW_mm)) %>%
+  pivot_wider(names_from=sequenced,values_from=mean_cw)
 
 
 
 
-cw.prey <- cw %>% filter(sequenced=="Sequenced w/ Prey") %>% mutate(sequenced="with Prey Taxa")
+cw.prey <- cw %>% filter(sequenced=="Sequenced w/ Prey") %>% mutate(sequenced="with Prey\n Taxa")
 cw.sequenced <- cw%>%filter(sequenced %in% c("Sequenced","Sequenced w/ Prey")) %>% mutate(sequenced="Sequenced")
 plotdat <- cw %>% mutate(sequenced="Trapped") %>%
   bind_rows(cw.sequenced,cw.prey)
 
 plotdat$site  <- factor(plotdat$site, levels=c("Stackpole","Oysterville","Nahcotta","Long Beach"))
-plotdat$sequenced <- factor(plotdat$sequenced, levels=c("Trapped","Sequenced","with Prey Taxa"))
+plotdat$sequenced <- factor(plotdat$sequenced, levels=c("Trapped","Sequenced","with Prey\n Taxa"))
 
 plot_CW <- ggplot(plotdat, aes(x=CW_mm, fill=sequenced)) +
   geom_histogram(position="dodge") +
@@ -246,63 +246,76 @@ plot_CW <- ggplot(plotdat, aes(x=CW_mm, fill=sequenced)) +
                      axis.text.x=element_text(size=14), axis.title.x=element_text(size=14),
                      strip.placement="outside",
                      axis.title.y=element_blank(),
-                     plot.margin=unit(c(0,0,0,0), "cm"))
+                     plot.margin=unit(c(t=0,r=0,b=0,l=0), "cm"))
 plot_CW
 
+rm(dat,meta.run,ncrab)
 
 # Final Figure ------------------------------------------------------------
 
 tiff(here('figs','Figure1a.tif'),res=300, height=2000,width=2700)
-ggplot() +  
-  geom_spatial_rgb(data = output2_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) +
-  geom_spatial_rgb(data = output3_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
-  geom_spatial_rgb(data = output4_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) +
-  ylab("Latitude") + xlab("Longitude") +
-  coord_sf(xlim=c(-124.1, -123.8),ylim=c(46.3,46.8),crs = 4326) + 
-  theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
-                     axis.title=element_blank(),
-                     axis.text.y=element_text(size=10),
-                     legend.title=element_blank(),
-                     legend.text=element_text(size=12), legend.position="top",
-                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
-dev.off()
-
-tiff(here('figs','Figure1a-2.tif'),res=300, height=2000,width=2700)
-ggplot() +  
-  geom_spatial_rgb(data = output2_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) +
-  geom_spatial_rgb(data = output3_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) + 
-  geom_spatial_rgb(data = output4_tiles[["ortho"]],
-                   aes(x = x, y = y, r = red, g = green, b = blue)) +
-  geom_point(data=mapdat, aes(x=longitude,y=latitude, fill=type), size=6) +
-  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name),
-                   segment.colour = 'white',
-                   nudge_x=0.22,nudge_y=0.01,
-                   force=1, force_pull=0.2, segment.size=0.5, size=6) + 
-  ylab("Latitude") + xlab("Longitude") +
-  scale_color_manual(values=c("#018571","#a6611a")) +
-  coord_sf(xlim=c(-124.1, -123.8),ylim=c(46.3,46.8),crs = 4326) + 
-  theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
-                     axis.title=element_blank(),
-                     axis.text.y=element_text(size=10),
-                     legend.title=element_blank(),
-                     legend.text=element_text(size=12), legend.position="top",
-                     plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
+ggdraw(ggplot() +  
+         geom_spatial_rgb(data = output2_tiles[["ortho"]],
+                          aes(x = x, y = y, r = red, g = green, b = blue)) +
+         geom_spatial_rgb(data = output3_tiles[["ortho"]],
+                          aes(x = x, y = y, r = red, g = green, b = blue)) + 
+         geom_spatial_rgb(data = output4_tiles[["ortho"]],
+                          aes(x = x, y = y, r = red, g = green, b = blue))  +
+         geom_spatial_rgb(data = output5_tiles[["ortho"]],
+                          aes(x = x, y = y, r = red, g = green, b = blue))  +
+         geom_rect(aes(ymin=46.375,ymax=46.56,xmin=-124.12,xmax=-124.0655), fill="#1D4054") +
+         geom_sf(data=mapdat_sf, aes(color=type), size=6) + 
+         geom_sf(data=mapdat_sf, pch=1,color="white", size=6) +
+         ggrepel::geom_label_repel(
+           data = head(mapdat_sf),
+           aes(label = site_name, geometry = geometry),
+           stat = "sf_coordinates", size=6,
+           min.segment.length = 0,nudge_x=0.2,nudge_y=c(0.02,-0.02,-0.02,0.02),segment.colour = 'white'
+         ) +
+         ylab("Latitude") + xlab("Longitude") +
+         scale_color_manual(values=c("#018571","#a6611a")) +
+         coord_sf(xlim=c(-124.1, -123.75),ylim=c(46.3,46.79),crs = 4326) + 
+         theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
+                            axis.title=element_blank(),
+                            axis.text.y=element_text(size=10),
+                            legend.title=element_blank(),
+                            legend.text=element_text(size=12), legend.position="top",
+                            plot.margin=unit(c(t=0,r=-1,b=0,l=0), "cm"))
+) + draw_plot(inset, x=0.6,y=0.1,width=0.1,height=0.13)
 dev.off()
 
 
-png(here('figs','Figure1.png'),res=300, height=2000,width=2700)
-plot_grid(sitemap,
-           plot_CW,ncol=2, rel_widths=c(1,0.92))
-dev.off()
-
-
-tiff(here('figs','Figure1_rmaps.tif'),res=300, height=2000,width=2700)
-plot_grid(sitemap,plot_CW,ncol=2, rel_widths=c(1,0.92))
+tiff(here('figs','Fig1.tif'),res=300, height=2000,width=2300)
+plot_grid(
+  ggdraw(ggplot() +  
+           geom_spatial_rgb(data = output2_tiles[["ortho"]],
+                            aes(x = x, y = y, r = red, g = green, b = blue)) +
+           geom_spatial_rgb(data = output3_tiles[["ortho"]],
+                            aes(x = x, y = y, r = red, g = green, b = blue)) + 
+           geom_spatial_rgb(data = output4_tiles[["ortho"]],
+                            aes(x = x, y = y, r = red, g = green, b = blue))  +
+           geom_spatial_rgb(data = output5_tiles[["ortho"]],
+                            aes(x = x, y = y, r = red, g = green, b = blue))  +
+           geom_rect(aes(ymin=46.375,ymax=46.56,xmin=-124.12,xmax=-124.0655), fill="#1D4054") +
+           geom_sf(data=mapdat_sf, aes(color=type), size=6) + 
+           geom_sf(data=mapdat_sf, pch=1,color="white", size=6) +
+           ggrepel::geom_label_repel(
+             data = head(mapdat_sf),
+             aes(label = site_name, geometry = geometry),
+             stat = "sf_coordinates", size=6,
+             min.segment.length = 0,nudge_x=0.2,nudge_y=c(0.04,0.01,0.01,0.04),segment.colour = 'white'
+           ) +
+           ylab("Latitude") + xlab("Longitude") +
+           scale_color_manual(values=c("#018571","#a6611a")) +
+           coord_sf(xlim=c(-124.1, -123.75),ylim=c(46.3,46.79),crs = 4326) + 
+           theme_bw() + theme(axis.text.x=element_text(angle=45,hjust=1,size=10),
+                              axis.title=element_blank(),
+                              axis.text.y=element_text(size=10),
+                              legend.title=element_blank(),
+                              legend.text=element_text(size=12), legend.position="top",
+                              plot.margin=unit(c(t=0,r=-2,b=0,l=-4), "cm"))
+  ) + draw_plot(inset, x=0.59,y=0.06,width=0.17,height=0.22),
+  plot_CW + theme(plot.margin=unit(c(t=0,r=1,b=0.5,l=-2), "cm")),ncol=2, rel_widths=c(1,0.8))
 dev.off()
 
 

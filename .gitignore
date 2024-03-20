@@ -13,6 +13,8 @@ data/qc/**
 #!data/blast/run5_BF3_taxonomy_filtered.csv
 scripts_sequencing/**.html
 figs/**.png
+figs/**.tif
+figs/*.tif
 .Rproj.user
 .Rhistory
 .RData
@@ -25,9 +27,6 @@ data/*.rds
 data/metadata/LC09_L1TP_047028_20240223_20240223_02_T1_refl.tif
 data/results/S1_Table.xlsx
 data/quant_modeling/*
-figs/Fig4.tif
-figs/Fig4.tif
-figs/Fig4.tif
 data/metadata/LC09_WillapaBay_Clip.tif
 data/zoid/zoid_MOCK_matchedTaxonomy.csv
 data/zoid/zoid_SAMPLEdata_taxonomy.csv
