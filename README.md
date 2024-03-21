@@ -1,5 +1,6 @@
 # Green-crab-dDNA
-Revealing European green crab predation in a Washington State estuary with DNA metabarcoding (dDNA)
+
+### Revealing European green crab predation in a Washington State estuary with DNA metabarcoding (dDNA)
 <br>
 For [Fisher et al. (in review)](doi.org)
 
@@ -18,7 +19,9 @@ ___________________
 
 ### Requirements
 
-Scripts written in R version 4.1.3 (2022-03-10)
+Scripts written in : R version 4.1.3 (2022-03-10), GNU bash version 4.4.23(2)-release (x86_64-pc-msys)
+
+NCBI BLAST database matching with blastn was run on a high-performance compute (HPC) cluster (University of Washington's HYAK)
 
 
 ### Folders
