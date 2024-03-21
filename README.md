@@ -1,7 +1,7 @@
 # Green-crab-dDNA
-European green crab diet analysis with DNA metabarcoding (dDNA)
+Revealing European green crab predation in a Washington State estuary with DNA metabarcoding (dDNA)
 <br>
-For [Fisher et al. (2024)]()
+For [Fisher et al. (in review)](doi.org)
 
 Authors: Mary Fisher, Emily Grason, Alex Stote, Ryan Kelly, Kate Litle, Sean McDonald
 
@@ -14,15 +14,21 @@ ___________________
 
 ### Workflow
 
+![doc-worksflow-img](https://github.com/mfisher5/Green-crab-dDNA/blob/main/doc/analysis_workflow.png?raw=true)
 
 ### Requirements
 
-
-### Setup
+Scripts written in R version 4.1.3 (2022-03-10)
 
 
 ### Folders
-
+- `R` custom R functions
+- `bash` custom bash scripts 
+- `data` all input, intermediate, and output data files
+- `doc` lab protocols with template spreadsheets; analysis workflow diagram
+- `figs` png or tif files with figures for main text and supplement
+- `scripts_sequencing` scripts 1-10 for processing and analysis of DNA metabarcoding data
+- `scripts_quant` scripts qm1-4 for running the Shelton et al. calibration model and the zoid R package mixture model
 
 
 
