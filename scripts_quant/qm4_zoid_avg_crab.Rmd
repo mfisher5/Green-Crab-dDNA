@@ -31,20 +31,18 @@ knitting=TRUE
 ```
 
 
-# Data
-
-## Read in 
+## Data
 
 QM model output, run by pcr cycles. Only includes the posterior mean estimates that match to species actually present in the diet data. 
 ```{r}
-QM_Bayes_filter <- read_csv(here('../../','data','qm_model','QM_Bayes_posterior_means_filtered_08-29-2023.csv'))
+QM_Bayes_filter <- read_csv(here('../','data','quant_modeling','QM_BayesOut_sampleRun_means_filtered.csv'))
 
 observed_prey_vec <- unique(filter(QM_Bayes_filter, name!="Carcinus maenas") %>% pull(name))
 ```
 
 the diet data (sequencing reads for modeled species) that was used to run the QM
 ```{r}
-all_dDNA_data_Observation <- readRDS(here('../../','data','qm_model','QM_Bayes_my_dDNA_data_observation.rds'))
+all_dDNA_data_Observation <- readRDS(here('../','data','quant_modeling','QM_BayesOut_sampleRun_dDNAobservations.rds'))
 ```
 
 get the average total reads per crab, across technical replicates
@@ -62,7 +60,7 @@ dDNA_avgReads <- all_dDNA_data_Observation %>%
 
 read in site information
 ```{r}
-metadat <- read_csv(here('../../','data','metadata','Willapa Bay EGC Samples - Sample Data.csv'))
+metadat <- read_csv(here('../','data','metadata','Willapa Bay EGC Samples - Sample Data.csv'))
 metadat %<>% dplyr::select(Sample_label,Site_Name) %>%
   mutate(site=ifelse(grepl("Nahcotta",Site_Name),"Nahcotta",
                      ifelse(grepl("Stackpole",Site_Name),"Stackpole",
@@ -71,21 +69,21 @@ metadat %<>% dplyr::select(Sample_label,Site_Name) %>%
   dplyr::select(-Site_Name)
 ```
 
-## Format
+## Format Input
 
 **if 'zoid_input_Bayes_est_reads.rds' has already been created, skip this!**
 
 ### clean up QM Bayes estimates
 
 some samples were sequenced twice: 
-```{r echo=FALSE}
+```{r echo=FALSE, eval=TRUE}
 #check proportions
 QM_Bayes_filter %>% ggplot(aes(x=crab,y=value,fill=name)) +
   geom_col() + 
   theme(axis.text.x=element_blank())
 ```
-how different are the results for the those samples?
-```{r}
+how different are the results for those samples?
+```{r, eval=TRUE}
 fix.sample <- QM_Bayes_filter %>% group_by(crab) %>% mutate(p=sum(value)) %>% filter(p>1) %>%
   dplyr::select(-sum_reads) %>%
   pivot_wider(names_from=npcr,values_from=value)
@@ -94,7 +92,7 @@ fix.sample
 ```
 
 that's cool, not that different between runs. take the posterior means for the sample run with the *least* PCR cycles. just use those. 
-```{r}
+```{r eval=TRUE}
 fixed.sample <- QM_Bayes_filter %>%
   filter(crab %in% fix.sample$crab) %>%
   group_by(crab,name) %>% arrange(npcr) %>% mutate(ranks = order(order(npcr))) %>%
@@ -106,7 +104,7 @@ bayes_clean <- QM_Bayes_filter %>% filter(!(crab %in% fixed.sample$crab)) %>%
 ```
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, eval=TRUE}
 #check proportions again!
 bayes_clean %>% ggplot(aes(x=crab,y=value,fill=name)) +
   geom_col() + 
@@ -117,7 +115,7 @@ bayes_clean %>% ggplot(aes(x=crab,y=value,fill=name)) +
 ### Combine Bayes estimates with reads data
 
 add total sample read depths to the Bayes estimates
-```{r}
+```{r eval=TRUE}
 bayes_clean_reads <- bayes_clean %>% dplyr::select(-sum_reads) %>%
   left_join(dplyr::select(dDNA_avgReads, level1,npcr,mean_reads) %>% distinct(),
             by=c("crab"="level1","npcr"))
@@ -125,7 +123,7 @@ sum(is.na(bayes_clean_reads$mean_reads))
 ```
 
 calculate reads per species by drawing from a multinomially distributed random number vector
-```{r}
+```{r eval=TRUE}
 set.seed(555)
 zoid_input <- bayes_clean_reads %>%
   group_by(crab) %>%
@@ -137,7 +135,7 @@ zoid_input <- bayes_clean_reads %>%
 ```
 
 Because many species contribute super low (but non-zero) proportion of DNA, the `rmultinom` function may return 0 reads. re-run `rmultinom` with a new seed until there are no zeroes remaining.
-```{r}
+```{r eval=TRUE}
 s <- 560
 while(any(zoid_input$sp_reads==0)){
   set.seed(s)
@@ -148,10 +146,10 @@ while(any(zoid_input$sp_reads==0)){
 ```
 
 plot the QM output data
-```{r}
+```{r eval=TRUE}
 if(!knitting){
   
-png(here('zoid_input_Bayes_est.png'),res=300,height=1500,width=1500)
+png(here('../','data','quant_modeling','quant_modeling_qc','zoid_input_Bayes_est.png'),res=300,height=1500,width=1500)
 zoid_input %>% mutate(name=ifelse(name=="Mya","Mya arenaria",name)) %>%
   pivot_longer(cols=c("value","sp_reads"),names_to="group",values_to="value") %>%
   mutate(group=ifelse(group=="value","propDNA",
@@ -169,7 +167,7 @@ dev.off()
 ```
 
 make matrix of the expected number of reads
-```{r}
+```{r eval=TRUE}
 bayes_wide <- zoid_input %>% 
   dplyr::select(crab,npcr,name,sp_reads) %>%
   pivot_wider(names_from="name",values_from="sp_reads", values_fill=0)
@@ -177,7 +175,7 @@ bayes_wide <- zoid_input %>%
 
 ### Attach site info
 
-```{r}
+```{r eval=TRUE}
 bayes_wide %<>% left_join(metadat,by=c("crab"="Sample_label"))
 bayes_wide %<>% mutate(site_type=ifelse(site %in% c("Nahcotta","Stackpole"),"slough","clam bed"))
 ```
@@ -186,14 +184,23 @@ bayes_wide %<>% mutate(site_type=ifelse(site %in% c("Nahcotta","Stackpole"),"slo
 ```{r}
 if(!knitting){
   
-saveRDS(bayes_wide,here('../../','data','zoid','zoid_input_Bayes_est_rmultinomReads_20230829.rds'))
+saveRDS(bayes_wide,here('../','data','quant_modeling','zoid_input_Bayes_est_rmultinomReads.rds'))
   
 }
 ```
 
 
+### Remove predator 
 
-# Run Zoid : prey all sites
+Remove the predator information from the data frame
+```{r}
+bayes_wide_prey <- dplyr::select(bayes_wide, -`Carcinus maenas`)
+```
+
+
+## Zoid : prey all sites
+
+### run zoid
 
 create the design matrix (site / site type information per observation, aka per crab) and the data matrix (read counts only)
 ```{r}
@@ -202,6 +209,7 @@ data_matrix = bayes_wide_prey[,names(bayes_wide_prey)%in%c("site","site_type","c
 design_matrix$y = 1 # dummy variable
 ```
 
+run zoid!
 ```{r}
 fit_1_prey <- fit_zoid(data_matrix = as.matrix(data_matrix/100),
                        overdispersion = TRUE,
@@ -209,7 +217,7 @@ fit_1_prey <- fit_zoid(data_matrix = as.matrix(data_matrix/100),
                        iter=10000)
 ```
 
-
+### format / explore output
 ```{r}
 fitted_vals_1 = get_fitted(fit_1_prey)
 fitted_vals_1 %<>% left_join(data.frame(group=seq(1,9,by=1),
@@ -247,21 +255,24 @@ plot_grid(avg_crab1,avg_crab2, rel_widths=c(0.9,1))
 ```
 
 ```{r}
-png(here('zoid_results_rmultinomReads_20230829.png'), res=300,height=1500,width=1500)
+png(here('zoid_fittedOut_rmultinomReads.png'), res=300,height=1500,width=1500)
 avg_crab1 + theme(plot.margin=margin(5.5,5.5,5.5,20, unit="pt"))
 dev.off()
 ```
 
 
+### save output
+
 Save fitted vals! use these later to make the combined figure 
 ```{r}
-write_csv(fitted_vals_1, here('../../','data','zoid','zoid_fitted_vals_preyD100_2023-08-29.csv'))
+write_csv(fitted_vals_1, here('../','data','quant_modeling','zoid_fittedOut_preyD100.csv'))
 ```
 
 
 
-# Run Zoid : by site type
+## Zoid : by site type
 
+### prep data
 get two matrices, one for each site
 ```{r}
 bayes_prey_slough <- filter(bayes_wide_prey, site_type=="slough")
@@ -289,6 +300,7 @@ if(length(to_remove) > 0){
 
 ### zoid for clam beds
 
+#### run zoid
 set up matrices
 ```{r}
 data_matrix = bayes_prey_clam[,names(bayes_prey_clam)%in%c("site","site_type","crab","npcr")==FALSE]
@@ -306,6 +318,7 @@ fit.clambed <- fit_zoid(data_matrix = as.matrix(data_matrix/100),
 ```
 
 
+#### format / explore output
 explore posterior means
 ```{r}
 fitted_vals_clambed = get_fitted(fit.clambed)
@@ -342,21 +355,22 @@ plot_grid(avg_crab1,avg_crab2, rel_widths=c(0.9,1))
 ```
 
 ```{r}
-png(here('zoid_results_CLAMBED_rmultinomReads_20230829.png'), res=300,height=1500,width=1500)
+png(here('zoid_fittedOut_CLAMBED_rmultinomReads.png'), res=300,height=1500,width=1500)
 avg_crab1 + theme(plot.margin=margin(5.5,5.5,5.5,20, unit="pt"))
 dev.off()
 ```
 
 
-
+#### save
 Save fitted vals! use these later to make the combined figure 
 ```{r}
-write_csv(fitted_vals_clambed, here('../../','data','zoid','zoid_fitted_vals_CLAMBED_preyD100_2023-08-29.csv'))
+write_csv(fitted_vals_clambed, here('../../','data','zoid','zoid_fittedOut_CLAMBED_preyD100.csv'))
 ```
 
 
 ### zoid for slough
 
+#### run zoid
 set up matrices
 ```{r}
 data_matrix = bayes_prey_slough[,names(bayes_prey_slough)%in%c("site","site_type","crab","npcr")==FALSE]
@@ -378,6 +392,9 @@ fitted_vals_slough = get_fitted(fit.slough)
 fitted_vals_slough %<>% left_join(data.frame(group=1:dim(data_matrix)[2],
                                          species=colnames(data_matrix)), by=c("group"))
 ```
+
+
+#### format / explore output
 
 explore fitted vals
 ```{r echo=FALSE,fig.width=8,fig.height=6}
@@ -409,13 +426,16 @@ plot_grid(avg_crab1,avg_crab2, rel_widths=c(0.9,1))
 ```
 
 ```{r}
-png(here('zoid_results_CLAMBED_rmultinomReads_20230829.png'), res=300,height=1500,width=1500)
+png(here('zoid_fittedOut_CLAMBED_rmultinomReads.png'), res=300,height=1500,width=1500)
 avg_crab1 + theme(plot.margin=margin(5.5,5.5,5.5,20, unit="pt"))
 dev.off()
 ```
+
+#### save
+
 Save fitted vals! use these later to make the combined figure 
 ```{r}
-write_csv(fitted_vals_slough, here('../../','data','zoid','zoid_fitted_vals_SLOUGH_preyD100_2023-08-29.csv'))
+write_csv(fitted_vals_slough, here('../../','data','zoid','zoid_fittedOut_SLOUGH_preyD100.csv'))
 ```
 
 
@@ -427,5 +447,5 @@ Save fitted vals! use these later to make the combined figure
 ```{r}
 zoid.list <- list(fit_1_prey,fit.clambed,fit.slough)
 names(zoid.list) <- c("all crab","clam bed","slough")
-saveRDS(zoid.list, here('../../','data','zoid','zoidOUT_preyD100_2023-08-29.rds'))
+saveRDS(zoid.list, here('../../','data','zoid','zoid_fittedOut_preyD100.rds'))
 ```
