@@ -336,7 +336,7 @@ mc.reads.samples %<>% left_join(indat,by=c("sample","MiSeqRun","taxon.species"="
 
 ```{r}
 if(isFALSE(knitting)){
-write_csv(mc.reads.samples,here('../','data','quant_modeling','QM_MOCKdata_input_samples_run.csv'))
+write_csv(mc.reads.samples,here('../','data','quant_modeling','QM_mocks_input_samples_run.csv'))
 }
 ```
 
@@ -591,7 +591,7 @@ sample.tax.thin %<>% filter(!(grepl("Control",sample)))
 
 ```{r}
 if(isFALSE(knitting)){
-write_csv(sample.tax.thin,here('../','data','quant_modeling','QM_SAMPLEdata_taxonomy.csv'))
+write_csv(sample.tax.thin,here('../','data','quant_modeling','QM_sampleRun_taxonomy.csv'))
 }
 ```
 
@@ -624,7 +624,7 @@ Obs_PCRcycles %>% group_by(sample_id) %>% summarise(n=n()) %>% filter(n>1)
 Save
 ```{r}
 if(isFALSE(knitting)){
-write_csv(Obs_PCRcycles,here('../','data','quant_modeling','QM_SAMPLEdata_PCR.csv'))
+write_csv(Obs_PCRcycles,here('../','data','quant_modeling','QM_sampleRun_nPCR.csv'))
 }
 ```
 

@@ -1,0 +1,282 @@
+---
+title: "Shelton et al. Quant eDNA Model"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+**Date written: May 20 2023**
+
+**Author: M Fisher**
+
+**Last Run: `r Sys.Date()`**
+
+
+## Description
+
+Run the [Shelton et al. (2023)](https://doi.org/10.1002/ecy.3906) quantitative eDNA model to generate calibrate DNA quantities of prey taxa in stomach content samples. 
+
+A note about error messages, from Ryan Kelly:
+
+- Max Tree Depth is a warning you can ignore.  It just means sampling wasn’t as efficient as it could have been, but the results are still totally valid.
+- Divergent transitions are intermediate-serious warnings.  These mean that sampling isn’t working quite right, but if there are small numbers of divergent transitions, that’s not too bad.
+- Rhat warnings are serious and mean that the model isn’t converging; something is broken.
+- Low sample-size warnings aren’t serious; you can either ignore them or else run the chains for longer.
+
+
+*Run notes:*
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(magrittr)
+library(here)
+library(ggplot2)
+library(ggrepel)
+library(beepr)
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+
+source(here("../","R","calibrate_metabarcoding_RPK.R"))
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+```
+
+
+## Data
+
+This is the data produced in script `qm1_prep_data_for_calibration`. 
+
+```{r}
+load(here('../','data','quant_modeling',"QM_dataLIST_sampleRun.rda"))
+```
+
+check to make sure sample data loaded in properly
+```{r}
+unique(EGC_obs[[1]]$Community); unique(EGC_obs[[1]]$species)
+unique(EGC_obs[[2]]$station); unique(EGC_obs[[2]]$species)
+```
+
+```{r}
+n_pcr_samples <- read_csv(here('../','data','quant_modeling','qm_sampleRun_nPCR.csv'))
+```
+
+
+### minimum read depths
+
+wwhat are the read depths going into the quant model?
+```{r}
+myplot <- EGC_obs[[2]] %>%
+  filter(species %in% EGC_obs[[1]]$species) %>%                # species in quant model
+  group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>%
+  ggplot(aes(x=total_reads)) + geom_histogram() +theme_bw()
+
+myplot
+
+png(here('../','data','quant_modeling','quant_modeling_qc','QM_sampleRun_sample-read-depths.png'))
+myplot
+dev.off()
+```
+
+How many crab do we get rid of if we only focus on samples with > 100 reads?
+```{r}
+reads_min <- 100
+
+
+crab_low_reads <- EGC_obs[[2]] %>%
+  filter(species %in% EGC_obs[[1]]$species) %>%   # filter for the calibrated species
+  group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>% filter(total_reads < reads_min) %>%
+  dplyr::select(station,tech) %>% distinct()
+
+ EGC_obs[[2]] %>%
+  filter(species %in% EGC_obs[[1]]$species & station %in% crab_100filter$station) %>% 
+   group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>% arrange(station,total_reads)
+```
+
+Because certain technical replicates have more reads than others, a 100 read filter would only remove 2 crab: WACO21-503 and WACO21-512.
+
+Filter samples according to a minimum read-depth cutoff of n=100
+```{r}
+EGC_obs[[2]] <- EGC_obs[[2]] %>% anti_join(dplyr::select(crab_low_reads,station,tech))
+```
+
+### separate samples by PCR cycle number
+
+The number of indexing PCR cycles varied by sample. When we run the quantitative model, we can only input one PCR cycle number for the sample data. Create single-column data frames for each total PCR cycle value (ater removing the crabs with low read counts identified above)
+```{r}
+n_pcr_samples <- anti_join(n_pcr_samples %>% mutate(tech=as.character(tech)),
+                           crab_low_reads %>% 
+                             dplyr::select(station,tech) %>% mutate(tech=as.character(tech)), by=c("sample"="station","tech"))
+#format, sample subset had 45 PCR cycles
+sub43.samples <- n_pcr_samples %>% filter(PCRcycles==43) %>% dplyr::select(sample) %>% distinct()
+sub40.samples <- n_pcr_samples %>% filter(PCRcycles==40) %>% dplyr::select(sample) %>% distinct()
+sub47.samples <- n_pcr_samples %>% filter(PCRcycles==47) %>% dplyr::select(sample) %>% distinct()
+```
+
+
+## Run Calibration Model
+
+### nPCR = 40
+
+format 
+```{r}
+my_dDNA_data <- format_metabarcoding_data(EGC_obs[[2]] %>% filter(station %in% sub40.samples$sample), N_pcr_mock=40,
+                                          EGC_obs[[1]],
+                                          Level_1_treatment_envir <- "station",
+                                          Level_2_treatment_envir <- "tech",
+                                          Level_3_treatment_envir <- NA,
+                                          Level_1_treatment_mock <- "Community",
+                                          Level_2_treatment_mock <- "tech",
+                                          Level_3_treatment_mock <- NA)
+mydata40 <- makeDesign(my_dDNA_data, N_pcr_cycles = 40)
+```
+
+
+check what species are present
+```{r}
+mydata40$sp_list
+```
+
+run model and save output
+```{r}
+QM_Bayes_40pcr <- QM_bayes("quant_metabar_multinom.stan", mydata40, NCHAINS = 3, ITER = 5000 )
+saveRDS(QM_Bayes_40pcr,file="QM_Bayes_out_40pcr_100rmin.rds")
+
+beepr::beep()
+```
+
+*Max tree depth warning, but nothing to worry about.*
+
+
+What are the alphas?
+```{r}
+QM_Bayes_40pcr$Bayes_alpha_est
+```
+
+
+
+### nPCR = 43
+
+format 
+```{r}
+my_dDNA_data43 <- format_metabarcoding_data(EGC_obs[[2]] %>% filter(station %in% sub43.samples$sample), N_pcr_mock=40,
+                                            EGC_obs[[1]],
+                                            Level_1_treatment_envir <- "station",
+                                            Level_2_treatment_envir <- "tech",
+                                            Level_3_treatment_envir <- NA,
+                                            Level_1_treatment_mock <- "Community",
+                                            Level_2_treatment_mock <- "tech",
+                                            Level_3_treatment_mock <- NA)
+mydata43 <- makeDesign(my_dDNA_data43, N_pcr_cycles = 43)
+
+```
+
+
+check what species are present
+```{r}
+mydata43$sp_list
+```
+
+run model and save output
+```{r}
+QM_Bayes_43pcr <- QM_bayes("quant_metabar_multinom.stan", mydata43, NCHAINS = 3, ITER = 5000 )
+saveRDS(QM_Bayes_43pcr,file="QM_Bayes_out_43pcr_100rmin.rds")
+
+beepr::beep()
+```
+
+*Max tree depth warning, but nothing to worry about.*
+
+
+What are the alphas?
+```{r}
+QM_Bayes_43pcr$Bayes_alpha_est
+```
+
+
+
+
+### nPCR = 47
+
+format 
+```{r}
+my_dDNA_data47 <- format_metabarcoding_data(EGC_obs[[2]] %>% filter(station %in% sub47.samples$sample), N_pcr_mock=40,
+                                            EGC_obs[[1]],
+                                            Level_1_treatment_envir <- "station",
+                                            Level_2_treatment_envir <- "tech",
+                                            Level_3_treatment_envir <- NA,
+                                            Level_1_treatment_mock <- "Community",
+                                            Level_2_treatment_mock <- "tech",
+                                            Level_3_treatment_mock <- NA)
+mydata47 <- makeDesign(my_dDNA_data47, N_pcr_cycles = 47)
+```
+
+
+check what species are present
+```{r}
+mydata47$sp_list
+```
+
+run model and save output
+```{r}
+QM_Bayes_47pcr <- QM_bayes("quant_metabar_multinom.stan", mydata47, NCHAINS = 3, ITER = 5000)
+saveRDS(QM_Bayes_47pcr,file="QM_Bayes_out_47pcr_100rmin.rds")
+
+
+beepr::beep()
+```
+
+
+
+What are the alphas?
+```{r}
+QM_Bayes_47pcr$Bayes_alpha_est
+```
+
+
+
+## Combine QM output
+
+```{r}
+QM_Bayes_all <- bind_rows((QM_Bayes_40pcr$Bayes_estimates %>%
+                             rownames_to_column("crab") %>%
+                             pivot_longer(cols=2:(dim(QM_Bayes_40pcr$Bayes_estimates)[2]+1)) %>%
+                             mutate(npcr=40)),
+                          (QM_Bayes_43pcr$Bayes_estimates %>%
+                             rownames_to_column("crab") %>%
+                             pivot_longer(cols=2:(dim(QM_Bayes_43pcr$Bayes_estimates)[2]+1)) %>%
+                             mutate(npcr=43)),
+                          (QM_Bayes_47pcr$Bayes_estimates %>%
+                             rownames_to_column("crab") %>%
+                             pivot_longer(cols=2:(dim(QM_Bayes_47pcr$Bayes_estimates)[2]+1))) %>%
+                            mutate(npcr=47))
+bayes_clean <- filter(QM_Bayes_all, value > 0.001) %>%  mutate(name=ifelse(name=="Mya","Mya arenaria",name))
+```
+
+
+```{r}
+bayes_clean %>% ggplot(aes(x=crab,y=value,fill=name)) +
+  geom_col() + 
+  theme(axis.text.x=element_blank())
+```
+
+save 
+```{r}
+write_csv(bayes_clean, here('../','data','quant_modeling','QM_BayesOut_sampleRun_means_filtered.csv'))
+```
+
+
+### save for fitting zoid!
+
+```{r}
+all_dDNA_data_Observation <- my_dDNA_data$Observation %>% mutate(npcr=40) %>%
+  bind_rows(my_dDNA_data43$Observation %>% mutate(npcr=43)) %>%
+  bind_rows(my_dDNA_data47$Observation %>% mutate(npcr=47))
+
+saveRDS(all_dDNA_data_Observation,here('data','quant_modeling','QM_BayesOut_sampleRun_dDNAobservations.rds'))
+```

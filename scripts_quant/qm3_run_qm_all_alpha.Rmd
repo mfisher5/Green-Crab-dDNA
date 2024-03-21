@@ -15,7 +15,7 @@ output:
 
 # Description
 
-Run the Shelton et al. (2023) quantitative eDNA model to generate alpha values for all species in the mock communities. 
+Run the [Shelton et al. (2023)](https://doi.org/10.1002/ecy.3906) quantitative eDNA model to generate alpha values for all species in the mock communities. 
 
 A note about error messages, from Ryan Kelly:
 
@@ -44,6 +44,8 @@ gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
+reads_min <- 100  ## this should match script 2!!
+
 
 n_pcr_samples <- read_csv(here('../../','data','qm_model','qm_model_SAMPLEpcr.csv'))
 
@@ -56,7 +58,7 @@ set.seed(555)
 This is the data produced for estimating amplification efficiencies of all species in the mock communities, not just the ones in the diet data. 
 
 ```{r}
-load(here('qm_model_dataLIST_matchAlpha_2023-8-29.rds'))
+load(here('QM_dataList_alphaRun.rds'))
 EGC_obs <- EGC_obs2
 
 rm(EGC_obs2)
@@ -65,25 +67,28 @@ rm(EGC_obs2)
 
 ### minimum read depths
 
-Filter samples according to a minimum read-depth cutoff of n=100
+
+wwhat are the read depths going into the quant model?
 ```{r}
-#plot the read depths going into the quant model?
-png(here('qm_model_sample-read-depth_matchAlphas_2023-8-29.png'))
-EGC_obs[[2]] %>%
+myplot <- EGC_obs[[2]] %>%
   filter(species %in% EGC_obs[[1]]$species) %>%                # species in quant model
   group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>%
-  ggplot(aes(x=total_reads)) + geom_histogram() + 
-  labs(x="Read Depth into Model",y="Number of Crab+Replicates") +theme_bw()
-dev.off()
+  ggplot(aes(x=total_reads)) + geom_histogram() +theme_bw()
 
-#filter for > 100 reads?
-low_read_crab <- EGC_obs[[2]] %>%
-  filter(species %in% EGC_obs[[1]]$species) %>% 
-  group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>% filter(total_reads < 100)
-low_read_crab
+myplot
+
+png(here('../','data','quant_modeling','quant_modeling_qc','QM_alphaRun_sample-read-depths.png'))
+myplot
+dev.off()
 ```
+
+
 ```{r}
-EGC_obs[[2]] <- EGC_obs[[2]] %>% anti_join(dplyr::select(low_read_crab,station,tech))
+crab_low_reads <- EGC_obs[[2]] %>%
+  filter(species %in% EGC_obs[[1]]$species) %>%   # filter for the calibrated species
+  group_by(station,tech) %>% summarise(total_reads=sum(Nreads)) %>% filter(total_reads < reads_min) %>%
+  dplyr::select(station,tech) %>% distinct()
+EGC_obs[[2]] <- EGC_obs[[2]] %>% anti_join(dplyr::select(crab_low_reads,station,tech))
 ```
 
 
@@ -115,7 +120,7 @@ mydata$sp_list
 run model
 ```{r}
 QM_Bayes_alpha <- QM_bayes("quant_metabar_multinom.stan", mydata, NCHAINS = 3, ITER = 5000 )
-saveRDS(QM_Bayes_alpha,file="QM_Bayes_out_100rmin_matchAlphas_2023-08-29.rds")
+saveRDS(QM_Bayes_alpha,file="QM_BayesOut_alphaRun_100rmin.rds")
 ```
 Warning: There were 13500 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 12. See
 https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceededWarning: Examine the pairs() plot to diagnose sampling problems
@@ -128,12 +133,9 @@ QM_Bayes_alpha$Bayes_alpha_est
 ```
 
 
-
-### Save 
-
-first, the input data frame
+Save alpha values for
 ```{r}
-write_csv(QM_Bayes_alpha$Bayes_alpha_est,here('../','data','zoid','QM_Bayes_out_AlphaRun_alpha_est.csv'))
+write_csv(QM_Bayes_alpha$Bayes_alpha_est,here('../','data','quant_modeling','QM_BayesOut_alphaRun_alphas.csv'))
 ```
 
 
