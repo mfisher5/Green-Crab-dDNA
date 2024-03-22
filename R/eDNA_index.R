@@ -1,3 +1,5 @@
+## Borrowed from Kelly eDNA Lab, UW ##
+
 
 eDNAINDEX <- function(x) { #where x is a dataframe with taxa/OTUs/etc in rows, and samples in columns
   rowMax <- function(x){apply(x, MARGIN = 1, FUN = max)}

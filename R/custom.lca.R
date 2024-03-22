@@ -1,4 +1,4 @@
-## borrowed from Moncho via Eily ##
+## borrowed from Ramon Gallego, via Eily Allen ##
 
 custom.lca <- function (df, cutoff = 90) {
   require(taxonomizr)
