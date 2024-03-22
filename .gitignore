@@ -4,26 +4,25 @@ doc/*.pptx
 # large data files #
 data/metadata/*.rds
 data/metadata/*.tif
-data/*.rds
 
 data/blast/**
-#!data/blast/*.fasta
-#!data/blast/run3_BF3_taxonomy_filtered.csv
-#!data/blast/run3_BF3_taxonomy_filtered.csv
-#!data/blast/run4_BF3_taxonomy_filtered.csv
-#!data/blast/run5_BF3_taxonomy_filtered.csv
+!data/blast/*.fasta
+!data/blast/run3_BF3_taxonomy_filtered.csv
+!data/blast/run3_BF3_taxonomy_filtered.csv
+!data/blast/run4_BF3_taxonomy_filtered.csv
+!data/blast/run5_BF3_taxonomy_filtered.csv
 
 data/quant_modeling/*
-#!data/quant_modeling/QM_dataLIST_alphaRun.rda
-#!data/quant_modeling/QM_dataLIST_sampleRun.rda
-#!data/quant_modeling/zoid_input_Bayes_est_rmultinomReads.rds
+!data/quant_modeling/QM_dataLIST_alphaRun.rda
+!data/quant_modeling/QM_dataLIST_sampleRun.rda
+!data/quant_modeling/zoid_input_Bayes_est_rmultinomReads.rds
 
 data/results/S1_Table.xlsx
 data/results/*.csv
-#!data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv
-#!data/results/allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv
-#!data/results/MockCommunities_BF3_filtered_FINAL_input_taxa.csv
-#!data/results/taxa_groups_key.csv
+!data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv
+!data/results/allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv
+!data/results/MockCommunities_BF3_filtered_FINAL_input_taxa.csv
+!data/results/taxa_groups_key.csv
 
 data/results/results_internal_qc/**
 data/qc/**

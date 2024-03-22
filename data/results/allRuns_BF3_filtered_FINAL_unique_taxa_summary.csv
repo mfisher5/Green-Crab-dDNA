@@ -1,0 +1,60 @@
+taxon,rank,phylum,class,order,family,genus,species,n_crab,miseqruns,site_months
+Alitta,genus,Annelida,Polychaeta,Phyllodocida,Nereididae,Alitta,NA,2,2,"Oysterville-Jul,Oysterville-May"
+Ampithoe valida,species,Arthropoda,Malacostraca,Amphipoda,Ampithoidae,Ampithoe,Ampithoe valida,6,"2,3,5,4","Oysterville-Jul,Long Beach-Jul,Oysterville-May,Stackpole-Sep,Stackpole-Jul"
+Arachnida,class,Arthropoda,Arachnida,NA,NA,NA,NA,2,"3,4","Oysterville-May,Long Beach-May"
+Batillaria attramentaria,species,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,4,"2,3,4","Oysterville-Jul,Oysterville-Sep"
+Belostomatidae,family,Arthropoda,Insecta,Hemiptera,Belostomatidae,NA,NA,1,5,Stackpole-Sep
+Botrylloides violaceus,species,Chordata,Ascidiacea,Stolidobranchia,Styelidae,Botrylloides,Botrylloides violaceus,2,"5,4",Stackpole-Sep
+Botryllus schlosseri,species,Chordata,Ascidiacea,Stolidobranchia,Styelidae,Botryllus,Botryllus schlosseri,2,4,"Oysterville-Sep,Oysterville-May"
+Cecidomyiidae,family,Arthropoda,Insecta,Diptera,Cecidomyiidae,NA,NA,1,4,Oysterville-Sep
+Ceratopogonidae,family,Arthropoda,Insecta,Diptera,Ceratopogonidae,NA,NA,1,"3,4",Oysterville-May
+Chaetogaster diastrophus,species,Annelida,Clitellata,Tubificida,Naididae,Chaetogaster,Chaetogaster diastrophus,1,3,Oysterville-May
+Cheumatopsyche lepida,species,Arthropoda,Insecta,Trichoptera,Hydropsychidae,Cheumatopsyche,Cheumatopsyche lepida,1,2,Oysterville-Jul
+Chordariaceae,family,NA,Phaeophyceae,Ectocarpales,Chordariaceae,NA,NA,7,"3,2,5,4","Oysterville-May,Oysterville-Jul,Long Beach-May,Stackpole-Jul,Oysterville-Sep"
+Clunio tsushimensis,species,Arthropoda,Insecta,Diptera,Chironomidae,Clunio,Clunio tsushimensis,1,2,Long Beach-Sep
+Crangon,genus,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,2,3,Oysterville-May
+Crangon franciscorum,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,10,"5,4,3,2","Stackpole-Sep,Stackpole-Jul,Oysterville-Sep,Long Beach-Sep"
+Cucurbitaceae,family,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,NA,NA,2,5,"Stackpole-Sep,Nahcotta-Sep"
+Culex tritaeniorhynchus,species,Arthropoda,Insecta,Diptera,Culicidae,Culex,Culex tritaeniorhynchus,1,5,Nahcotta-Sep
+Cymatogaster aggregata,species,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,2,2,"Oysterville-May,Long Beach-Sep"
+Ectocarpus,genus,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,NA,2,"3,2",Long Beach-May
+Ectocarpus crouaniorum,species,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,Ectocarpus crouaniorum,1,2,Oysterville-Jul
+Ectocarpus fasciculatus,species,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,Ectocarpus fasciculatus,1,"3,4",Oysterville-Sep
+Elachista,genus,Arthropoda,Insecta,Lepidoptera,Elachistidae,Elachista,NA,1,5,Stackpole-Sep
+Eogammarus confervicolus,species,Arthropoda,Malacostraca,Amphipoda,Anisogammaridae,Eogammarus,Eogammarus confervicolus,1,5,Stackpole-Jul
+Fucus,genus,NA,Phaeophyceae,Fucales,Fucaceae,Fucus,NA,6,"5,4","Stackpole-Sep,Stackpole-Jul,Nahcotta-Jul"
+Grandidierella japonica,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Grandidierella,Grandidierella japonica,7,"2,3","Oysterville-Jul,Oysterville-May,Long Beach-Jul,Long Beach-Sep,Oysterville-Sep"
+Gryllus,genus,Arthropoda,Insecta,Orthoptera,Gryllidae,Gryllus,NA,1,2,Long Beach-Jul
+Harmothoe aff. imbricata CMC01,species,Annelida,Polychaeta,Phyllodocida,Polynoidae,Harmothoe,Harmothoe aff. imbricata CMC01,2,"2,3",Oysterville-May
+Hediste diadroma,species,Annelida,Polychaeta,Phyllodocida,Nereididae,Hediste,Hediste diadroma,5,"2,5","Long Beach-Jul,Stackpole-Sep,Nahcotta-Sep"
+Hemigrapsus,genus,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,NA,2,"3,2","Long Beach-May,Long Beach-Jul"
+Hemigrapsus oregonensis,species,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,12,"2,3,5,4","Oysterville-Jul,Long Beach-Jul,Oysterville-May,Stackpole-Sep,Long Beach-Sep,Stackpole-Jul,Nahcotta-Sep"
+Kurtiella,genus,Mollusca,Bivalvia,Galeommatida,Montacutidae,Kurtiella,NA,1,"3,4",Oysterville-May
+Leathesia marina,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,Leathesia,Leathesia marina,3,"5,4",Stackpole-Sep
+Leptocottus armatus,species,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,7,"2,3","Long Beach-Jul,Oysterville-May,Long Beach-May,Long Beach-Sep"
+Liposcelis decolor,species,Arthropoda,Insecta,Psocoptera,Liposcelididae,Liposcelis,Liposcelis decolor,1,2,Long Beach-Jul
+Metacarcinus magister,species,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,3,"2,3,4","Oysterville-May,Long Beach-May"
+Micronereis nanaimoensis,species,Annelida,Polychaeta,Phyllodocida,Nereididae,Micronereis,Micronereis nanaimoensis,1,2,Oysterville-May
+Molgula manhattensis,species,Chordata,Ascidiacea,Stolidobranchia,Molgulidae,Molgula,Molgula manhattensis,1,2,Long Beach-Sep
+Monocorophium acherusicum,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Monocorophium,Monocorophium acherusicum,3,"2,3","Oysterville-May,Long Beach-Jul"
+Monocorophium insidiosum,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Monocorophium,Monocorophium insidiosum,2,"2,3","Oysterville-May,Oysterville-Sep"
+Mya arenaria,species,Mollusca,Bivalvia,Myida,Myidae,Mya,Mya arenaria,7,"5,4,2","Stackpole-Sep,Oysterville-May,Nahcotta-Sep,Long Beach-Sep,Long Beach-May,Stackpole-Jul"
+Nematostella,genus,Cnidaria,Anthozoa,Actiniaria,Edwardsiidae,Nematostella,NA,1,3,Oysterville-Sep
+Neoporphyra,genus,Rhodophyta,Bangiophyceae,Bangiales,Bangiaceae,Neoporphyra,NA,8,"3,4,2,5","Oysterville-Sep,Long Beach-Jul,Long Beach-Sep,Oysterville-Jul,Stackpole-Jul"
+Nicomache personata,species,Annelida,Polychaeta,NA,Maldanidae,Nicomache,Nicomache personata,1,2,Oysterville-May
+Petalonia fascia,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Petalonia,Petalonia fascia,4,"2,3,4","Oysterville-Jul,Oysterville-Sep,Long Beach-Sep"
+Pholis ornata,species,Chordata,Actinopteri,Perciformes,Pholidae,Pholis,Pholis ornata,1,2,Oysterville-May
+Photis,genus,Arthropoda,Malacostraca,Amphipoda,Photidae,Photis,NA,1,2,Oysterville-May
+Platynereis,genus,Annelida,Polychaeta,Phyllodocida,Nereididae,Platynereis,NA,1,2,Oysterville-Jul
+Poaceae,family,Streptophyta,Magnoliopsida,Poales,Poaceae,NA,NA,1,5,Nahcotta-Jul
+Polydora cornuta,species,Annelida,Polychaeta,Spionida,Spionidae,Polydora,Polydora cornuta,1,5,Stackpole-Jul
+Pseudopolydora bassarginensis,species,Annelida,Polychaeta,Spionida,Spionidae,Pseudopolydora,Pseudopolydora bassarginensis,1,3,Oysterville-Sep
+Pseudopolydora paucibranchiata,species,Annelida,Polychaeta,Spionida,Spionidae,Pseudopolydora,Pseudopolydora paucibranchiata,3,"2,4,3","Oysterville-May,Oysterville-Sep"
+Pylaiella washingtoniensis,species,NA,Phaeophyceae,Ectocarpales,Acinetosporaceae,Pylaiella,Pylaiella washingtoniensis,2,5,"Stackpole-Jul,Nahcotta-Jul"
+Ruditapes philippinarum,species,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,1,"3,4",Oysterville-Sep
+Sargassum,genus,NA,Phaeophyceae,Fucales,Sargassaceae,Sargassum,NA,2,"2,3,4","Oysterville-Jul,Oysterville-Sep"
+Scytosiphon,genus,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Scytosiphon,NA,4,"2,3","Oysterville-Jul,Oysterville-May,Oysterville-Sep,Long Beach-May"
+Scytosiphon lomentaria,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Scytosiphon,Scytosiphon lomentaria,4,"2,3","Oysterville-Jul,Oysterville-May,Long Beach-Sep,Oysterville-Sep"
+Serpula vermicularis,species,Annelida,Polychaeta,Sabellida,Serpulidae,Serpula,Serpula vermicularis,1,5,Nahcotta-Jul
+Ulva compressa,species,Chlorophyta,Ulvophyceae,Ulvales,Ulvaceae,Ulva,Ulva compressa,5,"4,5","Stackpole-Sep,Stackpole-Jul,Nahcotta-Jul"
+Zosteraceae,family,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,6,"2,3,5","Oysterville-Jul,Oysterville-May,Oysterville-Sep,Nahcotta-Sep,Stackpole-Jul,Long Beach-Jul"

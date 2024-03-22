@@ -1,0 +1,509 @@
+sample,Sample_name,Locus,tech,Hash,nReads,rank,kingdom,phylum,class,order,family,genus,species,taxon,MiSeqRun
+MC_B,97,BF3,1,5cc5bda34a61687ff23dd35422f3f67055889af9,6046,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,97,BF3,1,fd21a4a69e41031e050b80c96a578a2b0e1575ad,6371,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_B,97,BF3,1,41384eb53ebdac9ad36e75109961bdacfada2509,4342,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,97,BF3,1,35bcbb88b7a1827e9131054759e25603a6ef1e4b,3621,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,97,BF3,1,fdc80ae5c5d103b2e88889628d1e88288fe07089,2297,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_B,97,BF3,1,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,1664,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_B,97,BF3,1,5912de453e37344840868fe7776e6f84659742f2,1596,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_B,97,BF3,1,85ae8b995a1c9e5d9f4b6e265538078035f220d2,327,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,97,BF3,1,aee053d6803cdb5a8171495d7b79efae9b68c8f7,147,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_B,97,BF3,1,f9bec8a1cda505aef0a4a5a162274b00b387872d,89,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,97,BF3,1,4fbc29db0ec34b07a492602fa5bc926278f03216,113,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,97,BF3,1,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,18,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,97,BF3,1,1213612785627a26f9995b9f29b2f7daf628ab3a,19,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_B,97,BF3,1,921a619530265c77845aff59fa0e09fb1ca270cb,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,97,BF3,1,4f61e33a32c46d7f81d526f66acfe3e088d196a6,2,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,5cc5bda34a61687ff23dd35422f3f67055889af9,10264,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,fd21a4a69e41031e050b80c96a578a2b0e1575ad,10460,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_B,98,BF3,2,41384eb53ebdac9ad36e75109961bdacfada2509,6959,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,98,BF3,2,35bcbb88b7a1827e9131054759e25603a6ef1e4b,6420,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,98,BF3,2,fdc80ae5c5d103b2e88889628d1e88288fe07089,3630,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_B,98,BF3,2,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,2857,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_B,98,BF3,2,5912de453e37344840868fe7776e6f84659742f2,2921,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_B,98,BF3,2,be852773dcb909015503058be361a92ce69848bd,233,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,85ae8b995a1c9e5d9f4b6e265538078035f220d2,438,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,98,BF3,2,aee053d6803cdb5a8171495d7b79efae9b68c8f7,229,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_B,98,BF3,2,f9bec8a1cda505aef0a4a5a162274b00b387872d,147,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,98,BF3,2,4fbc29db0ec34b07a492602fa5bc926278f03216,158,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,98,BF3,2,984560259e9b6fba757665c6a6d7250bcaea3f63,70,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,98,BF3,2,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,17,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,98,BF3,2,1213612785627a26f9995b9f29b2f7daf628ab3a,36,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_B,98,BF3,2,46058688dff6ad0c446936715da0b6d461d66ff4,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,8043288a8de0a1058d0b10037e7dda473e0111f3,28,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_B,98,BF3,2,57f93ec05f3192f667645192b0cab92062bf5414,22,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,921a619530265c77845aff59fa0e09fb1ca270cb,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,4f61e33a32c46d7f81d526f66acfe3e088d196a6,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,fc127fcfc249e1ae3bf9d34034d47799adeaa313,7,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_B,98,BF3,2,e77f991d4257d06ecfc262cd80db694f09d175cd,19,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,bf56191dfd056d1c570eac16ec5ade9dc01b51fa,6,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,98,BF3,2,129d61941b95d17e40871fc0ff8421534b2d31f0,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,98,BF3,2,8407d3756788bf7d24e7ca70ab9d71c612f6d162,4,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,98,BF3,2,5ef1a953777ef89a3dd4e425552654d41d46ca4b,2,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,99,BF3,3,5cc5bda34a61687ff23dd35422f3f67055889af9,5192,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,99,BF3,3,fd21a4a69e41031e050b80c96a578a2b0e1575ad,5454,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_B,99,BF3,3,41384eb53ebdac9ad36e75109961bdacfada2509,3521,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_B,99,BF3,3,35bcbb88b7a1827e9131054759e25603a6ef1e4b,3412,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,99,BF3,3,fdc80ae5c5d103b2e88889628d1e88288fe07089,1893,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_B,99,BF3,3,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,1414,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_B,99,BF3,3,5912de453e37344840868fe7776e6f84659742f2,1431,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_B,99,BF3,3,85ae8b995a1c9e5d9f4b6e265538078035f220d2,274,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,99,BF3,3,aee053d6803cdb5a8171495d7b79efae9b68c8f7,132,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_B,99,BF3,3,f9bec8a1cda505aef0a4a5a162274b00b387872d,96,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_B,99,BF3,3,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,16,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_B,99,BF3,3,46058688dff6ad0c446936715da0b6d461d66ff4,12,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,99,BF3,3,8043288a8de0a1058d0b10037e7dda473e0111f3,17,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_B,99,BF3,3,afc95c4fb5e4a9a9aec7b140b40a156ef45c4617,7,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,99,BF3,3,4f61e33a32c46d7f81d526f66acfe3e088d196a6,3,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_B,99,BF3,3,fc127fcfc249e1ae3bf9d34034d47799adeaa313,6,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,100,BF3,1,5cc5bda34a61687ff23dd35422f3f67055889af9,7069,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,fa07c137c879896a4b3550b677aac7c27dd4f250,4135,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,fd21a4a69e41031e050b80c96a578a2b0e1575ad,7799,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,100,BF3,1,41384eb53ebdac9ad36e75109961bdacfada2509,4093,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,100,BF3,1,35bcbb88b7a1827e9131054759e25603a6ef1e4b,3182,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,100,BF3,1,fdc80ae5c5d103b2e88889628d1e88288fe07089,3072,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,100,BF3,1,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,846,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_E,100,BF3,1,5912de453e37344840868fe7776e6f84659742f2,536,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_E,100,BF3,1,eaa70a74bb73b4b8b17b9f492921b7bc8e0c57a4,110,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,be852773dcb909015503058be361a92ce69848bd,199,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,85ae8b995a1c9e5d9f4b6e265538078035f220d2,331,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,100,BF3,1,aee053d6803cdb5a8171495d7b79efae9b68c8f7,477,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_E,100,BF3,1,4ad6c700ef839622bedc3a38054b9536e8eaf552,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,095a1db4868c8536e38474706caa7dc687c80a88,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,f9bec8a1cda505aef0a4a5a162274b00b387872d,89,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,100,BF3,1,984560259e9b6fba757665c6a6d7250bcaea3f63,58,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,100,BF3,1,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,15,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,100,BF3,1,46058688dff6ad0c446936715da0b6d461d66ff4,20,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,8043288a8de0a1058d0b10037e7dda473e0111f3,22,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,100,BF3,1,57f93ec05f3192f667645192b0cab92062bf5414,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,921a619530265c77845aff59fa0e09fb1ca270cb,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,afc95c4fb5e4a9a9aec7b140b40a156ef45c4617,17,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,4f61e33a32c46d7f81d526f66acfe3e088d196a6,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,100,BF3,1,fc127fcfc249e1ae3bf9d34034d47799adeaa313,7,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,100,BF3,1,e0254b419ae70e17fc3a775368743fa8773609c4,14,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,61a2d62210eb0628f909d4d869e215bed66e5b1d,8,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,100,BF3,1,780f8d9c732c4c6a36d034c19abdf57b6a5cc69a,7,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,100,BF3,1,746c56234b042dc796acbf0979f737fa57a8c038,5,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,100,BF3,1,5ea0d730e8aed3d30e2765859909c1de8b20c5c8,5,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,8e62f2bd2ada4d41d70f451ee9a7c208c5e54fef,3,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,100,BF3,1,95a2b654533880847e66326d29e1df863c47ef22,2,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,101,BF3,2,5cc5bda34a61687ff23dd35422f3f67055889af9,7512,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,fa07c137c879896a4b3550b677aac7c27dd4f250,4382,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,101,BF3,2,fd21a4a69e41031e050b80c96a578a2b0e1575ad,7709,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,101,BF3,2,41384eb53ebdac9ad36e75109961bdacfada2509,3897,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,101,BF3,2,35bcbb88b7a1827e9131054759e25603a6ef1e4b,3412,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,101,BF3,2,fdc80ae5c5d103b2e88889628d1e88288fe07089,2951,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,101,BF3,2,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,942,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_E,101,BF3,2,5912de453e37344840868fe7776e6f84659742f2,565,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_E,101,BF3,2,be852773dcb909015503058be361a92ce69848bd,189,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,85ae8b995a1c9e5d9f4b6e265538078035f220d2,361,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,101,BF3,2,aee053d6803cdb5a8171495d7b79efae9b68c8f7,458,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_E,101,BF3,2,4ad6c700ef839622bedc3a38054b9536e8eaf552,23,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,101,BF3,2,f9bec8a1cda505aef0a4a5a162274b00b387872d,97,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,101,BF3,2,4fbc29db0ec34b07a492602fa5bc926278f03216,105,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,101,BF3,2,69db482581babf8ff2147a5227bbc75b7b812372,15,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,101,BF3,2,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,7,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,101,BF3,2,1213612785627a26f9995b9f29b2f7daf628ab3a,24,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,101,BF3,2,46058688dff6ad0c446936715da0b6d461d66ff4,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,57f93ec05f3192f667645192b0cab92062bf5414,12,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,afc95c4fb5e4a9a9aec7b140b40a156ef45c4617,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,4f61e33a32c46d7f81d526f66acfe3e088d196a6,4,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,fc127fcfc249e1ae3bf9d34034d47799adeaa313,11,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,101,BF3,2,e0254b419ae70e17fc3a775368743fa8773609c4,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,101,BF3,2,60a76d41f52cd47e97e8b91e91e4d5fbb0e9ea0a,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,101,BF3,2,3e0a10a08f764dac7bb16b08e6f93f1970da98ef,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,101,BF3,2,64fe5df1a753a1943a1d223850fb58e1e744f979,7,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_E,101,BF3,2,7310f889db9a784f1f4f6753a1504bf9028707f4,5,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,101,BF3,2,7fcff8917a02bc2d173b48e49071374819352242,4,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,101,BF3,2,4589640b3d40a4c7da1681cad5af7f84d288d1ee,4,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,101,BF3,2,1f86aeb06d0a4ab9f0a3628529a09e8b05f62922,4,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,5cc5bda34a61687ff23dd35422f3f67055889af9,7594,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,fa07c137c879896a4b3550b677aac7c27dd4f250,4272,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,102,BF3,3,fd21a4a69e41031e050b80c96a578a2b0e1575ad,7827,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,102,BF3,3,41384eb53ebdac9ad36e75109961bdacfada2509,3896,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,102,BF3,3,35bcbb88b7a1827e9131054759e25603a6ef1e4b,3588,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,102,BF3,3,fdc80ae5c5d103b2e88889628d1e88288fe07089,2918,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,102,BF3,3,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,776,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,3
+MC_E,102,BF3,3,5912de453e37344840868fe7776e6f84659742f2,460,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,3
+MC_E,102,BF3,3,be852773dcb909015503058be361a92ce69848bd,223,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,21,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,102,BF3,3,85ae8b995a1c9e5d9f4b6e265538078035f220d2,300,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,102,BF3,3,aee053d6803cdb5a8171495d7b79efae9b68c8f7,397,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,3
+MC_E,102,BF3,3,5063322535c4f9af1322193a29f070001788c0f8,23,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_E,102,BF3,3,f9bec8a1cda505aef0a4a5a162274b00b387872d,85,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,3
+MC_E,102,BF3,3,4fbc29db0ec34b07a492602fa5bc926278f03216,79,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,3
+MC_E,102,BF3,3,5067c5c135bdabdc6703f190bac600b36ade0aa5,218,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,102,BF3,3,984560259e9b6fba757665c6a6d7250bcaea3f63,53,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,102,BF3,3,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,22,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,3
+MC_E,102,BF3,3,1213612785627a26f9995b9f29b2f7daf628ab3a,13,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,3
+MC_E,102,BF3,3,46058688dff6ad0c446936715da0b6d461d66ff4,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,57f93ec05f3192f667645192b0cab92062bf5414,12,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,921a619530265c77845aff59fa0e09fb1ca270cb,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,4f61e33a32c46d7f81d526f66acfe3e088d196a6,5,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,da737e5bc821aa9033b9b3addd4ecf269e484850,22,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,60a76d41f52cd47e97e8b91e91e4d5fbb0e9ea0a,10,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,9702f8fe5bf5f9cd5e7b32e0a985eda541115b40,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,3
+MC_E,102,BF3,3,cc9f28d821e5da35b632c92b8bf4da48c6aa307d,5,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,102,BF3,3,19c452afabe9fa95a9b391138b663452ee3c65a2,4,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,3
+MC_E,102,BF3,3,44c7bc935a972688df6b0a89207d6dea88f532b6,4,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,3
+MC_E,102,BF3,3,53555da55e38651ec0bc75c1cae1367e067f2fed,4,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,3
+MC_D,90,BF3,3,5788d9dc7676015bdad42714abfc36866ef9dde3,35383,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,fd21a4a69e41031e050b80c96a578a2b0e1575ad,22256,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_D,90,BF3,3,41384eb53ebdac9ad36e75109961bdacfada2509,12074,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_D,90,BF3,3,35bcbb88b7a1827e9131054759e25603a6ef1e4b,11869,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,90,BF3,3,5cc5bda34a61687ff23dd35422f3f67055889af9,16001,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,fa07c137c879896a4b3550b677aac7c27dd4f250,2214,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,fdc80ae5c5d103b2e88889628d1e88288fe07089,5065,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_D,90,BF3,3,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,4795,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_D,90,BF3,3,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,943,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,5912de453e37344840868fe7776e6f84659742f2,1946,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_D,90,BF3,3,85ae8b995a1c9e5d9f4b6e265538078035f220d2,712,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,90,BF3,3,aee053d6803cdb5a8171495d7b79efae9b68c8f7,662,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_D,90,BF3,3,8631c8817a3e0f66abffa477be2f44653cfe0d60,393,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,299,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,befec3cb525983c44fa97460953a90ff584b8d47,302,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,9723040507573295908370f302b0a00c5c28f813,182,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,90,BF3,3,2709a4d571ff42851d46d65445d311688eec7689,279,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,684810f8d05a81ac45c0f6b21180c2a1700b5b29,283,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,184,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,146,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,212,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,42,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,90,BF3,3,4ad6c700ef839622bedc3a38054b9536e8eaf552,76,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,095a1db4868c8536e38474706caa7dc687c80a88,29,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,5063322535c4f9af1322193a29f070001788c0f8,38,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,1213612785627a26f9995b9f29b2f7daf628ab3a,54,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,90,BF3,3,e98cca2f8f132f63a4e0497920cae32cf0c5a677,66,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,c3608e3bbd051a827c3ba97daff98692490e6fc8,60,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,e77f991d4257d06ecfc262cd80db694f09d175cd,27,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,921a619530265c77845aff59fa0e09fb1ca270cb,19,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,e0254b419ae70e17fc3a775368743fa8773609c4,32,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,90,BF3,3,9350764a853200e43866e583cec74382bfda6859,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,46058688dff6ad0c446936715da0b6d461d66ff4,27,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,fc127fcfc249e1ae3bf9d34034d47799adeaa313,10,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,90,BF3,3,186b554f89da35730269f805e1bbcbc09b638a7a,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,57f93ec05f3192f667645192b0cab92062bf5414,9,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,e3f0464ce4a47a69539d89096334ce3bf133d18b,12,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,60a76d41f52cd47e97e8b91e91e4d5fbb0e9ea0a,9,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,90,BF3,3,55ac7d24233f60401f95150e5254ff1db05c1f3e,9,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_D,88,BF3,1,5788d9dc7676015bdad42714abfc36866ef9dde3,43396,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,fd21a4a69e41031e050b80c96a578a2b0e1575ad,27154,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_D,88,BF3,1,41384eb53ebdac9ad36e75109961bdacfada2509,14530,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_D,88,BF3,1,35bcbb88b7a1827e9131054759e25603a6ef1e4b,14882,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,88,BF3,1,5cc5bda34a61687ff23dd35422f3f67055889af9,18964,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,fa07c137c879896a4b3550b677aac7c27dd4f250,2502,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,fdc80ae5c5d103b2e88889628d1e88288fe07089,6156,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_D,88,BF3,1,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,5749,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_D,88,BF3,1,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,1136,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,5912de453e37344840868fe7776e6f84659742f2,2158,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_D,88,BF3,1,85ae8b995a1c9e5d9f4b6e265538078035f220d2,862,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,88,BF3,1,aee053d6803cdb5a8171495d7b79efae9b68c8f7,874,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_D,88,BF3,1,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,380,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_D,88,BF3,1,8631c8817a3e0f66abffa477be2f44653cfe0d60,487,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,315,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,befec3cb525983c44fa97460953a90ff584b8d47,307,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,9723040507573295908370f302b0a00c5c28f813,190,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,88,BF3,1,cb78c0621986feeaabb95bfa7e7749886ef4d946,192,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_D,88,BF3,1,2709a4d571ff42851d46d65445d311688eec7689,281,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,684810f8d05a81ac45c0f6b21180c2a1700b5b29,301,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,c938feebe9c4f07d78eddcd90cb135f5edc042dd,427,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,196,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,196,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,191,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,31,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,88,BF3,1,4ad6c700ef839622bedc3a38054b9536e8eaf552,83,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,095a1db4868c8536e38474706caa7dc687c80a88,29,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,26829b459ed76ee1c57239664f0d0a64a8e93c69,3,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,1213612785627a26f9995b9f29b2f7daf628ab3a,64,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,88,BF3,1,e98cca2f8f132f63a4e0497920cae32cf0c5a677,84,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,c3608e3bbd051a827c3ba97daff98692490e6fc8,75,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,e77f991d4257d06ecfc262cd80db694f09d175cd,37,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,921a619530265c77845aff59fa0e09fb1ca270cb,20,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,25,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,e0254b419ae70e17fc3a775368743fa8773609c4,62,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,88,BF3,1,9350764a853200e43866e583cec74382bfda6859,23,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,46058688dff6ad0c446936715da0b6d461d66ff4,25,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,fc127fcfc249e1ae3bf9d34034d47799adeaa313,17,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,88,BF3,1,186b554f89da35730269f805e1bbcbc09b638a7a,8,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,da9cdfcb1de7ec448fdbb0732149484d3edf98e8,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,88,BF3,1,e3f0464ce4a47a69539d89096334ce3bf133d18b,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,5788d9dc7676015bdad42714abfc36866ef9dde3,43098,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,fd21a4a69e41031e050b80c96a578a2b0e1575ad,27134,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_D,89,BF3,2,41384eb53ebdac9ad36e75109961bdacfada2509,12932,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_D,89,BF3,2,35bcbb88b7a1827e9131054759e25603a6ef1e4b,13408,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,89,BF3,2,5cc5bda34a61687ff23dd35422f3f67055889af9,17317,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,fa07c137c879896a4b3550b677aac7c27dd4f250,1978,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,fdc80ae5c5d103b2e88889628d1e88288fe07089,5741,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_D,89,BF3,2,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,5249,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_D,89,BF3,2,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,1132,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,5912de453e37344840868fe7776e6f84659742f2,1722,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_D,89,BF3,2,85ae8b995a1c9e5d9f4b6e265538078035f220d2,653,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,89,BF3,2,aee053d6803cdb5a8171495d7b79efae9b68c8f7,564,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_D,89,BF3,2,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,346,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_D,89,BF3,2,8631c8817a3e0f66abffa477be2f44653cfe0d60,447,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,247,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,befec3cb525983c44fa97460953a90ff584b8d47,280,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,9723040507573295908370f302b0a00c5c28f813,185,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_D,89,BF3,2,2709a4d571ff42851d46d65445d311688eec7689,263,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,684810f8d05a81ac45c0f6b21180c2a1700b5b29,302,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,c938feebe9c4f07d78eddcd90cb135f5edc042dd,429,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,189,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,157,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,198,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,23,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_D,89,BF3,2,4ad6c700ef839622bedc3a38054b9536e8eaf552,68,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,095a1db4868c8536e38474706caa7dc687c80a88,26,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,26829b459ed76ee1c57239664f0d0a64a8e93c69,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,5063322535c4f9af1322193a29f070001788c0f8,27,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,e98cca2f8f132f63a4e0497920cae32cf0c5a677,92,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,82eb0bcdcf88b18b8378afb56623045fdc7dc74e,15,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_D,89,BF3,2,c3608e3bbd051a827c3ba97daff98692490e6fc8,47,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,e77f991d4257d06ecfc262cd80db694f09d175cd,36,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,921a619530265c77845aff59fa0e09fb1ca270cb,20,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,42,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,8043288a8de0a1058d0b10037e7dda473e0111f3,65,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,89,BF3,2,e0254b419ae70e17fc3a775368743fa8773609c4,21,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_D,89,BF3,2,9350764a853200e43866e583cec74382bfda6859,26,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,46058688dff6ad0c446936715da0b6d461d66ff4,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,fc127fcfc249e1ae3bf9d34034d47799adeaa313,20,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_D,89,BF3,2,186b554f89da35730269f805e1bbcbc09b638a7a,25,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,57f93ec05f3192f667645192b0cab92062bf5414,21,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,60a76d41f52cd47e97e8b91e91e4d5fbb0e9ea0a,12,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_D,89,BF3,2,f67a659cde3faa3d43321896f28594488e928a05,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,ae982573d488eb67ce989ee57179a8868cb371ff,5,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_C,85,BF3,1,fd21a4a69e41031e050b80c96a578a2b0e1575ad,38766,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_C,85,BF3,1,41384eb53ebdac9ad36e75109961bdacfada2509,40217,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,85,BF3,1,35bcbb88b7a1827e9131054759e25603a6ef1e4b,28387,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,85,BF3,1,fdc80ae5c5d103b2e88889628d1e88288fe07089,16122,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,85,BF3,1,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,12849,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_C,85,BF3,1,85ae8b995a1c9e5d9f4b6e265538078035f220d2,3688,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,85,BF3,1,aee053d6803cdb5a8171495d7b79efae9b68c8f7,3088,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_C,85,BF3,1,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,996,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,85,BF3,1,24329888e20b63e52c9b1d5607db61741a292db9,787,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,85,BF3,1,9723040507573295908370f302b0a00c5c28f813,384,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,85,BF3,1,cb78c0621986feeaabb95bfa7e7749886ef4d946,452,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,85,BF3,1,504bee3b87acb1718dc9397b385a50174c656db2,386,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,85,BF3,1,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,169,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,85,BF3,1,82eb0bcdcf88b18b8378afb56623045fdc7dc74e,68,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_C,85,BF3,1,f57eabd117374dfe16a07cb905319c7ab6539e44,5,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_C,86,BF3,2,fd21a4a69e41031e050b80c96a578a2b0e1575ad,32552,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_C,86,BF3,2,41384eb53ebdac9ad36e75109961bdacfada2509,34581,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,86,BF3,2,35bcbb88b7a1827e9131054759e25603a6ef1e4b,24346,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,86,BF3,2,fdc80ae5c5d103b2e88889628d1e88288fe07089,13991,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,86,BF3,2,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,10735,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_C,86,BF3,2,85ae8b995a1c9e5d9f4b6e265538078035f220d2,3581,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,86,BF3,2,aee053d6803cdb5a8171495d7b79efae9b68c8f7,2958,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_C,86,BF3,2,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,1004,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,86,BF3,2,24329888e20b63e52c9b1d5607db61741a292db9,743,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,86,BF3,2,9723040507573295908370f302b0a00c5c28f813,413,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,86,BF3,2,cb78c0621986feeaabb95bfa7e7749886ef4d946,407,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,86,BF3,2,504bee3b87acb1718dc9397b385a50174c656db2,341,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,86,BF3,2,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,170,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,86,BF3,2,82eb0bcdcf88b18b8378afb56623045fdc7dc74e,78,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_C,86,BF3,2,eb56b3d9552d7131197ba65b85e1504ba6dff7a5,116,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,87,BF3,3,fd21a4a69e41031e050b80c96a578a2b0e1575ad,26847,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_C,87,BF3,3,41384eb53ebdac9ad36e75109961bdacfada2509,28640,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,87,BF3,3,35bcbb88b7a1827e9131054759e25603a6ef1e4b,21480,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,87,BF3,3,fdc80ae5c5d103b2e88889628d1e88288fe07089,10974,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,87,BF3,3,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,8790,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_C,87,BF3,3,85ae8b995a1c9e5d9f4b6e265538078035f220d2,2641,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,87,BF3,3,aee053d6803cdb5a8171495d7b79efae9b68c8f7,2386,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_C,87,BF3,3,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,803,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,87,BF3,3,24329888e20b63e52c9b1d5607db61741a292db9,584,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,87,BF3,3,9723040507573295908370f302b0a00c5c28f813,329,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,87,BF3,3,cb78c0621986feeaabb95bfa7e7749886ef4d946,290,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_C,87,BF3,3,504bee3b87acb1718dc9397b385a50174c656db2,301,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_C,87,BF3,3,c54656792b00892c72285c3e6ac7c42d32db8afa,686,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_C,87,BF3,3,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,104,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_C,87,BF3,3,82eb0bcdcf88b18b8378afb56623045fdc7dc74e,53,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_A,82,BF3,1,5788d9dc7676015bdad42714abfc36866ef9dde3,20347,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,fd21a4a69e41031e050b80c96a578a2b0e1575ad,23275,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_A,82,BF3,1,41384eb53ebdac9ad36e75109961bdacfada2509,15622,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,82,BF3,1,35bcbb88b7a1827e9131054759e25603a6ef1e4b,13064,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,82,BF3,1,5cc5bda34a61687ff23dd35422f3f67055889af9,20950,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,fa07c137c879896a4b3550b677aac7c27dd4f250,38785,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,fdc80ae5c5d103b2e88889628d1e88288fe07089,8714,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,82,BF3,1,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,5828,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_A,82,BF3,1,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,532,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,5912de453e37344840868fe7776e6f84659742f2,4830,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_A,82,BF3,1,85ae8b995a1c9e5d9f4b6e265538078035f220d2,805,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,82,BF3,1,aee053d6803cdb5a8171495d7b79efae9b68c8f7,417,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_A,82,BF3,1,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,411,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,82,BF3,1,8631c8817a3e0f66abffa477be2f44653cfe0d60,235,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,24329888e20b63e52c9b1d5607db61741a292db9,312,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,82,BF3,1,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,118,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,befec3cb525983c44fa97460953a90ff584b8d47,107,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,9723040507573295908370f302b0a00c5c28f813,191,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,82,BF3,1,cb78c0621986feeaabb95bfa7e7749886ef4d946,225,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,82,BF3,1,2709a4d571ff42851d46d65445d311688eec7689,102,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,684810f8d05a81ac45c0f6b21180c2a1700b5b29,95,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,84,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,165,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,61,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,30,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,82,BF3,1,4ad6c700ef839622bedc3a38054b9536e8eaf552,95,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,095a1db4868c8536e38474706caa7dc687c80a88,137,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,5063322535c4f9af1322193a29f070001788c0f8,84,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,69db482581babf8ff2147a5227bbc75b7b812372,55,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,e77f991d4257d06ecfc262cd80db694f09d175cd,31,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,921a619530265c77845aff59fa0e09fb1ca270cb,30,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,8043288a8de0a1058d0b10037e7dda473e0111f3,57,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,82,BF3,1,9350764a853200e43866e583cec74382bfda6859,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,46058688dff6ad0c446936715da0b6d461d66ff4,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,fc127fcfc249e1ae3bf9d34034d47799adeaa313,17,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,82,BF3,1,186b554f89da35730269f805e1bbcbc09b638a7a,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,ab31e5f57ed2d9b016490f5984e774717131c0c0,37,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,82,BF3,1,237f0530614c80339d744ab893dde432eba39592,25,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_A,82,BF3,1,57f93ec05f3192f667645192b0cab92062bf5414,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,afc95c4fb5e4a9a9aec7b140b40a156ef45c4617,19,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,82,BF3,1,9702f8fe5bf5f9cd5e7b32e0a985eda541115b40,15,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,5788d9dc7676015bdad42714abfc36866ef9dde3,17735,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,fd21a4a69e41031e050b80c96a578a2b0e1575ad,20079,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_A,83,BF3,2,41384eb53ebdac9ad36e75109961bdacfada2509,14391,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,83,BF3,2,35bcbb88b7a1827e9131054759e25603a6ef1e4b,12020,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,83,BF3,2,5cc5bda34a61687ff23dd35422f3f67055889af9,18662,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,fa07c137c879896a4b3550b677aac7c27dd4f250,32608,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,fdc80ae5c5d103b2e88889628d1e88288fe07089,6594,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,83,BF3,2,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,4708,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_A,83,BF3,2,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,535,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,5912de453e37344840868fe7776e6f84659742f2,4482,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_A,83,BF3,2,85ae8b995a1c9e5d9f4b6e265538078035f220d2,835,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,83,BF3,2,aee053d6803cdb5a8171495d7b79efae9b68c8f7,366,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_A,83,BF3,2,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,476,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,83,BF3,2,8631c8817a3e0f66abffa477be2f44653cfe0d60,207,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,24329888e20b63e52c9b1d5607db61741a292db9,360,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,83,BF3,2,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,112,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,befec3cb525983c44fa97460953a90ff584b8d47,105,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,9723040507573295908370f302b0a00c5c28f813,194,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,83,BF3,2,cb78c0621986feeaabb95bfa7e7749886ef4d946,217,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,83,BF3,2,2709a4d571ff42851d46d65445d311688eec7689,129,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,684810f8d05a81ac45c0f6b21180c2a1700b5b29,122,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,c938feebe9c4f07d78eddcd90cb135f5edc042dd,481,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,67,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,118,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,efb197d2602c22b55183b2b84a6f64c1e7d77c5e,872,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,69,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,32,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,83,BF3,2,4ad6c700ef839622bedc3a38054b9536e8eaf552,60,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,095a1db4868c8536e38474706caa7dc687c80a88,107,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,26829b459ed76ee1c57239664f0d0a64a8e93c69,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,5063322535c4f9af1322193a29f070001788c0f8,98,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,1213612785627a26f9995b9f29b2f7daf628ab3a,57,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,83,BF3,2,69db482581babf8ff2147a5227bbc75b7b812372,48,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,e77f991d4257d06ecfc262cd80db694f09d175cd,23,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,e82e42f5c2fcea439411da08ee94aa0dfd8b36e0,134,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,921a619530265c77845aff59fa0e09fb1ca270cb,29,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,14,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,9350764a853200e43866e583cec74382bfda6859,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,46058688dff6ad0c446936715da0b6d461d66ff4,9,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,fc127fcfc249e1ae3bf9d34034d47799adeaa313,24,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,83,BF3,2,ab31e5f57ed2d9b016490f5984e774717131c0c0,35,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,83,BF3,2,da9cdfcb1de7ec448fdbb0732149484d3edf98e8,11,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,afc95c4fb5e4a9a9aec7b140b40a156ef45c4617,17,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,83,BF3,2,9702f8fe5bf5f9cd5e7b32e0a985eda541115b40,9,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,5788d9dc7676015bdad42714abfc36866ef9dde3,15846,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,fd21a4a69e41031e050b80c96a578a2b0e1575ad,17036,species,Metazoa,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Cymatogaster aggregata,5
+MC_A,84,BF3,3,41384eb53ebdac9ad36e75109961bdacfada2509,12954,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,84,BF3,3,35bcbb88b7a1827e9131054759e25603a6ef1e4b,10733,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,84,BF3,3,5cc5bda34a61687ff23dd35422f3f67055889af9,17005,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,fa07c137c879896a4b3550b677aac7c27dd4f250,30705,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,fdc80ae5c5d103b2e88889628d1e88288fe07089,5908,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,84,BF3,3,7e7ae42efc9e7b56783c47f09c146656a8e3d3fc,4150,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_A,84,BF3,3,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,463,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,5912de453e37344840868fe7776e6f84659742f2,4075,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Hemigrapsus oregonensis,5
+MC_A,84,BF3,3,85ae8b995a1c9e5d9f4b6e265538078035f220d2,793,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,84,BF3,3,aee053d6803cdb5a8171495d7b79efae9b68c8f7,428,species,Viridiplantae,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Zosteraceae,5
+MC_A,84,BF3,3,625efb43fbfcd791c8bf7a26b11c90fa4a545c38,370,species,Metazoa,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Batillaria attramentaria,5
+MC_A,84,BF3,3,8631c8817a3e0f66abffa477be2f44653cfe0d60,176,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,24329888e20b63e52c9b1d5607db61741a292db9,301,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,84,BF3,3,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,107,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,befec3cb525983c44fa97460953a90ff584b8d47,108,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,9723040507573295908370f302b0a00c5c28f813,192,genus,Metazoa,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mya,5
+MC_A,84,BF3,3,cb78c0621986feeaabb95bfa7e7749886ef4d946,175,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_A,84,BF3,3,2709a4d571ff42851d46d65445d311688eec7689,83,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,684810f8d05a81ac45c0f6b21180c2a1700b5b29,102,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,54,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,236bca3206ed3c0579926bb1ee98706ea6e8e5d4,112,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,71,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,11bc5b4f80a0f346a1cc03a86a26dd4313bff62a,31,species,Metazoa,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Ruditapes philippinarum,5
+MC_A,84,BF3,3,4ad6c700ef839622bedc3a38054b9536e8eaf552,81,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,095a1db4868c8536e38474706caa7dc687c80a88,79,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,5063322535c4f9af1322193a29f070001788c0f8,77,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,1213612785627a26f9995b9f29b2f7daf628ab3a,68,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,84,BF3,3,69db482581babf8ff2147a5227bbc75b7b812372,70,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,921a619530265c77845aff59fa0e09fb1ca270cb,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,c83c18383ae13d277c6282da9a6a7b9ef53c4e0a,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,9350764a853200e43866e583cec74382bfda6859,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,46058688dff6ad0c446936715da0b6d461d66ff4,14,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,fc127fcfc249e1ae3bf9d34034d47799adeaa313,10,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,84,BF3,3,186b554f89da35730269f805e1bbcbc09b638a7a,13,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,237f0530614c80339d744ab893dde432eba39592,30,genus,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Cottus,5
+MC_A,84,BF3,3,da9cdfcb1de7ec448fdbb0732149484d3edf98e8,18,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Crangon franciscorum,5
+MC_A,84,BF3,3,ed1d55bd8ec51b350b71bc21f4ac357c7d54fb32,8,genus,Metazoa,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,NA,Crangon,5
+MC_A,84,BF3,3,48556384668bb062680da44bbfc9c20045bacf95,7,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Metacarcinus magister,5
+MC_A,84,BF3,3,d6aa449b2cbe2b8aac8feabf805017334bf307eb,4,species,Metazoa,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Leptocottus armatus,5
+MC_D,90,BF3,3,5788d9dc7676015bdad42714abfc36866ef9dde3,35383,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,943,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,8631c8817a3e0f66abffa477be2f44653cfe0d60,393,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,299,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,befec3cb525983c44fa97460953a90ff584b8d47,302,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,2709a4d571ff42851d46d65445d311688eec7689,279,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,684810f8d05a81ac45c0f6b21180c2a1700b5b29,283,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,184,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,212,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,90,BF3,3,e98cca2f8f132f63a4e0497920cae32cf0c5a677,66,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,5788d9dc7676015bdad42714abfc36866ef9dde3,20347,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,532,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,8631c8817a3e0f66abffa477be2f44653cfe0d60,235,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,118,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,befec3cb525983c44fa97460953a90ff584b8d47,107,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,2709a4d571ff42851d46d65445d311688eec7689,102,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,684810f8d05a81ac45c0f6b21180c2a1700b5b29,95,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,84,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,82,BF3,1,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,61,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,5788d9dc7676015bdad42714abfc36866ef9dde3,17735,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,535,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,8631c8817a3e0f66abffa477be2f44653cfe0d60,207,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,112,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,befec3cb525983c44fa97460953a90ff584b8d47,105,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,2709a4d571ff42851d46d65445d311688eec7689,129,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,684810f8d05a81ac45c0f6b21180c2a1700b5b29,122,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,67,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,69,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,83,BF3,2,26829b459ed76ee1c57239664f0d0a64a8e93c69,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,5788d9dc7676015bdad42714abfc36866ef9dde3,15846,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,463,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,8631c8817a3e0f66abffa477be2f44653cfe0d60,176,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,107,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,befec3cb525983c44fa97460953a90ff584b8d47,108,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,2709a4d571ff42851d46d65445d311688eec7689,83,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,684810f8d05a81ac45c0f6b21180c2a1700b5b29,102,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,54,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_A,84,BF3,3,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,71,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,5788d9dc7676015bdad42714abfc36866ef9dde3,43396,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,1136,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,8631c8817a3e0f66abffa477be2f44653cfe0d60,487,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,315,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,befec3cb525983c44fa97460953a90ff584b8d47,307,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,2709a4d571ff42851d46d65445d311688eec7689,281,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,684810f8d05a81ac45c0f6b21180c2a1700b5b29,301,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,196,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,191,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,26829b459ed76ee1c57239664f0d0a64a8e93c69,3,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,88,BF3,1,e98cca2f8f132f63a4e0497920cae32cf0c5a677,84,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,5788d9dc7676015bdad42714abfc36866ef9dde3,43098,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,0ab1ec29c0fb16023698a253b1a05c9bb55d6eef,1132,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,8631c8817a3e0f66abffa477be2f44653cfe0d60,447,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,03b43dad6d40a4c17a2f64069afcc82a9a4ec886,247,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,befec3cb525983c44fa97460953a90ff584b8d47,280,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,2709a4d571ff42851d46d65445d311688eec7689,263,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,684810f8d05a81ac45c0f6b21180c2a1700b5b29,302,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,f1b6cbe188bc13d30320ad0d31d6b4a5b602218f,189,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,bd4bfd82c9d2e9197acdcb72a61e091f01ea2247,198,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,26829b459ed76ee1c57239664f0d0a64a8e93c69,6,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,e98cca2f8f132f63a4e0497920cae32cf0c5a677,92,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,f67a659cde3faa3d43321896f28594488e928a05,16,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
+MC_D,89,BF3,2,ae982573d488eb67ce989ee57179a8868cb371ff,5,species,Metazoa,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Carcinus maenas,5
