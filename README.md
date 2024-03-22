@@ -2,7 +2,7 @@
 
 ### Revealing European green crab predation in a Washington State estuary with DNA metabarcoding (dDNA)
 <br>
-For [Fisher et al. (in review)](doi.org)
+For [Fisher et al. in review](www.doi.org)
 
 Authors: Mary Fisher, Emily Grason, Alex Stote, Ryan Kelly, Kate Litle, Sean McDonald
 
@@ -16,6 +16,8 @@ ___________________
 ### Workflow
 
 ![doc-worksflow-img](https://github.com/mfisher5/Green-crab-dDNA/blob/main/doc/analysis_workflow.png?raw=true)
+
+The final, filtered file of ASVs used for diet composition analysis is: [data/results/allRuns_BF3_filtered_FINAL_unique_taxa](https://github.com/mfisher5/Green-crab-dDNA/blob/main/data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv)
 
 ### Requirements
 

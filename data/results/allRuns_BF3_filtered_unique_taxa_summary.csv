@@ -1,0 +1,96 @@
+taxon,rank,phylum,class,order,family,genus,species,type,n_crab,miseqruns,site_months
+Acanthocyclops vernalis,species,Arthropoda,Hexanauplia,Cyclopoida,Cyclopidae,Acanthocyclops,Acanthocyclops vernalis,Sample,1,"3,4",Oysterville-Sep
+Alitta,genus,Annelida,Polychaeta,Phyllodocida,Nereididae,Alitta,NA,Sample,2,2,"Oysterville-Jul,Oysterville-May"
+Ampithoe valida,species,Arthropoda,Malacostraca,Amphipoda,Ampithoidae,Ampithoe,Ampithoe valida,Sample,6,"2,3,5,4","Oysterville-Jul,Long Beach-Jul,Oysterville-May,Stackpole-Sep,Stackpole-Jul"
+Appasus major,species,Arthropoda,Insecta,Hemiptera,Belostomatidae,Appasus,Appasus major,Sample,1,5,Stackpole-Sep
+Arachnida sp. BOLD:ACM9770,species,Arthropoda,Arachnida,NA,NA,NA,Arachnida sp. BOLD:ACM9770,Sample,2,"3,4","Oysterville-May,Long Beach-May"
+Arthropoda environmental sample,species,Arthropoda,NA,NA,NA,NA,Arthropoda environmental sample,Sample,1,"3,4",Oysterville-Sep
+Bathyagonus,genus,Chordata,Actinopteri,Perciformes,Agonidae,Bathyagonus,NA,Mock Community,5,"3,5",NA
+Batillaria attramentaria,species,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Mock Community,5,"3,5",NA
+Batillaria attramentaria,species,Mollusca,Gastropoda,NA,Batillariidae,Batillaria,Batillaria attramentaria,Sample,4,"2,3,4","Oysterville-Jul,Oysterville-Sep"
+Botrylloides violaceus,species,Chordata,Ascidiacea,Stolidobranchia,Styelidae,Botrylloides,Botrylloides violaceus,Sample,2,"5,4",Stackpole-Sep
+Botryllus schlosseri,species,Chordata,Ascidiacea,Stolidobranchia,Styelidae,Botryllus,Botryllus schlosseri,Sample,2,4,"Oysterville-Sep,Oysterville-May"
+Carcinus maenas,species,Arthropoda,Malacostraca,Decapoda,Carcinidae,Carcinus,Carcinus maenas,Mock Community,2,5,NA
+Cecidomyiidae,family,Arthropoda,Insecta,Diptera,Cecidomyiidae,NA,NA,Sample,1,4,Oysterville-Sep
+Ceratopogonidae,family,Arthropoda,Insecta,Diptera,Ceratopogonidae,NA,NA,Sample,1,"3,4",Oysterville-May
+Chaetogaster diastrophus,species,Annelida,Clitellata,Tubificida,Naididae,Chaetogaster,Chaetogaster diastrophus,Sample,1,3,Oysterville-May
+Cheumatopsyche lepida,species,Arthropoda,Insecta,Trichoptera,Hydropsychidae,Cheumatopsyche,Cheumatopsyche lepida,Sample,1,2,Oysterville-Jul
+Chordariaceae,family,NA,Phaeophyceae,Ectocarpales,Chordariaceae,NA,NA,Sample,3,"4,5","Oysterville-Sep,Stackpole-Jul"
+Chordariaceae sp. 1 AP-2016,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,NA,Chordariaceae sp. 1 AP-2016,Mock Community,1,3,NA
+Chordariaceae sp. 15 AP-2014,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,NA,Chordariaceae sp. 15 AP-2014,Sample,1,2,Oysterville-Jul
+Clunio tsushimensis,species,Arthropoda,Insecta,Diptera,Chironomidae,Clunio,Clunio tsushimensis,Sample,1,2,Long Beach-Sep
+Cottus,genus,Chordata,Actinopteri,Perciformes,Cottidae,Cottus,NA,Mock Community,5,"3,5",NA
+Crangon crangon,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon crangon,Mock Community,4,"3,5",NA
+Crangon crangon,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon crangon,Sample,1,3,Oysterville-Sep
+Crangon franciscorum,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Mock Community,4,"3,5",NA
+Crangon franciscorum,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon franciscorum,Sample,10,"2,3,4,5","Long Beach-Sep,Oysterville-Sep,Stackpole-Sep,Stackpole-Jul"
+Crangon sp. UF_53625,species,Arthropoda,Malacostraca,Decapoda,Crangonidae,Crangon,Crangon sp. UF_53625,Sample,2,3,Oysterville-May
+Cucurbitaceae,family,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,NA,NA,Sample,2,5,"Stackpole-Sep,Nahcotta-Sep"
+Culex tritaeniorhynchus,species,Arthropoda,Insecta,Diptera,Culicidae,Culex,Culex tritaeniorhynchus,Sample,1,5,Nahcotta-Sep
+Cyclopterus lumpus,species,Chordata,Actinopteri,Perciformes,Cyclopteridae,Cyclopterus,Cyclopterus lumpus,Mock Community,2,5,NA
+Cyclopterus lumpus,species,Chordata,Actinopteri,Perciformes,Cyclopteridae,Cyclopterus,Cyclopterus lumpus,Sample,2,3,Oysterville-May
+Cymatogaster aggregata,species,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Mock Community,5,"3,5",NA
+Cymatogaster aggregata,species,Chordata,Actinopteri,NA,Embiotocidae,Cymatogaster,Cymatogaster aggregata,Sample,2,2,"Long Beach-Sep,Oysterville-May"
+Dasycottus setiger,species,Chordata,Actinopteri,Perciformes,Psychrolutidae,Dasycottus,Dasycottus setiger,Mock Community,1,3,NA
+Ectocarpus,genus,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,NA,Sample,1,3,Long Beach-May
+Ectocarpus crouaniorum,species,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,Ectocarpus crouaniorum,Sample,1,2,Oysterville-Jul
+Ectocarpus fasciculatus,species,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,Ectocarpus fasciculatus,Sample,1,"3,4",Oysterville-Sep
+Ectocarpus sp. 1siliculosus,species,NA,Phaeophyceae,Ectocarpales,Ectocarpaceae,Ectocarpus,Ectocarpus sp. 1siliculosus,Sample,1,2,Long Beach-May
+Elachista sp. 1fucicola BOLD-2018,species,Arthropoda,Insecta,Lepidoptera,Elachistidae,Elachista,Elachista sp. 1fucicola BOLD-2018,Sample,1,5,Stackpole-Sep
+Eogammarus confervicolus,species,Arthropoda,Malacostraca,Amphipoda,Anisogammaridae,Eogammarus,Eogammarus confervicolus,Sample,1,5,Stackpole-Jul
+Epinephelus fuscoguttatus,species,Chordata,Actinopteri,Perciformes,Serranidae,Epinephelus,Epinephelus fuscoguttatus,Mock Community,2,5,NA
+Eriocheir sinensis,species,Arthropoda,Malacostraca,Decapoda,Varunidae,Eriocheir,Eriocheir sinensis,Sample,1,4,Stackpole-Sep
+Fucus,genus,NA,Phaeophyceae,Fucales,Fucaceae,Fucus,NA,Sample,6,"5,4","Stackpole-Sep,Stackpole-Jul,Nahcotta-Jul"
+Gadus chalcogrammus,species,Chordata,Actinopteri,Gadiformes,Gadidae,Gadus,Gadus chalcogrammus,Mock Community,1,5,NA
+Grandidierella japonica,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Grandidierella,Grandidierella japonica,Sample,7,"2,3","Oysterville-Jul,Long Beach-Sep,Oysterville-May,Long Beach-Jul,Oysterville-Sep"
+Gryllus,genus,Arthropoda,Insecta,Orthoptera,Gryllidae,Gryllus,NA,Sample,1,2,Long Beach-Jul
+Harmothoe aff. imbricata CMC01,species,Annelida,Polychaeta,Phyllodocida,Polynoidae,Harmothoe,Harmothoe aff. imbricata CMC01,Sample,2,"2,3",Oysterville-May
+Hediste diadroma,species,Annelida,Polychaeta,Phyllodocida,Nereididae,Hediste,Hediste diadroma,Sample,5,"2,5","Long Beach-Jul,Stackpole-Sep,Nahcotta-Sep"
+Hemigrapsus,genus,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,NA,Sample,2,"2,3","Long Beach-Jul,Long Beach-May"
+Hemigrapsus oregonensis,species,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Mock Community,4,"3,5",NA
+Hemigrapsus oregonensis,species,Arthropoda,Malacostraca,Decapoda,Varunidae,Hemigrapsus,Hemigrapsus oregonensis,Sample,12,"2,3,5,4","Oysterville-Jul,Long Beach-Sep,Long Beach-Jul,Oysterville-May,Nahcotta-Sep,Stackpole-Sep,Stackpole-Jul"
+Kurtiella bidentata,species,Mollusca,Bivalvia,Galeommatida,Montacutidae,Kurtiella,Kurtiella bidentata,Sample,1,"3,4",Oysterville-May
+Leathesia marina,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,Leathesia,Leathesia marina,Sample,3,"5,4",Stackpole-Sep
+Leptocottus armatus,species,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Mock Community,5,"3,5",NA
+Leptocottus armatus,species,Chordata,Actinopteri,Perciformes,Cottidae,Leptocottus,Leptocottus armatus,Sample,7,"2,3","Long Beach-Sep,Long Beach-Jul,Long Beach-May,Oysterville-May"
+Liposcelis decolor,species,Arthropoda,Insecta,Psocoptera,Liposcelididae,Liposcelis,Liposcelis decolor,Sample,1,2,Long Beach-Jul
+Metacarcinus magister,species,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Mock Community,3,"3,5",NA
+Metacarcinus magister,species,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister,Sample,3,"2,3,4","Oysterville-May,Long Beach-May"
+Micronereis nanaimoensis,species,Annelida,Polychaeta,Phyllodocida,Nereididae,Micronereis,Micronereis nanaimoensis,Sample,1,2,Oysterville-May
+Moina sp. ARRV-2013,species,Arthropoda,Branchiopoda,Diplostraca,Moinidae,Moina,Moina sp. ARRV-2013,Sample,1,5,Stackpole-Sep
+Molgula manhattensis,species,Chordata,Ascidiacea,Stolidobranchia,Molgulidae,Molgula,Molgula manhattensis,Sample,1,2,Long Beach-Sep
+Monocorophium acherusicum,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Monocorophium,Monocorophium acherusicum,Sample,3,"2,3","Oysterville-May,Long Beach-Jul"
+Monocorophium insidiosum,species,Arthropoda,Malacostraca,Amphipoda,Corophiidae,Monocorophium,Monocorophium insidiosum,Sample,2,"2,3","Oysterville-May,Oysterville-Sep"
+Mya,genus,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Mock Community,5,"3,5",NA
+Mya,genus,Mollusca,Bivalvia,Myida,Myidae,Mya,NA,Sample,1,2,Long Beach-Sep
+Mya arenaria,species,Mollusca,Bivalvia,Myida,Myidae,Mya,Mya arenaria,Sample,6,"2,5,4","Long Beach-Sep,Long Beach-May,Stackpole-Sep,Stackpole-Jul,Nahcotta-Sep,Oysterville-May"
+Myrionema balticum,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,Myrionema,Myrionema balticum,Mock Community,1,5,NA
+Myrionema balticum,species,NA,Phaeophyceae,Ectocarpales,Chordariaceae,Myrionema,Myrionema balticum,Sample,10,"2,3,4","Oysterville-Jul,Oysterville-May,Long Beach-Sep,Long Beach-May,Oysterville-Sep,Stackpole-Sep"
+Nematostella,genus,Cnidaria,Anthozoa,Actiniaria,Edwardsiidae,Nematostella,NA,Sample,1,3,Oysterville-Sep
+Neoporphyra haitanensis,species,Rhodophyta,Bangiophyceae,Bangiales,Bangiaceae,Neoporphyra,Neoporphyra haitanensis,Sample,8,"2,3,4,5","Oysterville-Jul,Long Beach-Sep,Long Beach-Jul,Oysterville-Sep,Stackpole-Jul"
+Nicomache personata,species,Annelida,Polychaeta,NA,Maldanidae,Nicomache,Nicomache personata,Sample,1,2,Oysterville-May
+Parophrys vetulus,species,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Parophrys,Parophrys vetulus,Mock Community,1,5,NA
+Petalonia fascia,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Petalonia,Petalonia fascia,Sample,4,"2,3,4","Oysterville-Jul,Long Beach-Sep,Oysterville-Sep"
+Pholis gunnellus,species,Chordata,Actinopteri,Perciformes,Pholidae,Pholis,Pholis gunnellus,Mock Community,1,5,NA
+Pholis ornata,species,Chordata,Actinopteri,Perciformes,Pholidae,Pholis,Pholis ornata,Sample,1,2,Oysterville-May
+Photis,genus,Arthropoda,Malacostraca,Amphipoda,Photidae,Photis,NA,Sample,1,2,Oysterville-May
+Platichthys stellatus,species,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Platichthys,Platichthys stellatus,Mock Community,1,5,NA
+Platynereis sp. CMC02,species,Annelida,Polychaeta,Phyllodocida,Nereididae,Platynereis,Platynereis sp. CMC02,Sample,1,2,Oysterville-Jul
+Poaceae,family,Streptophyta,Magnoliopsida,Poales,Poaceae,NA,NA,Sample,1,5,Nahcotta-Jul
+Polydora cornuta,species,Annelida,Polychaeta,Spionida,Spionidae,Polydora,Polydora cornuta,Sample,1,5,Stackpole-Jul
+Portunion conformis,species,Arthropoda,Malacostraca,Isopoda,Entoniscidae,Portunion,Portunion conformis,Sample,6,"2,3,5,4","Oysterville-Jul,Long Beach-Sep,Long Beach-Jul,Long Beach-May,Stackpole-Sep"
+Pseudopolydora bassarginensis,species,Annelida,Polychaeta,Spionida,Spionidae,Pseudopolydora,Pseudopolydora bassarginensis,Sample,1,3,Oysterville-Sep
+Pseudopolydora paucibranchiata,species,Annelida,Polychaeta,Spionida,Spionidae,Pseudopolydora,Pseudopolydora paucibranchiata,Sample,3,"2,3,4","Oysterville-May,Oysterville-Sep"
+Pylaiella washingtoniensis,species,NA,Phaeophyceae,Ectocarpales,Acinetosporaceae,Pylaiella,Pylaiella washingtoniensis,Sample,2,5,"Nahcotta-Jul,Stackpole-Jul"
+Ruditapes philippinarum,species,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Mock Community,5,"3,5",NA
+Ruditapes philippinarum,species,Mollusca,Bivalvia,Venerida,Veneridae,Ruditapes,Ruditapes philippinarum,Sample,1,"3,4",Oysterville-Sep
+Sargassum,genus,NA,Phaeophyceae,Fucales,Sargassaceae,Sargassum,NA,Sample,2,"2,3,4","Oysterville-Jul,Oysterville-Sep"
+Scytosiphon lomentaria,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Scytosiphon,Scytosiphon lomentaria,Sample,4,"2,3","Oysterville-Jul,Long Beach-Sep,Oysterville-Sep,Oysterville-May"
+Scytosiphon sp. groupJ,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Scytosiphon,Scytosiphon sp. groupJ,Sample,1,3,Long Beach-May
+Scytosiphon sp. Mitopromiscuus,species,NA,Phaeophyceae,Ectocarpales,Scytosiphonaceae,Scytosiphon,Scytosiphon sp. Mitopromiscuus,Sample,3,"2,3","Oysterville-Jul,Oysterville-May,Oysterville-Sep"
+Serpula vermicularis,species,Annelida,Polychaeta,Sabellida,Serpulidae,Serpula,Serpula vermicularis,Sample,1,5,Nahcotta-Jul
+Taurulus bubalis,species,Chordata,Actinopteri,Perciformes,Cottidae,Taurulus,Taurulus bubalis,Mock Community,1,5,NA
+Ulva compressa,species,Chlorophyta,Ulvophyceae,Ulvales,Ulvaceae,Ulva,Ulva compressa,Sample,5,"5,4","Stackpole-Jul,Stackpole-Sep,Nahcotta-Jul"
+zooplankton environmental sample,species,NA,NA,NA,NA,NA,zooplankton environmental sample,Sample,1,"3,4",Oysterville-May
+Zosteraceae,family,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Mock Community,5,"3,5",NA
+Zosteraceae,family,Streptophyta,Magnoliopsida,Alismatales,Zosteraceae,NA,NA,Sample,6,"2,3,5","Oysterville-Jul,Long Beach-Jul,Oysterville-Sep,Nahcotta-Sep,Stackpole-Jul,Oysterville-May"

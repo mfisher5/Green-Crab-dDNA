@@ -35,3 +35,17 @@ Fig2table_FO. Frequencies of occurrence (percent of total crab) used to construc
 
 
 ### Mixture Model 
+
+**zoid_fitted_vals_preyD100** : zoid output (proportion of calibrated species' DNA in an "average" green crab diet) when running fit_zoid with all crabs from all sites
+
+**zoid_fitted_vals_CLAMBED_preyD100** : same as above, but only for green crabs trapped on clam beds
+
+**zoid_fitted_vals_SLOUGH_preyD100** : same as above, but only for green crabs trapped at intertidal sloughs
+
+
+
+
+<br>
+<br>
+
+*Versioning:* zoid output from 2023-08-29.

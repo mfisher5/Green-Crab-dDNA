@@ -19,12 +19,18 @@ data/quant_modeling/*
 
 data/results/S1_Table.xlsx
 data/results/*.csv
+!data/results/allRuns_BF3_filtered_unique_taxa_summary.csv
 !data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv
 !data/results/allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv
 !data/results/MockCommunities_BF3_filtered_FINAL_input_taxa.csv
 !data/results/taxa_groups_key.csv
+!data/results/zoid_fitted_vals_CLAMBED_preyD100.csv
+!data/results/zoid_fitted_vals_SLOUGH_preyD100.csv
+!data/results/zoid_fitted_vals_preyD100.csv
+
 
 data/results/results_internal_qc/**
+data/quant_modeling/quant_modeling_qc/**
 data/qc/**
 scripts_sequencing/**.html
 figs/**.png
