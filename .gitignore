@@ -36,6 +36,8 @@ scripts_sequencing/**.html
 figs/**.png
 figs/**.tif
 figs/*.tif
+!Fig1.tif
+
 .Rproj.user
 .Rhistory
 .RData
