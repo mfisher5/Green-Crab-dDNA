@@ -7,10 +7,6 @@ data/metadata/*.tif
 
 data/blast/**
 !data/blast/*.fasta
-!data/blast/run3_BF3_taxonomy_filtered.csv
-!data/blast/run3_BF3_taxonomy_filtered.csv
-!data/blast/run4_BF3_taxonomy_filtered.csv
-!data/blast/run5_BF3_taxonomy_filtered.csv
 
 data/quant_modeling/*
 !data/quant_modeling/QM_dataLIST_alphaRun.rda
@@ -19,7 +15,6 @@ data/quant_modeling/*
 
 data/results/S1_Table.xlsx
 data/results/*.csv
-!data/results/allRuns_BF3_filtered_unique_taxa_summary.csv
 !data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv
 !data/results/allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv
 !data/results/MockCommunities_BF3_filtered_FINAL_input_taxa.csv
@@ -27,6 +22,9 @@ data/results/*.csv
 !data/results/zoid_fitted_vals_CLAMBED_preyD100.csv
 !data/results/zoid_fitted_vals_SLOUGH_preyD100.csv
 !data/results/zoid_fitted_vals_preyD100.csv
+!data/results/S1_Table.csv
+!data/results/S4_Table_higher_level_counts.csv
+!data/results/Fisher et al. revision data changes.xlsx
 
 
 data/results/results_internal_qc/**
