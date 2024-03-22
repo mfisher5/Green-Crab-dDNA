@@ -47,7 +47,7 @@ cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv
 mapdat <- data.frame(site_name=c("Stackpole","Nahcotta","Long Beach","Oysterville"),
                      latitude=c(-124.037698,-124.031611,-124.017641,-124.016617),
                      longitude=c(46.597556,46.492106,46.434368,46.554265),
-                     type=c("Slough","Clam Bed","Slough","Clam Bed"))
+                     type=c("Slough","Slough","Clam Bed","Clam Bed"))
 mapdat_sf <- sf::st_as_sf(mapdat,coords = c("latitude","longitude"))
 mapdat_sf <- sf::st_set_crs(mapdat_sf, 4326)
 
