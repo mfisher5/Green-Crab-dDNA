@@ -2,15 +2,31 @@
 doc/*.pptx
 
 # large data files #
-data/dada2/**
+data/metadata/*.rds
+data/metadata/*.tif
+data/*.rds
+
 data/blast/**
-data/results/*.csv
-data/results/results_internal_qc/**
-data/qc/**
+#!data/blast/*.fasta
 #!data/blast/run3_BF3_taxonomy_filtered.csv
 #!data/blast/run3_BF3_taxonomy_filtered.csv
 #!data/blast/run4_BF3_taxonomy_filtered.csv
 #!data/blast/run5_BF3_taxonomy_filtered.csv
+
+data/quant_modeling/*
+#!data/quant_modeling/QM_dataLIST_alphaRun.rda
+#!data/quant_modeling/QM_dataLIST_sampleRun.rda
+#!data/quant_modeling/zoid_input_Bayes_est_rmultinomReads.rds
+
+data/results/S1_Table.xlsx
+data/results/*.csv
+#!data/results/allRuns_BF3_filtered_FINAL_unique_taxa.csv
+#!data/results/allRuns_BF3_filtered_FINAL_unique_taxa_summary.csv
+#!data/results/MockCommunities_BF3_filtered_FINAL_input_taxa.csv
+#!data/results/taxa_groups_key.csv
+
+data/results/results_internal_qc/**
+data/qc/**
 scripts_sequencing/**.html
 figs/**.png
 figs/**.tif
@@ -19,16 +35,4 @@ figs/*.tif
 .Rhistory
 .RData
 Green-crab-dDNA.Rproj
-data/metadata/Willapa Bay EGC Samples - Sample Data.csv
-data/metadata/runs2-5_BF3_run_metadata.csv
-data/metadata/Willapa Bay EGC Samples - PCR cycles.csv
-data/metadata/*.rds
-data/*.rds
-data/metadata/LC09_L1TP_047028_20240223_20240223_02_T1_refl.tif
-data/results/S1_Table.xlsx
-data/quant_modeling/*
-data/metadata/LC09_WillapaBay_Clip.tif
-data/zoid/zoid_MOCK_matchedTaxonomy.csv
-data/zoid/zoid_SAMPLEdata_taxonomy.csv
 scripts_quant/scripts_zoid.Rproj
-data/metadata/*.tif
