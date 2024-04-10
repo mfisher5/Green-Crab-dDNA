@@ -41,3 +41,4 @@ figs/*.tif
 .RData
 Green-crab-dDNA.Rproj
 scripts_quant/scripts_zoid.Rproj
+Willapa-Bay-Green-crab-dDNA/app.R

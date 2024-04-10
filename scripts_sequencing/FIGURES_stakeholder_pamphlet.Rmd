@@ -61,6 +61,12 @@ dat %>%
 ```
 <br>
 
+# Sample counts, metadata
+
+```{r}
+length(unique(dat$sample))
+```
+
 
 # Basic Prey Diversity
 
@@ -103,36 +109,38 @@ get_unique_taxa(level="site")
 
 dat_sites %>%
   dplyr::select(taxon,site,rank, phylum,class,order,family,genus,species) %>%
-  group_by(site) %>% summarise(n.species=length(unique(taxon)))
-
-
+  group_by(site) %>% summarise(n.taxa=length(unique(taxon)))
 ```
 
 
 ### By month
+Species
 ```{r}
-
+dat %>% filter(rank=="species") %>% 
+  separate(site_month,into=c("site","month"),sep="-",remove=TRUE) %>%
+  rename(site=month, x=site) %>%
+  dplyr::select(site,taxon,genus,family,order,class) %>% distinct() %>%
+  group_by(site) %>% summarise(n.species=length(unique(taxon))) %>%
+  rename(month=site)
 ```
 
-# Beta diversity
-What is the $\beta$ diversity for prey taxon? (the ratio between regional and local prey diversity) The greater the similarity in community composition between multiple communities, the lower the value of β-diversity for that set of communities.
+Taxa
 ```{r}
-prey.sp.site.mat <- dat_sites %>%
-  dplyr::select(site, taxon) %>% distinct() %>%
-  mutate(presence=1) %>%
-  pivot_wider(id_cols="site", names_from="taxon",values_from="presence", values_fill=0)
-
-bdiv <- as.matrix(betadiver(prey.sp.site.mat, method="w")) 
-colnames(bdiv) <-c(prey.sp.site.mat$site); rownames(bdiv) <- c(prey.sp.site.mat$site)
-bdiv
+dat %>% separate(site_month,into=c("site","month"),sep="-",remove=TRUE) %>%
+  rename(site=month, x=site) %>%
+get_unique_taxa(level="site") %>%
+  dplyr::select(taxon,site,rank, phylum,class,order,family,genus,species) %>%
+  group_by(site) %>% summarise(n.taxa=length(unique(taxon))) %>%
+  rename(month=site)
 ```
-
 
 # Prey Identification
 
 ```{r}
 total.crab <- length(unique(dat$sample))
-crab.by.site.type <- dat_sites %>% mutate(site_type=ifelse(grepl("Nahcotta",site) | grepl("Stackpole",site),"Monitoring Sites","Clam Bed Sites")) %>%
+crab.by.site.type <- dat %>% 
+  separate(site_month,into=c("site","month"),sep="-",remove=TRUE) %>%
+  mutate(site_type=ifelse(grepl("Nahcotta",site) | grepl("Stackpole",site),"Monitoring Sites","Clam Bed Sites")) %>%
   group_by(site_type) %>% summarise(site.n=length(unique(sample)))
 ```
 
@@ -140,8 +148,11 @@ crab.by.site.type <- dat_sites %>% mutate(site_type=ifelse(grepl("Nahcotta",site
 ### by group
 
 ```{r}
-preyGrp.site <- dat_sites %>%
+preyGrp.site <- dat %>%
+  separate(site_month,into=c("site","month"),sep="-",remove=TRUE) %>%
   left_join(groups.key, by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+  ### for the pamphlet, don't break out algae by group (red/green/brown) ###
+  mutate(taxon.group=ifelse(grepl("algae",taxon.group), "Algae",taxon.group)) %>%
   group_by(site) %>%
   mutate(site_reads=sum(nReads)) %>%
   ungroup() %>%
@@ -153,11 +164,11 @@ preyGrp.site <- dat_sites %>%
   arrange(n_crab)
 
 preyGrp.site$site <- factor(preyGrp.site$site, levels=c("Long Beach","Oysterville","Stackpole","Nahcotta"))
-preyGrp.site$taxon.group <- factor(preyGrp.site$taxon.group, levels=rev(c("Other Crabs","Shrimp","Amphipods",
-                                                                          "Bivalves",
-                                                                          "Brown algae","Green algae","Red algae",
-                                                                          "Worms","Insects","Plants",
-                                                                          "Fishes","Tunicates","Invasive mud snail","Sea anemone")))
+preyGrp.site$taxon.group <- factor(preyGrp.site$taxon.group, levels=rev(c("Algae","Other Crabs",
+                                                                          "Shrimp","Amphipods","Fishes",
+                                                                          "Worms","Insects","Bivalves",
+                                                                          "Plants","Invasive mud snail",
+                                                                          "Tunicates","Sea anemone")))
 ```
 <br>
 ```{r}
@@ -170,7 +181,7 @@ col_palette2 <- c("#01665e","#c7eae5",
 
 
 ggplot(preyGrp.site, aes(y=taxon.group,x=n_crab, fill=site)) + 
-  geom_col() + facet_grid(cols=vars(site_type)) + ggtitle("What are green crabs eating?") + labs(x="Number of crabs") +
+  geom_col() + facet_grid(cols=vars(site_type)) + ggtitle("What are green crabs eating?") + labs(x="Number of green crabs") +
   scale_fill_manual(values=col_palette2) +
   theme_bw() + theme(legend.title=element_blank(), axis.title.y=element_blank(),
                      axis.text.y=element_text(size=12), legend.text=element_text(size=12))
@@ -179,7 +190,7 @@ ggplot(preyGrp.site, aes(y=taxon.group,x=n_crab, fill=site)) +
 ```{r}
 png(here('figs','POSTER_prey-groups_counts-by-site.png'),res=300,height=1200,width=1600,bg="transparent")
 ggplot(preyGrp.site, aes(y=taxon.group,x=n_crab, fill=site)) + 
-  geom_col() + facet_grid(cols=vars(site_type)) + labs(x="Number of crabs") +
+  geom_col() + facet_grid(cols=vars(site_type)) + labs(x="Number of green crabs") +
   scale_fill_manual(values=col_palette2) + guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
   theme_bw() + theme(legend.title=element_blank(), axis.title.y=element_blank(),
                      axis.text.y=element_text(size=12), legend.text=element_text(size=12),
@@ -209,7 +220,7 @@ preyGrp.site %>%
   left_join(crab.by.site.type) %>%
   mutate(p_crab=100*(n_crab/site.n)) %>%
   ggplot(aes(y=taxon.group,x=p_crab, fill=site)) + 
-  geom_col() + facet_grid(cols=vars(site_type)) + labs(x="Percent of crabs") +
+  geom_col() + facet_grid(cols=vars(site_type)) + labs(x="Percent of green crabs") +
   scale_fill_manual(values=col_palette2) + guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
   theme_bw() + theme(legend.title=element_blank(), axis.title.y=element_blank(),
                      axis.text.y=element_text(size=12), legend.text=element_text(size=12),
@@ -224,19 +235,28 @@ dev.off()
 ```
 
 ### % crab per species
+
+"top" species
 ```{r}
-dat_sites %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+dat %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
   group_by(rank,taxon,taxon.common) %>%
   summarise(n.crab=length(unique(sample))) %>%
   mutate(p.crab=n.crab/total.crab) %>%
-  arrange(desc(p.crab)) %>% top_n(5)
+  filter(!is.na(p.crab)) %>%
+  arrange(desc(p.crab)) 
 ```
 
+Combine the Crangon (species/genus) IDs and recalculate percent
+```{r}
+dat %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+  filter(taxon %in% c("Crangon","Crangon franciscorum")) %>%
+  mutate(taxon.group="Crangon shrimp") %>%
+  group_by(taxon.group) %>%
+  summarise(n.crab=length(unique(sample))) %>%
+  mutate(p.crab=n.crab/total.crab)
+```
 
-For bivalves, crab, and fish
-
-
-
+Graph percentages for bivalves, crab, and fish (POSTER version)
 ```{r}
 dat_sp <- dat %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
   filter(!is.na(taxon.common)) %>%
@@ -309,33 +329,102 @@ dev.off()
 
 
 
+Graph percentages for bivalves, crab, and fish (PAMPHLET version)
+```{r}
+dat_sp2 <- dat %>% left_join(groups.key,by=c("taxon"="taxon.final","rank"="rank.final")) %>%
+  # add kurtiella clam common name
+  mutate(taxon.common=ifelse(grepl("Kurtiella",taxon), "Kurtiella sp.\n(small clam)", taxon.common)) %>%
+  # only keep taxa with common names
+  filter(!is.na(taxon.common)) %>%
+  filter(!grepl("Crangon",taxon) & taxon!="Hemigrapsus") %>%   # get rid of genus-level IDs of these two groups
+  # remove scientific names
+  mutate(taxon.common=ifelse(taxon.common=="Soft-shell clam (M. arenaria)", "Soft-shell clam",
+                             ifelse(taxon.common=="Shiner perch (C. aggregata)","Shiner perch",
+                                    ifelse(taxon.common=="Pacific staghorn sculpin (L. armatus)","Pacific staghorn\n sculpin",
+                                           ifelse(taxon.common=="Saddleback gunnel (P. ornata)","Saddleback gunnel",
+                                                  ifelse(taxon.common=="Shore crab (H. oregonensis)","Hairy shore crab",
+                                           taxon.common)))))) %>%
+  separate(site_month, into=c("site","month"), sep="-") %>%
+  group_by(site,rank,taxon,taxon.common,phylum,class,order,family,taxon.group) %>%
+  summarise(n.crab=length(unique(sample))) %>%
+  left_join(dat %>% separate(site_month, into=c("site","month"), sep="-") %>%
+              group_by(site) %>% 
+              summarise(site.crab=length(unique(sample))), by="site") %>%
+  mutate(p.crab=n.crab/site.crab*100) %>%
+  arrange(desc(p.crab))
+
+
+plotdat <- dat_sp2 %>% 
+  rename(`Percent of\ngreen crabs\nwith food item`=p.crab) %>%   ## rename legend
+  mutate(site_type=ifelse(site %in% c("Long Beach","Oysterville"), "Clam Bed", "Monitoring")) %>%
+  mutate(taxon.common=ifelse(taxon.common=="Shiner perch (C.aggregata)","Shiner perch (C. aggregata)",taxon.common))
+
+
+
+plotdat$taxon.common <- factor(plotdat$taxon.common, levels=rev(c("Soft-shell clam","Manila clam","Kurtiella sp.\n(small clam)",
+                                                                  "Shiner perch","Pacific staghorn\n sculpin","Saddleback gunnel",
+                                                                  "Hairy shore crab", "Dungeness crab")))
+
+plotdat$site <- factor(plotdat$site, levels=c("Long Beach","Oysterville","Stackpole","Nahcotta"))
+
+col_palette4 <- c("#018571","#a6611a")
+col_palette2 <- c("#01665e","#c7eae5",
+                  "#8c510a","#f6e8c3")
+plotdat %>% filter(!is.na(taxon.common)) %>%
+ggplot() +
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of\ngreen crabs\nwith food item`, col=site)) + 
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of\ngreen crabs\nwith food item`), pch=21) +
+  geom_rect(aes(xmin=7.5,xmax=6.5,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
+  geom_segment(aes(x=7,xend=6.80,y=2.25,yend=2.4), col="gray60") +
+  geom_text(data=data.frame(x=6.4,y=3.12,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=4) +
+  scale_color_manual(values=col_palette2,name="") +
+  scale_size_continuous(range=c(2,6)) +
+  guides(color=FALSE) +
+  labs(x="",y="") + ggtitle("What bivalves, fish, and other crabs are being eaten?") +
+  coord_flip() + theme_bw() + theme(axis.text.x=element_text(angle=20,hjust=1,size=12),
+                                    axis.text.y=element_text(size=12),
+                                    legend.text=element_text(size=12), legend.title=element_text(size=13))
+```
+```{r}
+png(here('figs','PAMPHLET_prey-clams-crab-fish_by-site_dotplot.png'),res=300,height=1500,width=1600,bg = 'transparent')
+plotdat %>% filter(!is.na(taxon.common)) %>%
+  ggplot() +
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of\ngreen crabs\nwith food item`, col=site)) + 
+  geom_point(aes(x=taxon.common,y=site,size=`Percent of\ngreen crabs\nwith food item`), pch=21) +
+  geom_rect(aes(xmin=7.5,xmax=6.5,ymin=1.75,ymax=2.25), col="gray60",fill=NA) +
+  geom_segment(aes(x=7,xend=6.80,y=2.25,yend=2.4), col="gray60") +
+  geom_text(data=data.frame(x=6.82,y=3.25,label="1 green crab"), aes(x=x,y=y,label=label), col="gray60", fontface="italic",size=4) +
+  scale_color_manual(values=col_palette2,name="") +
+  scale_size_continuous(range=c(2,6)) +
+  guides(color=FALSE) +
+  labs(x="",y="") + ggtitle("What bivalves, fishes, and other\n crabs are being eaten?") +
+  coord_flip() + theme_bw()+ theme(axis.text.x=element_text(angle=30,hjust=1,size=12),
+                                   axis.text.y=element_text(size=12),
+                                   legend.text=element_text(size=12), legend.title=element_text(size=13),
+                                   panel.grid.major=element_line(linewidth=0.25),
+                                   # panel.background = element_rect(fill='transparent'), #transparent panel bg
+                                   plot.background = element_rect(fill='transparent', color=NA), #transparent plot bg
+                                   legend.background = element_rect(fill='transparent', color=NA), #transparent legend bg
+                                   legend.box.background = element_rect(fill='transparent',color=NA) #transparent legend panel
+  )
+dev.off()
+```
+
+
+
 # Map
 
 ### Site Map
+
+data needed for mapping
 ```{r}
-willapa2 <- readRDS(here("data","metadata","willapa_terrain_background2.rds"))
 willapa <- readRDS(here("data","metadata","willapa_terrain_background.rds"))
 mapdat <- site_coords %>% dplyr::select(site_name,latitude,longitude,type) %>% distinct() %>%
   mutate(type=ifelse(type=="Sentinel","Monitoring\nSites","Clam Bed\nSites"))
 ```
+
+create map
 ```{r}
-mymap <- ggmap(willapa2) + 
-  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name, color=type),
-                   segment.colour = 'black',
-                   nudge_x=0.2,
-                   force=1, force_pull=0.2, segment.size=0.05, size=4) +
-  geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) +
-  geom_text(aes(x=-123.98,y=46.65,label="italic('Willapa\n Bay')"), col="deepskyblue4", size=4, parse=TRUE) +
-  geom_text(aes(x=-123.87,y=46.23,label="italic('Columbia River')"), col="deepskyblue4", size=4, parse=TRUE) +
-  ylab("Latitude") + xlab("Longitude") +
-  scale_color_manual(values=c("#018571","#a6611a")) +
-  theme(axis.title=element_blank(),
-        axis.text=element_text(size=10),
-        legend.title=element_blank(),
-        legend.text=element_text(size=12), legend.position="right",legend.justification='top',
-        plot.margin=unit(c(0,0,0,0), "cm")) +
-  coord_fixed(ylim=c(46.3,46.8), xlim=c(-124.2, -123.7))
-mymap
 mymap2 <- ggmap(willapa) + 
   geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name, color=type),
                    segment.colour = 'black',
@@ -352,69 +441,39 @@ mymap2 <- ggmap(willapa) +
         plot.margin=unit(c(0.5,0,0,0), "cm"))
 mymap2
 ```
+
+
+
+*Alternative*
 ```{r}
-png(here('results','figures','fig1_map.png'),res=300, height=2000,width=1400)
+willapa2 <- readRDS(here("data","metadata","willapa_terrain_background2.rds"))
+mymap <- ggmap(willapa2) +
+  geom_label_repel(data=mapdat, aes(x=longitude,y=latitude, label=site_name, color=type),
+                   segment.colour = 'black',
+                   nudge_x=0.2,
+                   force=1, force_pull=0.2, segment.size=0.05, size=4) +
+  geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) +
+  geom_text(aes(x=-123.98,y=46.65,label="italic('Willapa\n Bay')"), col="deepskyblue4", size=4, parse=TRUE) +
+  geom_text(aes(x=-123.87,y=46.23,label="italic('Columbia River')"), col="deepskyblue4", size=4, parse=TRUE) +
+  ylab("Latitude") + xlab("Longitude") +
+  scale_color_manual(values=c("#018571","#a6611a")) +
+  theme(axis.title=element_blank(),
+        axis.text=element_text(size=10),
+        legend.title=element_blank(),
+        legend.text=element_text(size=12), legend.position="right",legend.justification='top',
+        plot.margin=unit(c(0,0,0,0), "cm")) +
+  coord_fixed(ylim=c(46.3,46.8), xlim=c(-124.2, -123.7))
 mymap
-dev.off()
-png(here('results','figures','fig1_map_nolabels.png'),res=300, height=2000,width=1000)
-mymap2
-dev.off()
 ```
-
-
-Alternative map
-```{r}
-require(raster)
-pt.gadm <- getData('GADM', country='United States', level=0)
-require(sf)
-wc.lim = data.frame(ylim=c(44,48.3), xlim=c(-129, -119))
-wc.bbox <- st_bbox(c(xmin=wc.lim$xlim[1],
-                     xmax=wc.lim$xlim[2],
-                     ymin=wc.lim$ylim[1],
-                     ymax=wc.lim$ylim[2]))
-
-pt.gadm <- sf::st_as_sf(pt.gadm) %>% 
-  st_crop(wc.bbox)
-
-loc.lim = data.frame(ylim=c(46.3,46.8), xlim=c(-124.2, -123.6))
-loc.bbox <- st_bbox(c(
-  xmin=loc.lim$xlim[1],
-  xmax=loc.lim$xlim[2],
-  ymin=loc.lim$ylim[1],
-  ymax=loc.lim$ylim[2]))
-
-# Altitude data (gives a raster list):
-alt.gadm <- getData("alt", country = "United States")[[1]]
-plot(alt.gadm, main="Elevation") 
-slope.raster <- terrain(alt.gadm, opt='slope')
-aspect.raster <- terrain(alt.gadm, opt='aspect')
-hill.raster <- hillShade(slope.raster, aspect.raster, 40, 270)
-hill.m <- rasterToPoints(hill.raster)
-hill.df <-  data.frame(hill.m)
-colnames(hill.df) <- c("lon", "lat", "hill")
-
-```
-```{r}
-ggplot() +
-  geom_sf(data=pt.gadm)+
-  coord_sf(ylim=loc.lim$ylim, xlim=loc.lim$xlim)+
-  geom_point(data=mapdat, aes(x=longitude,y=latitude, col=type), size=6) + 
-  geom_raster(data = hill.df, aes(lon, lat, fill = hill), alpha = .45) +
-  scale_fill_gradientn(colours = grey.colors(100)) +
-  ggtitle("GADM border - local area") +
-  theme_minimal()+
-  theme(panel.background = element_rect(fill = 'lightblue'),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-```
-
 
 
 ### Carapace widths (mm)
 
+**Note that "sequenced" here is "sequenced with prey", whereas in the publication, there is a distinction between "sequenced" (n=86, inclusive of crabs which did not have identifiable prey in their stomach contents) and "sequenced with prey"**
+
 ```{r}
 cw <- read_csv(here('data','metadata','Willapa Bay EGC Samples - Sample Data.csv')) %>%
-  mutate(sequenced=ifelse(Sample_label %in% meta.run$sample, "Sequenced", "Trapped"))
+  mutate(sequenced=ifelse(Sample_label %in% dat$sample, "Sequenced", "Trapped"))
 
 cw %<>% mutate(site=ifelse(grepl("Stackpole",Site_Name), "Stackpole",
                                  ifelse(grepl("Oysterville",Site_Name), "Oysterville",
@@ -451,7 +510,7 @@ ggplot(plotdat, aes(x=CW_mm, fill=sequenced)) +
   scale_fill_manual(values=c("black","grey60"),name="") +
   facet_grid(rows=vars(site_type),switch="y") + 
   scale_y_continuous(position = "right") +
-  labs(x="Carapace Width (mm)",y="Number of Green Crabs") + theme_bw() + 
+  labs(x="Carapace Width (mm)",y="Number of green crabs") + theme_bw() + 
   theme(strip.placement = "outside",legend.position=c(0.1,0.9), legend.title=element_blank(),
         strip.background=element_rect(color=c("white"), linewidth=2))
 
@@ -460,30 +519,24 @@ plot1 <- ggplot(plotdat, aes(x=CW_mm, fill=sequenced)) +
   scale_fill_manual(values=c("black","grey60"),name="") +
   facet_grid(rows=vars(site_type),switch="y") + 
   scale_y_continuous(position = "right") +
-  labs(x="Carapace Width (mm)",y="Number of Green Crabs") + theme_bw() + 
+  labs(x="Carapace width (mm)",y="Number of green crabs") + theme_bw() + 
   theme(strip.placement = "outside",legend.position=c(0.4,0.9), legend.title=element_blank(),
         strip.text=element_text(size=12),
         strip.background=element_rect(color=c("white"), linewidth=2))
 ```
 
 
-```{r}
-png(here('results','figures','fig1_pamphlet_cw.png'),res=300, height=1000,width=1400)
-plot1
-dev.off()
-```
-
 
 ### combined
 
 ```{r echo=TRUE}
 right_side <- plot_grid(NULL, plot1, NULL, nrow=3, rel_heights=c(0.2,1,0.2))
-png(here('results','figures','fig1-pamphet.png'),res=300, height=2300,width=2300)
+png(here('figs','PAMPHLET_map-metadata.png'),res=300, height=2300,width=2300)
 plot_grid(mymap2,right_side,ncol=2, rel_widths=c(1,0.5))
 dev.off()
 
 
-png(here('results','figures','fig1_nolabels.png'),res=300, height=2000,width=2200)
-plot_grid(mymap2,plot1,ncol=2, rel_widths=c(1,0.7))
-dev.off()
+# png(here('figs','PAMPHLET_map-metadata-largerCW.png'),res=300, height=2000,width=2200)
+# plot_grid(mymap2,plot1,ncol=2, rel_widths=c(1,0.7))
+# dev.off()
 ```
