@@ -2,7 +2,7 @@
 
 ### Revealing European green crab predation in a Washington State estuary with DNA metabarcoding (dDNA)
 <br>
-For [Fisher et al. in review](www.doi.org/10.1371/journal.pone.0302518
+For  Fisher et al. 2024 (DOI:10.1371/journal.pone.0302518)
 
 Authors: Mary Fisher, Emily Grason, Alex Stote, Ryan Kelly, Kate Litle, Sean McDonald
 
