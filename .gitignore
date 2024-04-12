@@ -12,6 +12,7 @@ data/quant_modeling/*
 !data/quant_modeling/QM_dataLIST_alphaRun.rda
 !data/quant_modeling/QM_dataLIST_sampleRun.rda
 !data/quant_modeling/zoid_input_Bayes_est_rmultinomReads.rds
+!README.md
 
 data/results/S1_Table.xlsx
 data/results/*.csv

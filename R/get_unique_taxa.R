@@ -1,3 +1,15 @@
+#' Get unique taxa
+#'
+#' `get_unique_taxa` removes higher-level taxa (i.e., non-specific identifications)
+#' that may represent duplicates. For example, *Decapoda* would be removed if there is
+#' an identification for *Cancer magister*, and *Crangon* would be removed if there is 
+#' an identification for *Crangon franciscorum*.  
+#'
+#' 
+#' @param taxa.df  a dataframe of of the taxa (rows) found each in sample (rows)
+#' @param level    remove potentially duplicated non-specific IDs across the full data set, or within sites? 
+#' @param return.removed return only a data frame without potentially duplicated non-specific IDs (FALSE), or return a list with that data frame plus a dataframe of what was removed (TRUE)
+
 get_unique_taxa <- function(taxa.df, level="all", return.removed=FALSE){
   
   if(level=="all"){
@@ -114,67 +126,3 @@ get_unique_taxa <- function(taxa.df, level="all", return.removed=FALSE){
 }
 
 
-
-
-
-
-
-
-
-# gdat <- dat %>% filter(rank=="genus")  # get genus-level identifications
-# dat <- dat %>%
-#   filter(!(taxon %in% gdat$family) & !(taxon %in% gdat$order) & 
-#            !(taxon %in% gdat$class) & !(taxon %in% gdat$phylum))
-# 
-# # remove higher level taxonomy that is already represented by family IDs
-# fdat <- dat %>% filter(rank=="family")
-# dat <- dat %>%
-#   filter(!(taxon %in% fdat$order) & 
-#            !(taxon %in% fdat$class) & !(taxon %in% fdat$phylum))
-# 
-# # remove higher level taxonomy already represented by order IDs
-# odat <- dat %>% filter(rank=="order")
-# if(dim(odat)[1] > 0){
-#   dat <- dat %>%
-#     filter(!(taxon %in% odat$class) & !(taxon %in% odat$phylum))
-# }
-# 
-# # remove phyla already represented by class
-# cdat <- dat %>% filter(rank=="class")
-# if(dim(cdat)[1] > 0){
-#   dat <- dat %>%
-#     filter(!(taxon %in% cdat$phylum))}
-
-
-
-
-# gdat <- dat %>% filter(rank=="genus") %>%
-#   dplyr::select(site,genus, family,order,class, phylum) %>% distinct() %>% # genus-level identifications by site
-#   pivot_longer(cols=c(family,order,class,phylum), names_to="rank",values_to="taxon")
-# 
-# keep_higherdat <- keep_higherdat %>%  # get higher level IDs that are not represented by genus, by site
-#   left_join(gdat %>% rename(genus.matched=genus), by=c("site","rank","taxon"))
-# 
-# # remove higher level taxonomy represented by family
-# fdat <- dat %>% filter(rank=="family") %>%
-#   dplyr::select(site,family,order,class, phylum) %>% distinct() %>%
-#   pivot_longer(cols=c(order,class,phylum), names_to="rank",values_to="taxon")
-# 
-# keep_higherdat <- keep_higherdat %>%  # get higher level IDs that are not represented by genus, by site
-#   left_join(fdat %>% rename(fam.matched=family), by=c("site","rank","taxon"))
-# 
-# # remove higher level taxonomy represented by order
-# odat <- dat %>% filter(rank == "order") %>%
-#   dplyr::select(site,order,class, phylum) %>% distinct() %>%
-#   pivot_longer(cols=c(class,phylum), names_to="rank",values_to="taxon")
-# 
-# keep_higherdat <- keep_higherdat %>%  # get higher level IDs that are not represented by genus, by site
-#   left_join(odat %>% rename(ord.matched=order), by=c("site","rank","taxon"))
-# 
-# # remove higher level taxonomy represented by class
-# cdat <- dat %>% filter(rank == "class") %>%
-#   dplyr::select(site,class, phylum) %>% distinct() %>%
-#   pivot_longer(cols=c(phylum), names_to="rank",values_to="taxon")
-# 
-# keep_higherdat <- keep_higherdat %>%  # get higher level IDs that are not represented by genus, by site
-#   left_join(cdat %>% rename(class.matched=class), by=c("site","rank","taxon"))

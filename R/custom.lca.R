@@ -1,4 +1,12 @@
-## borrowed from Ramon Gallego, via Eily Allen ##
+#' Last Common Ancestor
+#'
+#' `custom.lca` returns the last common ancestor for BLAST matches in a dataframe.
+#'  It is used in sequencing script 5. 
+#'
+#' This function was written by Ramon Gallego, shared by Eily Allen 
+#' 
+#' @param df data frame with re-structured BLAST matches
+#' @param cutoff percent identity threshold (keep everything above the cutoff value). Default is 90% 
 
 custom.lca <- function (df, cutoff = 90) {
   require(taxonomizr)

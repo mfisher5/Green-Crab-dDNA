@@ -1,11 +1,11 @@
 #' Plot with Ellipses, Hulls, Spiders
+#' 
+#' EDITED BY M FISHER TO PRODUCE CUSTOM ORDIPLOTS FOR FISHER ET AL. 2024 (GREEN CRAB dDNA)
 #'
 #' \code{gg_ordiplot} uses \code{ggplot2} to make an ordination plot
 #' with group ellipses by default, and optionally hulls and/or
 #' spiders. It is patterned after \code{vegan}'s functions \code{ordiellipse},
 #' \code{ordihull}, and \code{ordispider} and accepts similar parameters.
-#' 
-#' CODE EDITED TO PRODUCE CUSTOM ORDIPLOTS FOR FISHER ET AL. (GREEN CRAB dDNA)
 #' 
 #' @param ord An ordination object.
 #' @param groups A vector of groups.
